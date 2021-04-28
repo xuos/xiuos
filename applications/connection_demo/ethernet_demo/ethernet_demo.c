@@ -180,6 +180,7 @@ void AtTestCmdEthernet(int argc, char *argv[])
 
     printf("Waiting for msg...\n");
 
+    // Send hfa21 handshake, start cmd mode.
     ATOrderSend(at_adapter->agent, REPLY_TIME_OUT, NULL, "+++");
     UserTaskDelay(100);
 
