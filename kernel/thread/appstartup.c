@@ -41,7 +41,7 @@ void MainKTaskFunction(void *parameter)
 #endif
 
 /**
- * This function will create main application 
+ * This function will create main application then startup it
  * 
  * 
  */
