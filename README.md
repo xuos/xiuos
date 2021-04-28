@@ -37,7 +37,7 @@ RISC-V架构系列的开发板有
 
 ### 操作系统： [Ubuntu18.04](https://ubuntu.com/download/desktop)
 
-### 开发工具： [VSCode](https://code.visualstudio.com/)
+### 开发工具： [VSCode](http://101.36.126.201:8011/vscode_1.55.2-1618307277_amd64.deb)
 
 ### 依赖包安装：
 
