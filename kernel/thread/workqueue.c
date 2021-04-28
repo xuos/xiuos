@@ -23,7 +23,7 @@
 #include <device.h>
 queue *sys_workq = NONE;
 
-static void _WorkQueueKTaskEntry(void *parameter)
+static void WorkQueueKTaskEntry(void *parameter)
 {
     x_base lock = 0;
     WorkqueueType *p_queue = (WorkqueueType *)parameter;
@@ -86,7 +86,7 @@ WorkqueueType *CreateWorkQueue(const char *name, uint16 stack_size, uint8 priori
         p_queue->front = p_queue->rear = 0;
 
         // start work thread
-        p_queue->task = KTaskCreate(name, _WorkQueueKTaskEntry, p_queue, 2048, priority);
+        p_queue->task = KTaskCreate(name, WorkQueueKTaskEntry, p_queue, 2048, priority);
         if (NONE == p_queue->task) {
             KPrintf("CreateWorkQueue KTaskCreate failed\n");
             break;
