@@ -25,7 +25,7 @@
 
 adapter_t padapter;
 /* a demo function to send message through command line using zigbee*/
-
+/* first open zigbee to start demo*/
 void ZigbeeOpenDemo()
 {
     /*Find from the list of registered adapters*/
