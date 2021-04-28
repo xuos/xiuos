@@ -1,0 +1,21 @@
+menuconfig CONNECTION_COMMUNICATION_WIFI
+    bool "Enable Wifi"
+    default n
+
+
+menuconfig CONNECTION_COMMUNICATION_ETHERNET
+    bool "Enable Ethernet"
+    default n
+
+menuconfig CONNECTION_COMMUNICATION_ZIGBEE
+    bool "Enable Zigbee"
+    default n
+
+
+menuconfig CONNECTION_COMMUNICATION_NB_IOT
+    bool "Enable NB-IOT"
+    default n
+
+menuconfig CONNECTION_COMMUNICATION_4G
+    bool "Enable 4G"
+    default n

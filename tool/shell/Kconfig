@@ -1,0 +1,96 @@
+menu "Command shell"
+
+menuconfig TOOL_SHELL
+    bool "Enable letter-shell function"
+    default y
+
+if TOOL_SHELL
+    config SHELL_ENTER_CR
+    bool
+    config SHELL_ENTER_LF
+    bool
+    
+    choice
+    prompt "Set shell end-of-line markers :"
+        default SHELL_ENTER_CR_AND_LF
+    
+    config SHELL_ENTER_CR_AND_LF
+        bool "Using CR And LF as end-of-line markers"
+        select SHELL_ENTER_CR
+        select SHELL_ENTER_LF    
+    
+    config SHELL_ENTER_CRLF
+        bool "Using CRLF as end-of-line markers"
+    endchoice
+
+    menu "Set shell user control"
+        config SHELL_DEFAULT_USER
+            string "Set default user's name"
+            default "letter"
+        
+        config SHELL_DEFAULT_USER_PASSWORD
+            string "Set default user's password(none for unnecessary)"
+            default ""
+
+        config SHELL_LOCK_TIMEOUT
+            int "Set the lock time(ms) if password isn't none."
+            default 10000
+    endmenu
+
+    menu "Set shell config param"
+        config SHELL_TASK_STACK_SIZE
+            int "Set the stack size for shell "
+            default 4096
+        
+        config SHELL_TASK_PRIORITY
+            int
+            default 5  if KTASK_PRIORITY_8
+            default 20  if KTASK_PRIORITY_32
+            default 120  if KTASK_PRIORITY_256
+        
+        config SHELL_MAX_NUMBER
+        int "Set the max shell count"
+        default 5
+
+        config SHELL_PARAMETER_MAX_NUMBER
+            int "Set the max number of parameter"
+            default 8
+            help
+                The max number of parameter in shell. We support up to eight including command name.
+            
+        config SHELL_HISTORY_MAX_NUMBER
+            int "Set the max number of command history"
+            default 5
+
+        config SHELL_PRINT_BUFFER
+            int "Set the max number of print buffer"
+            default 128
+    endmenu
+
+    config SHELL_HELP_SHOW_PERMISSION
+        bool "Enable the function of showing permission"
+        default y
+        help
+            Show Command and Variable Permission in Shell
+
+    config SHELL_HELP_LIST_USER
+        bool "List all users "
+        default n
+        help
+            List all users in shell
+
+    config SHELL_HELP_LIST_VAR
+        bool "List all variable "
+        default y
+        help
+            List all variable in shell
+
+    config SHELL_HELP_LIST_KEY
+        bool "List all keys "
+        default n
+        help
+            List all keys in shell
+
+endif
+
+endmenu

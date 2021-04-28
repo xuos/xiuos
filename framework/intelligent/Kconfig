@@ -1,0 +1,5 @@
+menu "Intelligence"
+
+source "$KERNEL_DIR/framework/intelligent/tflite-mcu/Kconfig"
+
+endmenu

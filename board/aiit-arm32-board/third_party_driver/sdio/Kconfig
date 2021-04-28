@@ -1,0 +1,13 @@
+if BSP_USING_SDIO
+config SDIO_BUS_NAME
+    string "sdio bus name"
+    default "sdio"
+
+config SDIO_DRIVER_NAME
+    string "sdio driver name"
+    default "sdio_drv"
+
+config SDIO_DEVICE_NAME
+    string "sdio device name"
+    default "sdio_dev"
+endif

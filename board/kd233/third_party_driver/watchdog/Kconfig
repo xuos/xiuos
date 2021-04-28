@@ -1,0 +1,34 @@
+menuconfig BSP_USING_WDT0
+bool "Using watchdog 0 "
+default n
+if BSP_USING_WDT0
+config WDT_BUS_NAME_0
+    string "watchdog bus 0 name"
+    default "wdt0"
+
+config WDT_DRIVER_NAME_0
+    string "watchdog driver 0 name"
+    default "wdt0_drv"
+
+config WDT_0_DEVICE_NAME_0
+    string "watchdog device 0 name"
+    default "wdt0_dev0"
+endif
+
+menuconfig BSP_USING_WDT1
+bool "Using watchdog 1 "
+default n
+if BSP_USING_WDT1
+config WDT_BUS_NAME_1
+    string "watchdog bus 1 name"
+    default "wdt1"
+
+config WDT_DRIVER_NAME_1
+    string "watchdog driver 1 name"
+    default "wdt1_drv"
+
+config WDT_1_DEVICE_NAME_1
+    string "watchdog device 1 name"
+    default "wdt1_dev1"
+endif
+

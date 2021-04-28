@@ -1,0 +1,4 @@
+config USING_TFLITE_SIN
+    bool "sin(x) demo app for tflite micro"
+    depends on INTELLIGENT_TFLITE
+    default n

@@ -1,0 +1,12 @@
+
+config PIN_BUS_NAME
+    string "pin bus name"
+    default "pin"
+
+config PIN_DRIVER_NAME
+    string "pin driver name"
+    default "pin_drv"
+
+config PIN_DEVICE_NAME
+    string "pin device name"
+    default "pin_dev"

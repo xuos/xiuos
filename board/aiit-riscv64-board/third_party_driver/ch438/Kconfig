@@ -1,0 +1,136 @@
+
+if BSP_USING_CH438
+    config CH438_BUS_NAME
+        string
+        default "extuart"
+
+    config CH438_DRIVER_NAME
+        string
+        default "extuart_drv"
+
+    config CH438_DEVICE_NAME_0
+        string
+        default "extuart_dev0"
+
+    config CH438_DEVICE_NAME_1
+        string
+        default "extuart_dev1"
+
+    config CH438_DEVICE_NAME_2
+        string
+        default "extuart_dev2"
+
+    config CH438_DEVICE_NAME_3
+        string
+        default "extuart_dev3"
+
+    config CH438_DEVICE_NAME_4
+        string
+        default "extuart_dev4"
+
+    config CH438_DEVICE_NAME_5
+        string
+        default "extuart_dev5"
+
+    config CH438_DEVICE_NAME_6
+        string
+        default "extuart_dev6"
+
+    config CH438_DEVICE_NAME_7
+        string
+        default "extuart_dev7"
+
+    config BSP_CH438_ALE_PIN
+        int "ALE pin number for ch438"
+        default 23
+
+    config BSP_CH438_NWR_PIN
+        int "NWR pin number for ch438"
+        default 24
+
+    config BSP_CH438_NRD_PIN
+        int "NRD pin number for ch438"
+        default 25
+        
+    config BSP_CH438_D0_PIN
+        int "D0 pin number for ch438"
+        default 27
+        
+    config BSP_CH438_D1_PIN
+        int "D1 pin number for ch438"
+        default 28
+        
+    config BSP_CH438_D2_PIN
+        int "D2 pin number for ch438"
+        default 29
+        
+    config BSP_CH438_D3_PIN
+        int "D3 pin number for ch438"
+        default 30
+        
+    config BSP_CH438_D4_PIN
+        int "D4 pin number for ch438"
+        default 31
+        
+    config BSP_CH438_D5_PIN
+        int "D5 pin number for ch438"
+        default 32
+        
+    config BSP_CH438_D6_PIN
+        int "D6 pin number for ch438"
+        default 33
+        
+    config BSP_CH438_D7_PIN
+        int "D7 pin number for ch438"
+        default 34
+        
+    config BSP_CH438_INT_PIN
+        int "INT pin number for ch438"
+        default 35
+        
+    config BSP_485_dir
+        int "485 direction pin number for ch438"
+        default 18
+        
+
+    menuconfig BSP_USING_4G_OR_NB
+        bool "Select using the ec200t(4G) or bc28(NB-IOT)"
+        default y
+        if BSP_USING_4G_OR_NB
+            choice
+                prompt "Select using the ec200t(4G) or bc28(NB-IOT)"
+                default BSP_USING_4G
+                config BSP_USING_4G
+                    bool "Using ec200t(4G)"
+                config BSP_USING_NBIOT
+                    bool "Using bc26(NB-IOT)"
+            endchoice
+
+
+            if BSP_USING_4G
+                config BSP_4G_STATUS
+                    int "STATUS pin number for ec200t"
+                    default 21
+                config BSP_4G_POWERKEY
+                    int "POWERKEY pin number for ec200t"
+                    default 37
+            endif
+
+            if BSP_USING_NBIOT
+                config BSP_NB_RESET
+                    int "RESET pin number for bc28"
+                    default 21
+            endif
+        endif
+
+    menuconfig BSP_USING_WIFI_HFA21
+        bool "Using the hfa21(WIFI)"
+        default y
+        if BSP_USING_WIFI_HFA21
+            config BSP_WIFI_RST
+                int "RESET pin number for hfa21"
+                default 22
+        endif
+
+endif
+

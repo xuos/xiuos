@@ -1,0 +1,19 @@
+if BSP_USING_HWTIMER
+    config HWTIMER_BUS_NAME_1
+    string "hwtimer bus name"
+    default "hwtim1"
+
+    menuconfig ENABLE_TIM1
+    bool "enable TIM1"
+    default y
+
+    if ENABLE_TIM1
+        config HWTIMER_1_DEVICE_NAME_1
+        string "TIM1 dev name"
+        default "hwtim1_dev1"
+
+        config HWTIMER_DRIVER_NAME_1
+        string "TIM1 drv name"
+        default "hwtim1_drv"
+    endif
+endif

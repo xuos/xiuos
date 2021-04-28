@@ -1,0 +1,6 @@
+    config VFS_USING_WORKDIR
+    bool "Using work dir for FS_VFS"
+    default y
+    config FS_VFS_DEVFS
+    bool "Using dev object for FS_VFS"
+    default y

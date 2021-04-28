@@ -1,0 +1,11 @@
+menu "connection"
+
+menuconfig CONNECTION_ADAPTER
+bool "Enable adapter"
+default n
+if CONNECTION_ADAPTER
+source "$KERNEL_DIR/framework/connection/Adapter/Kconfig"
+endif
+
+
+endmenu

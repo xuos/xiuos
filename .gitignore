@@ -1,0 +1,8 @@
+xsconfig.h
+xsconfig.mk
+.config
+.config.old  
+build
+XiUOS.*
+*.swp
+.vscode

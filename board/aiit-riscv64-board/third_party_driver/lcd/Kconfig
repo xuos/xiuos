@@ -1,0 +1,36 @@
+
+if BSP_USING_LCD
+    config LCD_BUS_NAME_1
+        string "lcd bus 1 name"
+        default "lcd1"
+    config LCD_DRV_NAME_1
+        string "lcd bus 1 driver name"
+        default "lcd1drv"
+    config LCD_1_DEVICE_NAME_0
+            string "lcd bus 1 device 0 name"
+            default "lcd10"   
+    config BSP_LCD_CS_PIN
+        int "CS pin number of 8080 interface"
+        default 40
+    config BSP_LCD_WR_PIN
+        int "WR pin number of 8080 interface"
+        default 38
+    config BSP_LCD_DC_PIN
+        int "DC pin number of 8080 interface"
+        default 41
+    config FPIOA_LCD_DC
+        int "DC FPIOA number of 8080 interface"
+        default 2
+    config BSP_LCD_BL_PIN
+        int "BL pin number of 8080 interface"
+        default 47
+    config FPIOA_LCD_BL
+        int "BL FPIOA number of 8080 interface"
+        default 10
+    config BSP_LCD_X_MAX
+        int "LCD Height"
+        default 240
+    config BSP_LCD_Y_MAX
+        int "LCD Width"
+        default 320
+endif

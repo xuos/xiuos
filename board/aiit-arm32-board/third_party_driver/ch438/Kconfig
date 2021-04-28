@@ -1,0 +1,39 @@
+config CH438_BUS_NAME
+    string
+    default "extuart"
+
+config CH438_DRIVER_NAME
+    string
+    default "extuart_drv"
+
+config CH438_DEVICE_NAME_0
+    string
+    default "extuart_dev0"
+
+config CH438_DEVICE_NAME_1
+    string
+    default "extuart_dev1"
+
+config CH438_DEVICE_NAME_2
+    string
+    default "extuart_dev2"
+
+config CH438_DEVICE_NAME_3
+    string
+    default "extuart_dev3"
+
+config CH438_DEVICE_NAME_4
+    string
+    default "extuart_dev4"
+
+config CH438_DEVICE_NAME_5
+    string
+    default "extuart_dev5"
+
+config CH438_DEVICE_NAME_6
+    string
+    default "extuart_dev6"
+
+config CH438_DEVICE_NAME_7
+    string
+    default "extuart_dev7"

@@ -1,0 +1,14 @@
+
+if BSP_USING_WDT
+config WDT_BUS_NAME
+    string "watchdog bus name"
+    default "wdt"
+
+config WDT_DRIVER_NAME
+    string "watchdog driver name"
+    default "wdt_drv"
+
+config WDT_DEVICE_NAME
+    string "watchdog device name"
+    default "wdt_dev"
+endif

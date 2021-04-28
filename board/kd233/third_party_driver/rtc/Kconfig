@@ -1,0 +1,11 @@
+if BSP_USING_RTC
+    config RTC_BUS_NAME
+        string "rtc bus name"
+        default "rtc"
+    config RTC_DRV_NAME
+        string "rtc bus driver name"
+        default "rtc_drv"
+    config RTC_DEVICE_NAME
+            string "rtc bus device name"
+            default "rtc_dev"     
+endif

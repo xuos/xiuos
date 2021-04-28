@@ -1,0 +1,29 @@
+
+
+menuconfig BSP_USING_PLIC
+bool "Using PLIC device"
+default y
+if BSP_USING_PLIC
+source "$BSP_DIR/third_party_driver/plic/Kconfig"
+endif
+
+
+
+menuconfig BSP_USING_SYSCLOCK
+bool "Using SYSCLOCK device"
+default y
+if BSP_USING_SYSCLOCK
+source "$BSP_DIR/third_party_driver/sys_clock/Kconfig"
+endif
+
+
+
+menuconfig BSP_USING_UART
+bool "Using UART device"
+default y
+select RESOURCES_SERIAL
+if BSP_USING_UART
+source "$BSP_DIR/third_party_driver/uart/Kconfig"
+endif
+
+

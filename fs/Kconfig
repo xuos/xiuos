@@ -1,0 +1,36 @@
+menu "File system"
+
+menuconfig FS_VFS
+    bool "Using device virtual file system"
+    select KERNEL_MUTEX
+    default y
+    help
+        The device file system is a light weight virtual file system.
+
+if FS_VFS
+    source "$KERNEL_DIR/fs/iot-devicefile/Kconfig"
+
+    config FS_VFS_FATFS
+    bool "Using FATFS file system"
+    default y
+    if FS_VFS_FATFS
+        source "$KERNEL_DIR/fs/fatfs/Kconfig"
+    endif
+
+    config FS_CH376
+    bool "Using CH376 file system"
+    default n
+    if FS_CH376
+        source "$KERNEL_DIR/fs/compatibility_ch376/Kconfig"
+    endif
+
+    config FS_LWEXT4
+    bool "Using LWEXT4 file system"
+    default n
+    if FS_LWEXT4
+        source "$KERNEL_DIR/fs/lwext4/Kconfig"
+    endif
+
+endif
+
+endmenu

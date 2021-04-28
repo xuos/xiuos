@@ -1,0 +1,17 @@
+menu "APP Framework"
+
+source "$KERNEL_DIR/framework/perception/Kconfig"
+
+source "$KERNEL_DIR/framework/connection/Kconfig"
+
+source "$KERNEL_DIR/framework/intelligent/Kconfig"
+
+source "$KERNEL_DIR/framework/control/Kconfig"
+
+source "$KERNEL_DIR/lib/Kconfig"
+
+source "$KERNEL_DIR/framework/security/Kconfig"
+
+
+
+endmenu

@@ -1,0 +1,90 @@
+config BSP_USING_SPI1
+bool "Using spi1  "
+default y
+
+
+if BSP_USING_SPI1
+    config SPI_BUS_NAME_1
+        string "spi bus 1 name"
+        default "spi1"
+    config SPI_1_DRV_NAME
+        string "spi bus 1 driver name"
+        default "spi1_drv"    
+    config BSP_SPI1_CLK_PIN
+        int "spi1 clk pin number"
+        default 6
+    config BSP_SPI1_D0_PIN
+        int "spi1 d0 pin number"
+        default 8
+    config BSP_SPI1_D1_PIN
+        int "spi1 d1 pin number"
+        default 7
+    menuconfig BSP_SPI1_USING_SS0
+        bool "SPI1 Enable SS0"
+        default y
+    if BSP_SPI1_USING_SS0
+        config SPI_1_DEVICE_NAME_0
+            string "spi bus 1 device 0 name"
+            default "spi1_dev0"        
+        config BSP_SPI1_SS0_PIN
+            int "spi1 ss0 pin number"
+            default 9
+    endif
+    menuconfig BSP_SPI1_USING_SS1
+        bool "SPI1 Enable SS1"
+        default y
+    if BSP_SPI1_USING_SS1
+        config SPI_1_DEVICE_NAME_1
+            string "spi bus 1 device 1 name"
+            default "spi1_dev1"             
+        config BSP_SPI1_SS1_PIN
+            int "spi1 ss1 pin number"
+            default 33
+    endif
+    menuconfig BSP_SPI1_USING_SS2
+        bool "SPI1 Enable SS2"
+        default n
+    if BSP_SPI1_USING_SS2
+        config SPI_1_DEVICE_NAME_2
+            string "spi bus 1 device 2 name"
+            default "spi1_dev2"              
+        config BSP_SPI1_SS2_PIN
+            int "spi1 ss2 pin number"
+            default 26
+    endif
+    menuconfig BSP_SPI1_USING_SS3
+        bool "SPI1 Enable SS3"
+        default n
+    if BSP_SPI1_USING_SS3
+        config SPI_1_DEVICE_NAME_3
+            string "spi bus 1 device 3 name"
+            default "spi1_dev3"               
+        config BSP_SPI1_SS3_PIN
+            int "spi1 ss3 pin number"
+            default 27
+    endif
+endif
+
+config BSP_USING_TP
+bool "Using LCD touch  "
+default n
+
+if BSP_USING_TP
+    config BSP_TP_SCK_PIN
+        int "TP SCK pin number"
+        default 42
+    config BSP_TP_NCS_PIN
+        int "TP NCS pin number"
+        default 43
+    config BSP_TP_MISO_PIN
+        int "TP MISO pin number"
+        default 44
+    config BSP_TP_IRQ_PIN
+        int "TP IRQ pin number"
+        default 45
+    config BSP_TP_MOSI_PIN
+        int "TP MOSI pin number"
+        default 46
+
+endif
+

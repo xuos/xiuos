@@ -1,0 +1,10 @@
+menuconfig USER_TEST
+    bool "Enable application test function "
+    default n
+
+    if USER_TEST
+        config USER_TEST_LORA_ADHOC
+            bool "Config test lora adhoc"
+            default n
+
+    endif

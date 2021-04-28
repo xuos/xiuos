@@ -1,0 +1,59 @@
+mainmenu "XiUOS Project Configuration"
+
+config BSP_DIR
+    string
+    option env="BSP_ROOT"
+    default "."
+
+config KERNEL_DIR
+    string
+    option env="KERNEL_ROOT"
+    default "../.."
+
+config BOARD_STM32F407_EVB
+    bool
+    select  ARCH_ARM
+    default y
+
+source "$KERNEL_DIR/arch/Kconfig"
+
+menu "stm32f407-st-discovery feature"
+    source "$BSP_DIR/third_party_driver/Kconfig"
+    
+    menu "config default board resources"
+        menu "config board app name"
+            config BOARD_APP_NAME
+                string "config board app name"
+                default "/XiUOS_stm32f407-st-discovery_app.bin"
+        endmenu
+
+        menu "config board service table"
+            config SERVICE_TABLE_ADDRESS
+                hex "board service table address"
+                default 0x20000000
+        endmenu
+
+        menu "config hardware resources for connection"
+            if CONNECTION_COMMUNICATION_ETHERNET
+                config ETHERNET_UART_NAME
+                    string "ethernet uart name"
+                    default "/dev/usart3_dev3"
+            endif
+            if CONNECTION_COMMUNICATION_WIFI
+                config WIFI_UART_NAME
+                    string "wifi uart name"
+                    default "/dev/usart3_dev3"
+            endif
+
+        endmenu
+
+    endmenu
+
+endmenu
+
+
+menu "Hardware feature"
+source "$KERNEL_DIR/resources/Kconfig"
+endmenu
+
+source "$KERNEL_DIR/Kconfig"

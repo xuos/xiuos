@@ -1,0 +1,62 @@
+menuconfig KERNEL_TEST
+    bool "Enable kernel test function "
+    default n
+
+    if KERNEL_TEST
+        config KERNEL_TEST_AVLTREE
+            bool "Config test avl tree"
+            default n
+            select KERNEL_AVL_TREE
+        config KERNEL_TEST_CRICULAR_AREA
+            bool "Config test Circular area"
+            default n
+            select KERNEL_CIRCULAR_AREA
+        config KERNEL_TEST_MEM
+            bool "Config test mem"
+            default n
+            select KERNEL_MEMBLOCK
+        config KERNEL_TEST_TIMER
+            bool "Config test timer"
+            default n
+        config KERNEL_TEST_IWG
+            bool "Config test iwg"
+            default n
+            select BSP_USING_WDT
+        config KERNEL_TEST_REALTIME
+            bool "Config test realtime"
+            default n
+        config KERNEL_TEST_DBG
+            bool "Config test dbg"
+            default n
+            select KERNEL_DEBUG
+        config KERNEL_TEST_SCHED
+            bool "Config test sched"
+            default n
+        config KERNEL_TEST_RTC
+            bool "Config test rtc"
+            default n
+        config KERNEL_TEST_SERIAL
+            bool "Config test serial"
+            default n
+        config KERNEL_TEST_HWTIMER
+            bool "Config test hwtimer"
+            default n
+        config KERNEL_TEST_CAN
+            bool "Config test can"
+            default n
+        config KERNEL_TEST_TOUCH
+            bool "Config test touch"
+            default n
+        config KERNEL_TEST_LCD
+            bool "Config test lcd"
+            default n
+        config KERNEL_TEST_CH438
+            bool "Config test ch438"
+            default n
+        config KERNEL_TEST_I2C
+            bool "Config test i2c"
+            default n
+        config KERNEL_TEST_RISC_CAN
+            bool "Config test riscv can "
+            default n
+    endif

@@ -1,0 +1,4 @@
+config POSIX_API
+    bool "support posix api"
+    default n
+

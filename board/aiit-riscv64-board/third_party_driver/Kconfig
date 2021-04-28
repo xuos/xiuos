@@ -1,0 +1,110 @@
+menuconfig BSP_USING_CH376
+bool "Using CH376 device"
+default n
+select FS_VFS
+select FS_CH376
+if BSP_USING_CH376
+source "$BSP_DIR/third_party_driver/ch376/Kconfig"
+endif
+
+menuconfig BSP_USING_CH438
+bool "Using CH438 device"
+default y
+if BSP_USING_CH438
+source "$BSP_DIR/third_party_driver/ch438/Kconfig"
+endif
+
+menuconfig BSP_USING_DMA
+bool "Using DMA device"
+default y
+if BSP_USING_DMA
+source "$BSP_DIR/third_party_driver/dma/Kconfig"
+endif
+
+menuconfig BSP_USING_GPIO
+bool "Using GPIO device"
+default y
+select RESOURCES_PIN
+if BSP_USING_GPIO
+source "$BSP_DIR/third_party_driver/gpio/Kconfig"
+endif
+
+menuconfig BSP_USING_I2C
+bool "Using I2C device"
+default n
+select RESOURCES_I2C
+if BSP_USING_I2C
+source "$BSP_DIR/third_party_driver/i2c/Kconfig"
+endif
+
+menuconfig BSP_USING_LCD
+bool "Using LCD device"
+default n
+select RESOURCES_LCD
+select BSP_USING_SPI1
+if BSP_USING_LCD
+source "$BSP_DIR/third_party_driver/lcd/Kconfig"
+endif
+
+menuconfig BSP_USING_PLIC
+bool "Using PLIC device"
+default y
+if BSP_USING_PLIC
+source "$BSP_DIR/third_party_driver/plic/Kconfig"
+endif
+
+menuconfig BSP_USING_RTC
+bool "Using RTC device"
+default n
+select RESOURCES_RTC
+if BSP_USING_RTC
+source "$BSP_DIR/third_party_driver/rtc/Kconfig"
+endif
+
+menuconfig BSP_USING_SPI
+bool "Using SPI device"
+default n
+select RESOURCES_SPI
+select  BSP_USING_DMA
+if BSP_USING_SPI
+source "$BSP_DIR/third_party_driver/spi/Kconfig"
+endif
+
+menuconfig BSP_USING_SYSCLOCK
+bool "Using SYSCLOCK device"
+default y
+if BSP_USING_SYSCLOCK
+source "$BSP_DIR/third_party_driver/sys_clock/Kconfig"
+endif
+
+menuconfig BSP_USING_HWTIMER
+bool "Using HWTIMER device"
+default n
+select RESOURCES_HWTIMER
+if BSP_USING_HWTIMER
+source "$BSP_DIR/third_party_driver/timer/Kconfig"
+endif
+
+menuconfig BSP_USING_TOUCH
+bool "Using TOUCH device"
+default n
+select RESOURCES_TOUCH
+if BSP_USING_TOUCH
+source "$BSP_DIR/third_party_driver/touch/Kconfig"
+endif
+
+menuconfig BSP_USING_UART
+bool "Using UART device"
+default y
+select RESOURCES_SERIAL
+if BSP_USING_UART
+source "$BSP_DIR/third_party_driver/uart/Kconfig"
+endif
+
+menuconfig BSP_USING_WDT
+bool "Using WATCHDOG device"
+default y
+select RESOURCES_WDT
+if BSP_USING_WDT
+source "$BSP_DIR/third_party_driver/watchdog/Kconfig"
+endif

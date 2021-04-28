@@ -1,0 +1,7 @@
+menuconfig CONNECTION_COMMUNICATION_ZIGBEE_AIIT
+bool "Enable zigbee for AIIT Board"
+default n
+
+menuconfig CONNECTION_COMMUNICATION_ZIGBEE_KD233
+bool "Enable zigbee for kd233"
+default n

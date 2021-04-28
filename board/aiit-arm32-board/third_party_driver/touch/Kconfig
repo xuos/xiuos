@@ -1,0 +1,9 @@
+config TOUCH_BUS_NAME_1
+    string "touch bus 1 name"
+    default "touch1"
+config TOUCH_DRV_NAME_1
+    string "touch bus 1 driver name"
+    default "touch1drv"
+config TOUCH_1_DEVICE_NAME_0
+    string "touch bus 1 device 0 name"
+    default "touch10"   

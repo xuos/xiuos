@@ -1,0 +1,23 @@
+menu "Lib"
+
+
+
+menuconfig LIB
+    bool "Enable libc APIs from toolchain"
+    default y
+
+
+    if LIB 
+        config LIB_POSIX
+            bool "Enable POSIX layer for poll/select, stdin etc"
+            default y
+    endif
+
+
+
+
+source "$KERNEL_DIR/lib/libcpp/Kconfig"
+
+source "$KERNEL_DIR/lib/newlib/Kconfig"
+
+endmenu

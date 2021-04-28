@@ -1,0 +1,148 @@
+
+menuconfig RESOURCES_SERIAL
+    bool "Using SERIAL bus drivers"
+    select KERNEL_WORKQUEUE
+    default y
+
+if RESOURCES_SERIAL
+    config SERIAL_USING_DMA
+        bool "Enable SERIAL DMA mode"
+        default y
+
+    config SERIAL_RB_BUFSZ
+        int "Set SERIAL RX buffer size"
+        default 128
+endif
+
+if BSP_USING_CAN
+    config RESOURCES_CAN
+        bool "Using CAN bus drivers"
+        default y
+endif
+
+if BSP_USING_I2C
+    config RESOURCES_I2C
+        bool "Using I2C bus drivers"
+        default n
+endif
+
+if BSP_USING_LCD
+    config RESOURCES_LCD
+        bool "Using LCD bus drivers"
+        default n
+endif
+
+if BSP_USING_GPIO
+    config RESOURCES_PIN
+        bool "Using generic GPIO PIN bus drivers"
+        default n
+endif
+
+if BSP_USING_RTC
+    menuconfig RESOURCES_RTC
+        bool "Using RTC bus drivers"
+        default n
+
+        if RESOURCES_RTC
+            config USING_SOFT_RTC
+            bool "Using SOFT RTC"
+            default n
+            if USING_SOFT_RTC
+                config SOFT_RTC_BUS_NAME
+                    string "soft rtc bus name"
+                    default "srtc"
+                config SOFT_RTC_DRV_NAME
+                    string "soft rtc bus driver name"
+                    default "srtc_drv"  
+            endif
+        endif
+endif
+
+if BSP_USING_SDIO
+    config RESOURCES_SDIO
+        bool "Using SD/MMC card bus drivers"
+        default n
+endif
+
+if BSP_USING_SPI
+    menuconfig RESOURCES_SPI
+        bool "Using SPI bus drivers"
+        default n
+
+        if RESOURCES_SPI  
+            menuconfig RESOURCES_SPI_SD
+                bool "Using SD/TF card driver with spi"
+                    default n
+                if RESOURCES_SPI_SD
+                    config SPI_SD_NAME
+                    string "spi sd card 0 name"
+                    default "sd0"
+                endif
+
+            menuconfig RESOURCES_SPI_SFUD
+                bool "Using Serial Flash Universal Driver Lib"
+                default n
+                if RESOURCES_SPI_SFUD
+                    config SFUD_USING_SFDP
+                    bool "Using auto probe flash JEDEC SFDP parameter"
+                    default y
+
+                    config SFUD_USING_FLASH_INFO_TABLE
+                    bool "Using defined supported flash chip information table"
+                    default n
+                    
+                    config SFUD_DEBUG_LOG
+                    bool "Support SFUD debug log"
+                    default y
+                endif
+        endif
+endif
+
+if BSP_USING_HWTIMER
+    config RESOURCES_HWTIMER
+        bool "Using hardware timer bus drivers"
+        default n
+endif
+
+if BSP_USING_TOUCH
+    config RESOURCES_TOUCH
+        bool "Using touch bus drivers"
+        default n
+endif
+
+if BSP_USING_USB
+    menuconfig RESOURCES_USB
+        bool "Using USB bus drivers"
+        default n
+        
+    if RESOURCES_USB
+        config RESOURCES_USB_HOST
+            bool "Using USB host function"
+            default y
+            if RESOURCES_USB_HOST
+                    config UDISK_MOUNTPOINT
+                        string "Udisk mount dir"
+                        default "/"
+            endif
+                    config USBH_MSTORAGE
+                        bool "usb use mass storage device"
+                        default y
+                        select FS_VFS
+
+        config RESOURCES_USB_DEVICE
+            bool "Using USB device function"
+            default y
+            
+            if RESOURCES_USB_DEVICE
+                config USBD_THREAD_STACK_SZ
+                    int "usb thread stack size"
+                    default 4096
+            endif
+    endif
+endif
+
+if BSP_USING_WDT
+    config RESOURCES_WDT
+        bool "Using Watch Dog bus drivers"
+        default n
+endif
