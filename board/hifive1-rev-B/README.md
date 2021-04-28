@@ -36,7 +36,7 @@ make BOARD=hifive1-rev-B menuconfig
 ```
 make BOARD=hifive1-rev-B
 ```
->5.如果编译正确无误，会产生XiUOS_hifive1-rev-B.elf、XiUOS_hifive1-rev-B.bin文件。其中XiUOS_hifive1-rev-B.bin需要烧写到设备中进行运行。
+>5.如果编译正确无误，会在build目录下产生XiUOS_hifive1-rev-B.elf、XiUOS_hifive1-rev-B.bin文件。其中XiUOS_hifive1-rev-B.bin需要烧写到设备中进行运行。
 >注：最后可以执行以下命令，清除配置文件和编译生成的文件
 ```
 make BOARD=hifive1-rev-B distclean
