@@ -11,7 +11,7 @@
 | 外设 | 内嵌AES与SHA256算法加速器 |
 | | DVP、JTAG、OTP、FPIOA、GPIO、UART、SPI、RTC、I²S、I²C、WDT、Timer与PWM |
 
-XiUOS板级当前支持使用GPIO、I2C、LCD、RTC、SPI、Timer、UART和watchdog等。
+XiUOS板级当前支持使用CH438、CH376、GPIO、I2C、LCD、RTC、SPI、Timer、UART和watchdog等。
 
 ## 2. 编译说明
 
