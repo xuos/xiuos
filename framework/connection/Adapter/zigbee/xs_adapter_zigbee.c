@@ -20,10 +20,6 @@
 */
 
 #include "xs_adapter_zigbee.h"
-// #include "../applications/user_api/switch_api/user_api.h"
-// #include "../applications/user_api/include/bus_serial.h"
-// #include "../applications/user_api/include/dev_serial.h"
-
 #include <user_api.h>
 #include <bus_serial.h>
 #include <dev_serial.h>
