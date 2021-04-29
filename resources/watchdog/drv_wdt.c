@@ -54,11 +54,11 @@ int WdtDriverRegister(struct Driver *driver)
     NULL_PARAM_CHECK(driver);
 
     x_err_t ret = EOK;
-    static x_bool DriverLinkFlag = RET_FALSE;
+    static x_bool driver_link_flag = RET_FALSE;
 
-    if (!DriverLinkFlag) {
+    if (!driver_link_flag) {
         WdtDrvLinkInit();
-        DriverLinkFlag = RET_TRUE;
+        driver_link_flag = RET_TRUE;
     }
 
     DoubleLinkListInsertNodeAfter(&wdtdrv_linklist, &(driver->driver_link));
