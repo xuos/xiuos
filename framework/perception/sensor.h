@@ -50,7 +50,7 @@
 #define SENSOR_ABILITY_VOICE    ((uint32_t)(1 << SENSOR_QUANTITY_VOICE))
 
 struct SensorProductInfo {
-    uint32_t ability;           /* sensor ability */
+    uint32_t ability;           /* Bitwise OR of sensor ability */
     const char *vendor_name;
     const char *model_name;
 };
@@ -66,16 +66,16 @@ struct SensorDone {
 };
 
 struct SensorDevice {
-    char *name;
-    struct SensorProductInfo *info;
+    char *name;                             /* Name of sensor */
+    struct SensorProductInfo *info;         /* Sensor model info */
     struct SensorDone *done;
-    int fd;
-    int status;
-    uint8 buffer[SENSOR_RECEIVE_BUFFSIZE];
+    int fd;                                 /* File descriptor */
+    int status;                             /* Sensor work mode */
+    uint8 buffer[SENSOR_RECEIVE_BUFFSIZE];  /* Buffer for read data */
 
-    int ref_cnt;
-    DoubleLinklistType quant_list;
-    struct SysDoubleLinklistNode link;
+    int ref_cnt;                            /* Reference count */
+    DoubleLinklistType quant_list;          /* Sensor quantity link */
+    struct SysDoubleLinklistNode link;      /* Sensors link node */
 };
 
 enum SensorQuantityType {
@@ -86,6 +86,7 @@ enum SensorQuantityType {
     SENSOR_QUANTITY_CO,
     SENSOR_QUANTITY_PM,
     SENSOR_QUANTITY_VOICE,
+    /* ...... */
     SENSOR_QUANTITY_END,
 };
 
