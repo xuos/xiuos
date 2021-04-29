@@ -70,6 +70,16 @@ KERNELPATHS :=-I$(BSP_ROOT) \
 	-I$(KERNEL_ROOT)/include #
 endif
 
+ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/hifive1-emulator)
+KERNELPATHS :=-I$(BSP_ROOT) \
+	-I$(BSP_ROOT)/third_party_driver \
+	-I$(BSP_ROOT)/third_party_driver/include \
+	-I$(BSP_ROOT)/third_party_driver/include/sifive \
+	-I$(BSP_ROOT)/third_party_driver/include/sifive/devices \
+	-I$(BSP_ROOT)/third_party_driver/fe300prci \
+	-I$(BSP_ROOT)/third_party_driver/plic\
+	-I$(KERNEL_ROOT)/include #
+endif
 
 ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/aiit-riscv64-board)
 KERNELPATHS :=-I$(BSP_ROOT) \
