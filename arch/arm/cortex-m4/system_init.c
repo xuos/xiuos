@@ -50,12 +50,23 @@
   */
 
 /**
-* @file coreclock.c
-* @brief derived from ST standard peripheral library
+* @file system_init.c
+* @brief support SystemInit function
 * @version 1.0 
 * @author AIIT XUOS Lab
-* @date 2021-04-25
+* @date 2021-04-29
 */
+
+/*************************************************
+File name: system_init.c
+Description: support SystemInit function
+Others: 
+History: 
+1. Date: 2021-04-29
+Author: AIIT XUOS Lab
+Modification: 
+1. take system_stm32f4xx.c for XiUOS
+*************************************************/
 
 #include "stm32f4xx.h"
 

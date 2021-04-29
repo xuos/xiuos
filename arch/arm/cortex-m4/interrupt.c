@@ -10,6 +10,14 @@
 * See the Mulan PSL v2 for more details.
 */
 
+/**
+* @file interrupt.c
+* @brief support arm cortex-m4 interrupt function
+* @version 1.0 
+* @author AIIT XUOS Lab
+* @date 2021-04-29
+*/
+
 #include <xs_base.h>
 #include <xs_isr.h>
 #include <misc.h>
