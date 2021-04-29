@@ -20,10 +20,14 @@
 */
 
 #include "xs_adapter_zigbee.h"
-#include "../applications/user_api/switch_api/user_api.h"
-#include "../applications/user_api/include/bus_serial.h"
-#include "../applications/user_api/include/dev_serial.h"
+// #include "../applications/user_api/switch_api/user_api.h"
+// #include "../applications/user_api/include/bus_serial.h"
+// #include "../applications/user_api/include/dev_serial.h"
 
+#include <user_api.h>
+#include <bus_serial.h>
+#include <dev_serial.h>
+#include <string.h>
 #ifdef CONNECTION_COMMUNICATION_ZIGBEE_AIIT
 #define SAMPLE_UART_NAME       "/dev/extuart_dev0"
 int use_aiit = 1;    
@@ -63,9 +67,9 @@ int ZigbeeOpen(struct Adapter *padapter)
         cfg.port_configure      = 0;
     }
 
-    ioctl(serial_fd, OPE_INT, &cfg);
+    ioctl(serial_fd, 0, &cfg);
     UserTaskDelay(1000);
-    KPrintf("Zigbee ready\n");
+    printf("Zigbee ready\n");
 
     return 0;
 }
@@ -157,11 +161,12 @@ void ZigbeeSettingDemo(int argc, char *argv[])
     UserTaskDelay(500);
     write(serial_fd,set5,strlen(set5));
     UserTaskDelay(500);
-    KPrintf("zigbee setting success!\n");
+    printf("zigbee setting success!\n");
 }
+#ifndef SEPARATE_COMPILE
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN),
 ZigbeeSettingDemo, ZigbeeSettingDemo,  zigbee send function );
-
+#endif
 
 void ZigbeeClose(struct Adapter *padapter)
 {
