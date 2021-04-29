@@ -26,7 +26,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
 {
     int ret ;
     int pid ;
-    utask_x task ;
+    UtaskType task ;
     task.func_entry = start_routine ;
     task.func_param = arg ;
     memcpy(task.name , "utask", 6);

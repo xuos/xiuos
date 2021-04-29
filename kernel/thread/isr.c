@@ -44,7 +44,7 @@ extern int GetCpuId(void);
     return ret;
 }
 
- void incIsrCounter()
+ void IncIsrCounter()
 {
 #ifdef ARCH_SMP
      isrManager.isr_count[GetCpuId()] ++ ;
@@ -54,7 +54,7 @@ extern int GetCpuId(void);
     return ;
 }
 
- void decIsrCounter()
+ void DecIsrCounter()
 {
 
 #ifdef ARCH_SMP
@@ -65,7 +65,7 @@ extern int GetCpuId(void);
     return ;
 }
 
- x_bool Is_InIsr()
+ x_bool IsInIsr()
 {
 #ifdef ARCH_SMP
     return ( isrManager.isr_count[GetCpuId()] != 0 ? RET_TRUE : RET_FALSE ) ;
@@ -155,7 +155,7 @@ void IsrCommon(uint32 irq_num)
 
 }
 
- void setIsrSwitchTrigerFlag()
+ void SetIsrSwitchTrigerFlag()
  {
 
 #ifdef ARCH_SMP
@@ -166,7 +166,7 @@ void IsrCommon(uint32 irq_num)
 
 }
 
- void clearIsrSwitchTrigerFlag()
+ void ClearIsrSwitchTrigerFlag()
  {
 
 #ifdef ARCH_SMP
@@ -176,7 +176,7 @@ void IsrCommon(uint32 irq_num)
 #endif
 }
 
- uint8 getIsrSwitchTrigerFlag()
+ uint8 GetIsrSwitchTrigerFlag()
  {
    
 #ifdef ARCH_SMP
@@ -188,18 +188,18 @@ void IsrCommon(uint32 irq_num)
 }
 
 struct IsrDone isrDone = {
-    Is_InIsr,
+    IsInIsr,
     RegisterHwIrq ,
     FreeHwIrq,
     EnableHwIrq,
     DisableHwIrq,
     IsrCommon,
     GetIsrCounter,
-    incIsrCounter,
-    decIsrCounter,
-    getIsrSwitchTrigerFlag,
-    setIsrSwitchTrigerFlag,
-    clearIsrSwitchTrigerFlag
+    IncIsrCounter,
+    DecIsrCounter,
+    GetIsrSwitchTrigerFlag,
+    SetIsrSwitchTrigerFlag,
+    ClearIsrSwitchTrigerFlag
 } ;
 
 void SysInitIsrManager()

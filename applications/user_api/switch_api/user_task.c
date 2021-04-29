@@ -34,7 +34,7 @@
  * 
  * @return EOK on success; ENOMEMORY/EEMPTY on failure
  */
-int32_t UserTaskCreate(utask_x utask){
+int32_t UserTaskCreate(UtaskType utask){
     return (int32_t) KSwitch5(KS_USER_TASK_CREATE,(uintptr_t)utask.name,(uintptr_t)utask.func_entry,(uintptr_t)utask.func_param,(uintptr_t)utask.stack_size,(uintptr_t)utask.prio);
 }
 

@@ -254,6 +254,6 @@
 #define Fpclk           1843200         /* Define the internal clock frequency  */
 
 void Set485Input(uint8 ch_no);
-void set_485_output(uint8 ch_no);
+void Set485Output(uint8 ch_no);
 
 #endif

@@ -37,16 +37,14 @@ void InitCmpts(void);
 extern int VfsInit(void);
 extern int WorkSysWorkQueueInit(void);
 extern int FlashW25qxxSpiDeviceInit(void);
-extern int sal_mbedtls_proto_init(void);
 extern int FatfsInit(void);
 extern int Ch376fsInit(void);
 extern int LibcSystemInit(void);
-extern int sal_init(void);
 extern int RtcNtpSyncInit(void);
 extern int MountSDCard(void);
-extern int dfs_mount_table(void);
+extern int DfsMountTable(void);
 extern int userShellInit(void);
-extern int stm32_sdcard_mount(void);
+extern int Stm32SdcardMount(void);
 extern int STM32USBHostRegister(void);
 extern int WorkSysWorkQueueInit(void);
 

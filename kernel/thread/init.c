@@ -44,7 +44,7 @@ extern void CreateKServiceKTask(void);
 extern int main(void);
 void InitBoardHardware(void);
 extern int hook_init(void);
-int cplusplus_system_init(void);
+int CplusplusSystemInit(void);
 
 #ifdef KERNEL_COMPONENTS_INIT
 #ifdef USER_APPLICATION
@@ -64,7 +64,7 @@ struct InitSequenceDesc prev_cmpts_init[] =
 	{ "vfs", VfsInit },
 #endif
 #ifdef  LIB_CPLUSPLUS
-	{ "cplusplus_system", cplusplus_system_init },
+	{ "cplusplus_system", CplusplusSystemInit },
 #endif
 #ifdef KERNEL_HOOK
 	{ "hook", hook_init },
@@ -86,9 +86,6 @@ struct InitSequenceDesc device_init[] =
 };
 struct InitSequenceDesc components_init[] = 
 {
-#ifdef CONNECTION_AT_SAL_USING_TLS
-	{"sal_mbedtls_proto", sal_mbedtls_proto_init},
-#endif
 #ifdef FS_VFS_FATFS
 	{ "fatfs", FatfsInit },
 #endif
@@ -96,9 +93,6 @@ struct InitSequenceDesc components_init[] =
 	{ "ch376", Ch376fsInit },
 #endif
 	{ "libc_system", LibcSystemInit },
-#ifdef CONNECTION_AT_OS_USING_SAL
-	// { "sal_init", sal_init },
-#endif
 #ifdef RTC_SYNC_USING_NTP
 	{ "rtc_ntp_sync",RtcNtpSyncInit},
 #endif
@@ -112,7 +106,7 @@ struct InitSequenceDesc env_init[] =
 #endif
 #endif
 #ifdef FS_VFS_MNTTABLE
-	{ "dfs_mount_table", dfs_mount_table },
+	{ "DfsMountTable", DfsMountTable },
 #endif
 #ifdef TOOL_SHELL
 	{ "letter-shell system", userShellInit },
@@ -122,7 +116,7 @@ struct InitSequenceDesc env_init[] =
 struct InitSequenceDesc communication_init[] = 
 {
 // #ifdef BSP_USING_SDIO
-//     { "stm32_sdcard_mount",stm32_sdcard_mount },
+//     { "Stm32SdcardMount",Stm32SdcardMount },
 // #endif
 #ifdef BSP_USING_USBH
     { "STM32USBHostRegister", STM32USBHostRegister },
@@ -201,7 +195,7 @@ int XiUOSStartup(void)
 	DISABLE_INTERRUPT();
 
 #ifdef KERNEL_QUEUEMANAGE
-	queuemanager_done_register();
+	QueuemanagerDoneRegister();
 #endif
 
 #ifdef KERNEL_BANNER

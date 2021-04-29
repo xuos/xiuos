@@ -46,7 +46,7 @@ static void SvcDispatch(void)
 }
 
 
-void __svcall(uintptr_t* contex)
+void _svcall(uintptr_t* contex)
 {
     uint32_t svc_number;
     KTaskDescriptorType tid;

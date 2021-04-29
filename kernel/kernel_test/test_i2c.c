@@ -76,18 +76,18 @@ static x_err_t ReadRegs(struct HardwareDev *dev, uint8 len, uint8 *buf)
     }
 }
 
-static void read_temp_humi(float *cur_temp, float *cur_humi)
+static void ReadTempHumi(float *cur_temp, float *cur_humi)
 {
     uint8 temp[4],ret=0;
     MdelayKTask(15);
     ret  =  WriteReg(i2c_bus->owner_haldev);                            //reset
     if(EOK != ret){
-        KPrintf("read_temp_humi WriteReg failed!\n");
+        KPrintf("ReadTempHumi WriteReg failed!\n");
     }
     MdelayKTask(50);
     ret = ReadRegs(i2c_bus->owner_haldev, 4, temp);          /* get sensor data */
     if(EOK != ret){
-        KPrintf("read_temp_humi ReadRegs failed\n");
+        KPrintf("ReadTempHumi ReadRegs failed\n");
     }
  
     *cur_humi = ((temp[0] <<8 | temp[1] )& 0x3fff ) * 100.0 / ( (1 << 14) - 1);                  /* humidity data */
@@ -95,15 +95,15 @@ static void read_temp_humi(float *cur_temp, float *cur_humi)
     *cur_temp = ((temp[2]  << 8 | temp[3]) >> 2) * 165.0 /( (1 << 14) - 1) -  40.0;     /* temperature data */
 }
 
-static void _HS3000Init(const char *bus_name, const char *dev_name, const char  *drv_name)
+static void HS3000Init(const char *bus_name, const char *dev_name, const char  *drv_name)
 {
     /* find I2C device and get I2C handle */
     i2c_bus = BusFind(bus_name);
     if (NONE == i2c_bus){
-        KPrintf("_HS3000Init can't find %s bus!\n", bus_name);
+        KPrintf("HS3000Init can't find %s bus!\n", bus_name);
     }
     else{
-        KPrintf("_HS3000Init find %s bus!\n", bus_name);
+        KPrintf("HS3000Init find %s bus!\n", bus_name);
     }
 
     i2c_bus->owner_haldev = BusFindDevice(i2c_bus, dev_name);
@@ -113,7 +113,7 @@ static void _HS3000Init(const char *bus_name, const char *dev_name, const char  
         KPrintf("i2c match drv %s  %p dev %s %p error\n", drv_name, i2c_bus->owner_driver, dev_name, i2c_bus->owner_haldev);
     }
     else{
-        KPrintf("_HS3000Init successfully!write %p read %p\n", 
+        KPrintf("HS3000Init successfully!write %p read %p\n", 
             i2c_bus->owner_haldev->dev_done->write,
             i2c_bus->owner_haldev->dev_done->read);
     }
@@ -121,13 +121,13 @@ static void _HS3000Init(const char *bus_name, const char *dev_name, const char  
 
 void Hs300xInit(void)
 {
-    _HS3000Init(HS_I2C_BUS_NAME, HS_I2C_DEV_NAME, HS_I2C_DRV_NAME);        /* init sensor */
+    HS3000Init(HS_I2C_BUS_NAME, HS_I2C_DEV_NAME, HS_I2C_DRV_NAME);        /* init sensor */
 }
 
 void Hs300xRead(Hs300xDataType *Hs300xDataType)
 {
     float humidity = 0.0, temperature   =  0.0;
-    read_temp_humi(&temperature, &humidity);       /* read temperature and humidity sensor data */
+    ReadTempHumi(&temperature, &humidity);       /* read temperature and humidity sensor data */
     Hs300xDataType->humi_high = (int)humidity;
     Hs300xDataType->humi_low = (int)(humidity*10)%10;
     if( temperature >= 0 ) {
@@ -140,7 +140,7 @@ void Hs300xRead(Hs300xDataType *Hs300xDataType)
     }
 }
 
-void Tsk_hs300x_test()
+void TskHs300xTest()
 {
     memset(&g_hs300x_data, 0, sizeof(Hs300xDataType));
     KPrintf("Tsk create successfully!\n");
@@ -167,7 +167,7 @@ void Hs300xI2cTest(void)
     MdelayKTask(1000);
 
     x_err_t flag;
-    int32 Tsk_hs300x = KTaskCreate("Tsk_hs300x", Tsk_hs300x_test, NONE, 2048, 10); 
+    int32 Tsk_hs300x = KTaskCreate("Tsk_hs300x", TskHs300xTest, NONE, 2048, 10); 
 	flag = StartupKTask(Tsk_hs300x);
     if (EOK != flag){
 		KPrintf("Hs300xI2cTest StartupKTask failed!\n");

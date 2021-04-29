@@ -56,11 +56,11 @@ struct utask
     int32_t     stack_size;  
     uint8_t     prio; 
 };
-typedef struct utask utask_x;
+typedef struct utask UtaskType;
 
 typedef void DIR;
 
-int32_t UserTaskCreate(utask_x utask);
+int32_t UserTaskCreate(UtaskType utask);
 
 x_err_t UserTaskStartup(int32_t id);
 x_err_t UserTaskDelete(int32_t id);
@@ -178,8 +178,8 @@ struct utask
     int32_t     stack_size;  
     uint8_t     prio; 
 };
-typedef struct utask utask_x;
-int32_t UserTaskCreate(utask_x utask);
+typedef struct utask UtaskType;
+int32_t UserTaskCreate(UtaskType utask);
 
 #define UserTaskStartup          StartupKTask
 #define UserTaskDelete           KTaskDelete

@@ -28,7 +28,7 @@
 
 void* g_queue_done[QUEUE_MAX];
 
-void queuemanager_done_register()
+void QueuemanagerDoneRegister()
 {
     DataQueueDoneType* pdata_queue_done = (DataQueueDoneType*)x_malloc(sizeof(DataQueueDoneType));
     pdata_queue_done->InitDataqueue = InitDataqueue;

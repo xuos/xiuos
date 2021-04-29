@@ -55,7 +55,7 @@ extern void entry(void);
 extern void SecondaryCpuCStart(void);
 extern void ShutdownCpu(void);
 extern int IoConfigInit(void);
-extern int hw_ch438_init(void);
+extern int HwCh438Init(void);
 extern int HwSpiInit(void);
 extern int HwLcdInit(void);
 extern int HwWdtInit(void);
@@ -138,7 +138,7 @@ struct InitSequenceDesc _board_init[] =
 #endif
 #ifdef BSP_USING_CH438
 
-    { "hw_extuart", hw_ch438_init },
+    { "hw_extuart", HwCh438Init },
 #endif
 #ifdef BSP_USING_SPI
 	{ "hw_spi", HwSpiInit },

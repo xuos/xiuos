@@ -336,7 +336,7 @@ static void ATAgentReceiveProcess(void *param)
 static int ATAgentInit(ATAgentType agent)
 {
     int result = EOK;
-	utask_x at_utask;
+	UtaskType at_utask;
     do
     {
         agent->maintain_len = 0;

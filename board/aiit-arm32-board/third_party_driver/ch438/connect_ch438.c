@@ -1292,7 +1292,7 @@ int Stm32HwCh438Init(void)
 	serial_dev_0.haldev.private_data = (void *)&dev_param_0;
 	ret = Stm32Ch438DevRegister(&serial_dev_0, CH438_DEVICE_NAME_0);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Stm32Ch438DevRegister error %d\n", ret);
+        KPrintf("Stm32HwCh438Init Stm32Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1302,7 +1302,7 @@ int Stm32HwCh438Init(void)
 	serial_dev_1.haldev.private_data = (void *)&dev_param_1;
 	ret = Stm32Ch438DevRegister(&serial_dev_1, CH438_DEVICE_NAME_1);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Stm32Ch438DevRegister error %d\n", ret);
+        KPrintf("Stm32HwCh438Init Stm32Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1312,7 +1312,7 @@ int Stm32HwCh438Init(void)
 	serial_dev_2.haldev.private_data = (void *)&dev_param_2;
 	ret = Stm32Ch438DevRegister(&serial_dev_2, CH438_DEVICE_NAME_2);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Stm32Ch438DevRegister error %d\n", ret);
+        KPrintf("Stm32HwCh438Init Stm32Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1322,7 +1322,7 @@ int Stm32HwCh438Init(void)
 	serial_dev_3.haldev.private_data = (void *)&dev_param_3;
 	ret = Stm32Ch438DevRegister(&serial_dev_3, CH438_DEVICE_NAME_3);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Stm32Ch438DevRegister error %d\n", ret);
+        KPrintf("Stm32HwCh438Init Stm32Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1332,7 +1332,7 @@ int Stm32HwCh438Init(void)
 	serial_dev_4.haldev.private_data = (void *)&dev_param_4;
 	ret = Stm32Ch438DevRegister(&serial_dev_4, CH438_DEVICE_NAME_4);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Stm32Ch438DevRegister error %d\n", ret);
+        KPrintf("Stm32HwCh438Init Stm32Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1342,7 +1342,7 @@ int Stm32HwCh438Init(void)
 	serial_dev_5.haldev.private_data = (void *)&dev_param_5;
 	ret = Stm32Ch438DevRegister(&serial_dev_5, CH438_DEVICE_NAME_5);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Stm32Ch438DevRegister error %d\n", ret);
+        KPrintf("Stm32HwCh438Init Stm32Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1352,7 +1352,7 @@ int Stm32HwCh438Init(void)
 	serial_dev_6.haldev.private_data = (void *)&dev_param_6;
 	ret = Stm32Ch438DevRegister(&serial_dev_6, CH438_DEVICE_NAME_6);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Stm32Ch438DevRegister error %d\n", ret);
+        KPrintf("Stm32HwCh438Init Stm32Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1362,7 +1362,7 @@ int Stm32HwCh438Init(void)
 	serial_dev_7.haldev.private_data = (void *)&dev_param_7;
 	ret = Stm32Ch438DevRegister(&serial_dev_7, CH438_DEVICE_NAME_7);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Stm32Ch438DevRegister error %d\n", ret);
+        KPrintf("Stm32HwCh438Init Stm32Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 

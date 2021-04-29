@@ -31,7 +31,7 @@ Modification:
 1. support cppinit function
 *************************************************/
 
-int cplusplus_system_init(void)   
+int CplusplusSystemInit(void)   
 
 {
     typedef void(*pfunc)();

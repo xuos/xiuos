@@ -42,6 +42,6 @@ enum QUEUE_TYPE
 };
 
 extern void *g_queue_done[];
-extern void queuemanager_done_register();
+extern void QueuemanagerDoneRegister();
 
 #endif

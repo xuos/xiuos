@@ -207,7 +207,7 @@ err:
     return -1;
 }
 
-int cmd_cp(int argc, char *argv[])
+int CmdCp(int argc, char *argv[])
 {
     if (argc != 3) {
         KPrintf("Usage: cp SOURCE DEST\n");
@@ -223,7 +223,7 @@ int cmd_cp(int argc, char *argv[])
 
 
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-cp,cmd_cp, Copy source to dest.);
+cp,CmdCp, Copy source to dest.);
 
 
 static void RmRecursive(char *file_name, int recursive)
@@ -255,7 +255,7 @@ static void RmRecursive(char *file_name, int recursive)
     unlink(file_name);
 }
 
-int cmd_mv(int argc, char *argv[])
+int CmdMv(int argc, char *argv[])
 {
     if (argc != 3) {
         KPrintf("Usage: mv SOURCE DEST\n");
@@ -272,7 +272,7 @@ int cmd_mv(int argc, char *argv[])
 }
 
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-mv,cmd_mv, Move frome source to dest.);
+mv,CmdMv, Move frome source to dest.);
 
 
 void cat(const char *filename)
@@ -367,14 +367,14 @@ int cmd_cd(int argc, char **argv)
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
 cd,cmd_cd, Chage the shell wroking directory.);
 
-int cmd_pwd(int argc, char **argv)
+int CmdPwd(int argc, char **argv)
 {
     KPrintf("%s\n", working_dir);
     return 0;
 }
 
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-pwd,cmd_pwd, print the name of the current working directory.);
+pwd,CmdPwd, print the name of the current working directory.);
 
 #endif
 
@@ -537,7 +537,7 @@ SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHE
 tar,cmd_tar,create or extarct tar archive.);
 
 
-int cmd_gzip(int argc, char **argv)
+int CmdGzip(int argc, char **argv)
 {
     extern int gzip(int argc, char **argv);
     gzip(argc, argv);
@@ -547,10 +547,10 @@ int cmd_gzip(int argc, char **argv)
 
 SHELL_EXPORT_CMD(
 SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-gzip,cmd_gzip, creat or extart gzip compressed files);
+gzip,CmdGzip, creat or extart gzip compressed files);
 
 
-int cmd_gunzip(int argc, char **argv)
+int CmdGunzip(int argc, char **argv)
 {
     extern int gunzip(int argc, char **argv);
     gunzip(argc, argv);
@@ -560,9 +560,9 @@ int cmd_gunzip(int argc, char **argv)
 
 
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-gunzip,cmd_gunzip,decompress gzip files.);
+gunzip,CmdGunzip,decompress gzip files.);
 
-int cmd_unzip(int argc, char **argv)
+int CmdUnzip(int argc, char **argv)
 {
     extern int unzip(int argc, char **argv);
     unzip(argc, argv);
@@ -571,7 +571,7 @@ int cmd_unzip(int argc, char **argv)
 }
 
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-unzip,cmd_unzip, decompress zip files.);
+unzip,CmdUnzip, decompress zip files.);
 
 
 int cmd_bzip2(int argc, char **argv)
