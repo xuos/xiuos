@@ -19,8 +19,10 @@
 * @date:    2020/3/8
 *
 */
-
+#include <string.h>
+#include <xs_ktask.h>
 #include <xs_service.h>
+
 #ifdef FS_VFS
 #include <iot-vfs_posix.h>
 #endif
