@@ -27,43 +27,24 @@
 
 struct ff_disk ff_disks[FF_VOLUMES];
 
-static int TranslateError(FRESULT error)
+static int GetErrno(FRESULT error)
 {
-    int status = EOK;
-
-    switch (error) {
-    case FR_OK:
-        break;
-    case FR_NO_FILE:
-    case FR_NO_PATH:
-    case FR_NO_FILESYSTEM:
-        status = -ENOENT;
-        break;
-    case FR_INVALID_NAME:
-        status = -EINVAL;
-        break;
-    case FR_EXIST:
-    case FR_INVALID_OBJECT:
-        status = -EEXIST;
-        break;
-    case FR_DISK_ERR:
-    case FR_NOT_READY:
-    case FR_INT_ERR:
-        status = -EIO;
-        break;
-    case FR_WRITE_PROTECTED:
-    case FR_DENIED:
-        status = -EROFS;
-        break;
-    case FR_MKFS_ABORTED:
-        status = -EINVAL;
-        break;
-    default:
-        status = -1;
-        break;
-    }
-
-    return status;
+    if (error == FR_OK)
+        return EOK;
+    else if (error == FR_NO_FILE || error == FR_NO_PATH || error == FR_NO_FILESYSTEM)
+        return -ENOENT;
+    else if (error == FR_INVALID_NAME)
+        return -EINVAL;
+    else if (error == FR_EXIST || error == FR_INVALID_OBJECT)
+        return -EEXIST;
+    else if (error == FR_DISK_ERR || error == FR_NOT_READY || error == FR_INT_ERR)
+        return -EIO;
+    else if (error == FR_WRITE_PROTECTED || error == FR_DENIED)
+        return -EROFS;
+    else if (error == FR_MKFS_ABORTED)
+        return -EINVAL;
+    else
+        return -1;
 }
 
 static int GetDisk(HardwareDevType dev)
@@ -104,7 +85,7 @@ static int FatfsOpen(struct FileDescriptor *fdp, const char *path)
     res = f_open(fdp->data, ff_path, fs_mode);
     free(ff_path);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsClose(struct FileDescriptor *fdp)
@@ -119,7 +100,7 @@ static int FatfsClose(struct FileDescriptor *fdp)
         fdp->data = NULL;
     }
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static ssize_t FatfsRead(struct FileDescriptor *fdp, void *dst, size_t len)
@@ -129,7 +110,7 @@ static ssize_t FatfsRead(struct FileDescriptor *fdp, void *dst, size_t len)
 
     res = f_read(fdp->data, dst, len, &br);
     if (res != FR_OK)
-        return TranslateError(res);
+        return GetErrno(res);
 
     return br;
 }
@@ -141,7 +122,7 @@ static ssize_t FatfsWrite(struct FileDescriptor *fdp, const void *src, size_t le
 
     res = f_write(fdp->data, src, len, &bw);
     if (res != FR_OK)
-        return TranslateError(res);
+        return GetErrno(res);
 
     return bw;
 }
@@ -172,7 +153,7 @@ static int FatfsSeek(struct FileDescriptor *fdp, off_t offset, int whence,
     res = f_lseek(fdp->data, pos);
     *new_offset = (off_t)f_tell((FIL *)fdp->data);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static off_t FatfsTell(struct FileDescriptor *fdp)
@@ -188,7 +169,7 @@ static int FatfsTruncate(struct FileDescriptor *fdp, off_t length)
     /* expand file if new position is larger than file size */
     res = f_lseek(fdp->data, length);
     if (res != FR_OK)
-        return TranslateError(res);
+        return GetErrno(res);
 
     if (length < curr_len)
         res = f_truncate(fdp->data);
@@ -198,7 +179,7 @@ static int FatfsTruncate(struct FileDescriptor *fdp, off_t length)
 
         res = f_lseek(fdp->data, curr_len);
         if (res != FR_OK)
-            return TranslateError(res);
+            return GetErrno(res);
 
         unsigned int bw;
         uint8_t c = 0;
@@ -210,7 +191,7 @@ static int FatfsTruncate(struct FileDescriptor *fdp, off_t length)
         }
     }
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsSync(struct FileDescriptor *fdp)
@@ -219,7 +200,7 @@ static int FatfsSync(struct FileDescriptor *fdp)
 
     res = f_sync(fdp->data);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsOpendir(struct FileDescriptor *fdp, const char *path)
@@ -238,7 +219,7 @@ static int FatfsOpendir(struct FileDescriptor *fdp, const char *path)
     res = f_opendir((DIR *)fdp->data, ff_path);
     free(ff_path);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsClosedir(struct FileDescriptor *fdp)
@@ -252,7 +233,7 @@ static int FatfsClosedir(struct FileDescriptor *fdp)
         fdp->data = NULL;
     }
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsReaddir(struct FileDescriptor *fdp, struct dirent *dirent)
@@ -266,7 +247,7 @@ static int FatfsReaddir(struct FileDescriptor *fdp, struct dirent *dirent)
         strcpy(dirent->d_name, fno.fname);
     }
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsMount(struct MountPoint *mp)
@@ -298,7 +279,7 @@ static int FatfsMount(struct MountPoint *mp)
 
     CHECK(res == FR_OK);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsUnmount(struct MountPoint *mp)
@@ -316,7 +297,7 @@ static int FatfsUnmount(struct MountPoint *mp)
         ff_disks[i].dev = NULL;
     }
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsUnlink(struct MountPoint *mp, const char *path)
@@ -328,7 +309,7 @@ static int FatfsUnlink(struct MountPoint *mp, const char *path)
     res = f_unlink(ff_path);
     free(ff_path);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsRename(struct MountPoint *mp, const char *from,
@@ -355,7 +336,7 @@ err:
     free(ff_path_from);
     free(ff_path_to);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsMkdir(struct MountPoint *mp, const char *path)
@@ -367,7 +348,7 @@ static int FatfsMkdir(struct MountPoint *mp, const char *path)
     res = f_mkdir(ff_path);
     free(ff_path);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsStat(struct MountPoint *mp, const char *path,
@@ -417,7 +398,7 @@ static int FatfsStat(struct MountPoint *mp, const char *path,
 err:
     free(ff_path);
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 static int FatfsStatvfs(struct MountPoint *mp, const char *path,
@@ -447,7 +428,7 @@ static int FatfsStatvfs(struct MountPoint *mp, const char *path,
     buf->f_bsize = 512;
 #endif
 
-    return TranslateError(res);
+    return GetErrno(res);
 }
 
 /* fatfs filesystem interface */
