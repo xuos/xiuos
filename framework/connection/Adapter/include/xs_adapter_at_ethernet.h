@@ -42,7 +42,7 @@ int EthernetReceive(struct Adapter *padapter, char *rev_buffer, int buffer_len, 
 
 int EthernetSetUp(struct AdapterAT *adapterAT);
 int EthernetDHCP(struct AdapterAT *adapterAT, bool enable);
-int EthernetPing(struct AdapterAT *adapterAT, const char *destination, struct ping_result *ping_resp);
+int EthernetPing(struct AdapterAT *adapterAT, const char *destination, struct PingResult *ping_resp);
 int EthernetNetstat(struct AdapterAT *adapterAT);
 
 #endif

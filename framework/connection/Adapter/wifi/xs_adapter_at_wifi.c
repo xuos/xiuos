@@ -304,7 +304,7 @@ __exit:
     return result;
 }
 
-int WifiPing(struct AdapterAT *adapter_at, const char *destination,struct ping_result *ping_resp)
+int WifiPing(struct AdapterAT *adapter_at, const char *destination,struct PingResult *ping_resp)
 {
     char *ping_result = NONE;
     char *dst = NONE;

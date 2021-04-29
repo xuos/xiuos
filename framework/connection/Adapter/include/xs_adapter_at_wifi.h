@@ -44,7 +44,7 @@ int WifiSetUp(struct AdapterAT *adapter_at);
 int WifiSetDown(struct AdapterAT *adapter_at);
 int WifiSetAddr(struct AdapterAT *adapter_at, uint ip, uint gateway, uint netmask);
 int WifiDHCP(struct AdapterAT *adapter_at, bool enable);
-int WifiPing(struct AdapterAT *adapter_at, const char *destination,struct ping_result *ping_resp);
+int WifiPing(struct AdapterAT *adapter_at, const char *destination,struct PingResult *ping_resp);
 int WifiNetstat(struct AdapterAT *adapter_at);
 
 #endif

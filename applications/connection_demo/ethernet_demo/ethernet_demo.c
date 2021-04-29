@@ -107,7 +107,7 @@ void PingEthernet()
         printf("ATAdapterFind failed .\n");
 
     printf("Waiting for msg...\n");
-    struct ping_result result;
+    struct PingResult result;
     char *ip_str = "192.168.250.250";
 
     if (!opened){
@@ -131,7 +131,7 @@ void SetUpEthernet()
         printf("ATAdapterFind failed .\n");
 
     printf("Waiting for msg...\n");
-    struct ping_result result;
+    struct PingResult result;
 
     if (!opened){
         opened = true;

@@ -31,7 +31,7 @@ typedef void(*send_success)(void* param);
 #define DNS_COUNT 2U
 #define HW_MAX 8U
 
-enum cb_type
+enum CbType
 {
     CB_ADDR_IP,                 /* IP address */
     CB_ADDR_NETMASK,            /* subnet mask */
@@ -47,24 +47,24 @@ enum cb_type
     CB_STATUS_DHCP_DISABLE,     /* disable DHCP capability */
 };
 
-enum change_type
+enum ChangeType
 {
-    addr_change,
-    status_change,
+    ADDR_CHANGE,
+    STATUS_CHANGE,
 };
 
-struct ADDRESS_IPV4
+struct AddressIpv4
 {
     uint32 ipv4;
 };
 
-struct ping_result
+struct PingResult
 {
-    struct ADDRESS_IPV4 ip_addr;                           /* response IP address */
+    struct AddressIpv4 ip_addr;                           /* response IP address */
     uint16 data_len;                           /* response data length */
     uint16 ttl;                                /* time to live */
     uint32 ticks;                              /* response time, unit tick */
-    void *UserData;                             /* user-specific data */
+    void *user_data;                             /* user-specific data */
 };
 
 #define ETHERNET_ADAPTER_ID 0x03U

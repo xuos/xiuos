@@ -240,7 +240,7 @@ __exit:
     return result;
 }
 
-int EthernetPing(struct AdapterAT *adapterAT, const char *destination,struct ping_result *ping_resp)
+int EthernetPing(struct AdapterAT *adapterAT, const char *destination,struct PingResult *ping_resp)
 {
     char *ping_result = NONE;
     ping_result = (char *) UserCalloc(1, 17);

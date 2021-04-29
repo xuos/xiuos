@@ -102,10 +102,10 @@ static uint32 SdSendCmdByte(SpiSdDeviceType spi_sd_dev, struct SdCmdParam *sd_cm
 
     switch (sd_cmd_param->sd_respone_type)
     {
-        case SD_Respone_1 :
+        case SD_RESPONE_1 :
             sd_cmd_param->sd_respone_data[0] = read[0];
             return EOK;
-        case SD_Respone_1b :
+        case SD_RESPONE_1B :
             sd_cmd_param->sd_respone_data[0] = read[0];
 
             start_time = 0;
@@ -119,7 +119,7 @@ static uint32 SdSendCmdByte(SpiSdDeviceType spi_sd_dev, struct SdCmdParam *sd_cm
             }while(0xFF != read_byte);
 
             return EOK;
-        case SD_Respone_2 :
+        case SD_RESPONE_2 :
             sd_cmd_param->sd_respone_data[0] = read[0];
 
             read_param.buffer = (void *)&read_byte;
@@ -129,8 +129,8 @@ static uint32 SdSendCmdByte(SpiSdDeviceType spi_sd_dev, struct SdCmdParam *sd_cm
             sd_cmd_param->sd_respone_data[1] = read_byte;
 
             return EOK;
-        case SD_Respone_3 :
-        case SD_Respone_7 :
+        case SD_RESPONE_3 :
+        case SD_RESPONE_7 :
             sd_cmd_param->sd_respone_data[0] = read[0];
 
             read_param.buffer = (void *)&read;
@@ -204,7 +204,7 @@ static uint32 SdHwInit(SpiSdDeviceType spi_sd_dev)
     g_sd_cmd_param.sd_cmd_type = SD_CMD_0;
     g_sd_cmd_param.sd_cmd_args = 0x00;
     g_sd_cmd_param.sd_cmd_crc = 0x95;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
     start_time = 0;
 
@@ -238,7 +238,7 @@ static uint32 SdConfirmType(SpiSdDeviceType spi_sd_dev)
     g_sd_cmd_param.sd_cmd_type = SD_CMD_8;
     g_sd_cmd_param.sd_cmd_args = 0x01AA;
     g_sd_cmd_param.sd_cmd_crc = 0x87;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_7;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_7;
 
     start_time = 0;
 
@@ -290,7 +290,7 @@ static uint32 SdHwReset(SpiSdDeviceType spi_sd_dev)
             g_sd_cmd_param.sd_cmd_type = SD_CMD_55;
             g_sd_cmd_param.sd_cmd_args = 0x00;
             g_sd_cmd_param.sd_cmd_crc = 0x65;
-            g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+            g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
             
             /*pull down the cs pin*/
             SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -308,7 +308,7 @@ static uint32 SdHwReset(SpiSdDeviceType spi_sd_dev)
             g_sd_cmd_param.sd_cmd_type = SD_ACMD_41;
             g_sd_cmd_param.sd_cmd_args = 0x40000000;
             g_sd_cmd_param.sd_cmd_crc = 0x77;
-            g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+            g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
             ret = SdSendCmdByte(spi_sd_dev, &g_sd_cmd_param);
             if (EOK != ret) {
@@ -325,7 +325,7 @@ static uint32 SdHwReset(SpiSdDeviceType spi_sd_dev)
         g_sd_cmd_param.sd_cmd_type = SD_CMD_58;
         g_sd_cmd_param.sd_cmd_args = 0x00;
         g_sd_cmd_param.sd_cmd_crc = 0x00;
-        g_sd_cmd_param.sd_respone_type = SD_Respone_3;
+        g_sd_cmd_param.sd_respone_type = SD_RESPONE_3;
             
         /*pull down the cs pin*/
         SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -362,7 +362,7 @@ static uint32 SdHwReset(SpiSdDeviceType spi_sd_dev)
             g_sd_cmd_param.sd_cmd_type = SD_CMD_55;
             g_sd_cmd_param.sd_cmd_args = 0x00;
             g_sd_cmd_param.sd_cmd_crc = 0x65;
-            g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+            g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
             
             /*pull down the cs pin*/
             SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -381,7 +381,7 @@ static uint32 SdHwReset(SpiSdDeviceType spi_sd_dev)
             g_sd_cmd_param.sd_cmd_type = SD_ACMD_41;
             g_sd_cmd_param.sd_cmd_args = 0x40000000;
             g_sd_cmd_param.sd_cmd_crc = 0x77;
-            g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+            g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
             ret = SdSendCmdByte(spi_sd_dev, &g_sd_cmd_param);
             if (EOK != ret) {
@@ -417,7 +417,7 @@ static uint32 SdHwReset(SpiSdDeviceType spi_sd_dev)
                 g_sd_cmd_param.sd_cmd_type = SD_CMD_1;
                 g_sd_cmd_param.sd_cmd_args = 0x00;
                 g_sd_cmd_param.sd_cmd_crc = 0x00;
-                g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+                g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
                 /*pull down the cs pin*/
                 SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -452,7 +452,7 @@ static uint32 SdHwSetBlockLength(SpiSdDeviceType spi_sd_dev)
     g_sd_cmd_param.sd_cmd_type = SD_CMD_16;
     g_sd_cmd_param.sd_cmd_args = SD_BLOCK_LENGTH;
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
     /*pull down the cs pin*/
     SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -674,7 +674,7 @@ static uint32 SdHwReadCSD(SpiSdDeviceType spi_sd_dev)
     g_sd_cmd_param.sd_cmd_type = SD_CMD_9;
     g_sd_cmd_param.sd_cmd_args = 0x00;
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_2;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_2;
 
     /*pull down the cs pin*/
     SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -754,7 +754,7 @@ static uint32 SdReadSingleBlock(SpiSdDeviceType spi_sd_dev, uint32 id, uint8 *re
         g_sd_cmd_param.sd_cmd_args = id * spi_sd_dev->sd_param.block_param.block_size;
     }
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
     /*pull down the cs pin*/
     SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -823,7 +823,7 @@ static uint32 SdReadMultiBlock(SpiSdDeviceType spi_sd_dev, uint32 id, const uint
         g_sd_cmd_param.sd_cmd_args = id * spi_sd_dev->sd_param.block_param.block_size;
     }
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
     /*pull down the cs pin*/
     SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -876,7 +876,7 @@ static uint32 SdReadMultiBlock(SpiSdDeviceType spi_sd_dev, uint32 id, const uint
     g_sd_cmd_param.sd_cmd_type = SD_CMD_12;
     g_sd_cmd_param.sd_cmd_args = 0x00;
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1b;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1B;
 
     ret = SdSendCmdByte(spi_sd_dev, &g_sd_cmd_param);
     if (EOK != ret) {
@@ -908,7 +908,7 @@ static uint32 SdWriteSingleBlock(SpiSdDeviceType spi_sd_dev, uint32 id, const ui
         g_sd_cmd_param.sd_cmd_args = id * spi_sd_dev->sd_param.block_param.block_size;
     }
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
     /*pull down the cs pin*/
     SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 1, 0);
@@ -986,7 +986,7 @@ static uint32 SdWriteMultiBlock(SpiSdDeviceType spi_sd_dev, uint32 id, const voi
     g_sd_cmd_param.sd_cmd_type = SD_CMD_55;
     g_sd_cmd_param.sd_cmd_args = 0x00;
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
     ret = SdSendCmdByte(spi_sd_dev, &g_sd_cmd_param);
     if (EOK != ret) {
@@ -1002,7 +1002,7 @@ static uint32 SdWriteMultiBlock(SpiSdDeviceType spi_sd_dev, uint32 id, const voi
     g_sd_cmd_param.sd_cmd_type = SD_ACMD_23;
     g_sd_cmd_param.sd_cmd_args = block_num;
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
     ret = SdSendCmdByte(spi_sd_dev, &g_sd_cmd_param);
     if (EOK != ret) {
@@ -1023,7 +1023,7 @@ static uint32 SdWriteMultiBlock(SpiSdDeviceType spi_sd_dev, uint32 id, const voi
         g_sd_cmd_param.sd_cmd_args = id * spi_sd_dev->sd_param.block_param.block_size;
     }
     g_sd_cmd_param.sd_cmd_crc = 0x00;
-    g_sd_cmd_param.sd_respone_type = SD_Respone_1;
+    g_sd_cmd_param.sd_respone_type = SD_RESPONE_1;
 
     start_time = 0;
     do
