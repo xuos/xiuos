@@ -59,7 +59,7 @@ void ZigbeeReceiveDemo(int argc, char *argv[])
     char rev_buffer[NAME_NUM_MAX];    
     /* Initialize semaphore */
     re_sem = UserSemaphoreCreate(0);
-
+    /* receive buffer from serial port */
     padapter->done.NetAiitReceive(padapter,rev_buffer,strlen(rev_buffer),10000,false,NULL);
     ZigbeeWait(rev_buffer);
     UserSemaphoreObtain(re_sem,-1);
