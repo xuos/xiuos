@@ -22,7 +22,7 @@
 #include <string.h>
 #include <xs_klist.h>
 #include <xs_adapter_manager.h>
-
+#include <string.h>
 adapter_t padapter;
 /* a demo function to send message through command line using zigbee*/
 /* first open zigbee to start demo*/
@@ -32,20 +32,21 @@ void ZigbeeOpenDemo()
     // adapter_t padapter = ZigbeeAdapterFind("zigbee");
     padapter = ZigbeeAdapterFind("zigbee");
     if (NONE == padapter){
-        KPrintf("adapter find failed!\n");
+        printf("adapter find failed!\n");
         return;
     }
 
     /*Open adapter*/
     if (0 != padapter->done.NetAiitOpen(padapter)){
-        KPrintf("adapter open failed!\n");
+        printf("adapter open failed!\n");
         return;
     }
 
 }
+#ifndef SEPARATE_COMPILE
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN),
 ZigbeeOpenDemo, ZigbeeOpenDemo,  zigbee send function );
-
+#endif
 
 void ZigbeeSendDemo(int argc, char *argv[])
 {
@@ -54,8 +55,9 @@ void ZigbeeSendDemo(int argc, char *argv[])
     padapter->done.NetAiitSend(padapter, argv[1], strlen(argv[1]) ,true,10000,0, NULL,&v,NULL);
 
 }
+#ifndef SEPARATE_COMPILE
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN),
 ZigbeeSendDemo, ZigbeeSendDemo,  zigbee send function );
-
+#endif
 
 

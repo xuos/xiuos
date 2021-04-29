@@ -20,7 +20,7 @@
 */
 #include <xs_adapter_zigbee.h>
 #include <xs_adapter_manager.h>
-
+#include <string.h>
 /* initialize to the register list*/
 int RegisterAdapterZigbee(void)
 {
