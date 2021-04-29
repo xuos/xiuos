@@ -57,7 +57,7 @@
  */
 struct DynamicAllocNode
 {
-	uint32 size;                /* the size of dynamicAllocNode */
+	x_size_t size;                /* the size of dynamicAllocNode */
 	uint32 prev_adj_size;         /* the size of the previous adjacent node, (dynamic alloc node or dynamic free node */
 };
 
@@ -480,7 +480,7 @@ static void SmallMemInit(struct ByteMemory *byte_memory)
 
     for(offset = 0; offset < item->block_total_count; offset++) {
         node = PTR2ALLOCNODE((char*)item->freelist + offset * (SIZEOF_32B + SIZEOF_DYNAMICALLOCNODE_MEM));
-        node->size =(uint64) ((char*)item->freelist + (offset + 1) * (SIZEOF_32B + SIZEOF_DYNAMICALLOCNODE_MEM));
+        node->size =(x_size_t) ((char*)item->freelist + (offset + 1) * (SIZEOF_32B + SIZEOF_DYNAMICALLOCNODE_MEM));
         node->prev_adj_size = STATIC_BLOCK_MASK;
     }
     node->size = NONE;
@@ -501,7 +501,7 @@ static void SmallMemInit(struct ByteMemory *byte_memory)
 
     for(offset = 0; offset < item->block_total_count; offset++) {
         node = PTR2ALLOCNODE((char*)item->freelist + offset * (SIZEOF_64B + SIZEOF_DYNAMICALLOCNODE_MEM));
-        node->size =(uint64) ((char*)item->freelist + (offset + 1) * (SIZEOF_64B + SIZEOF_DYNAMICALLOCNODE_MEM));
+        node->size =(x_size_t) ((char*)item->freelist + (offset + 1) * (SIZEOF_64B + SIZEOF_DYNAMICALLOCNODE_MEM));
         node->prev_adj_size = STATIC_BLOCK_MASK;
     }
     node->size = NONE;
@@ -527,10 +527,10 @@ static void SmallMemFree(void *pointer)
 
 	/* get the allocNode */
 	node = PTR2ALLOCNODE((char*)pointer-SIZEOF_DYNAMICALLOCNODE_MEM);
-    StaticSegment = (struct segment*)(uint64)node->size;
+    StaticSegment = (struct segment*)(x_size_t)node->size;
 
     /* update the statistic information of StaticSegment */
-	node->size = (uint64)StaticSegment->freelist;
+	node->size = (x_size_t)StaticSegment->freelist;
     StaticSegment->freelist = (uint8 *)node;
     StaticSegment->block_free_count++;
 

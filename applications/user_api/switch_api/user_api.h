@@ -160,7 +160,7 @@ struct statfs {
 int statfs(const char *path, struct statfs *buf);
 #endif
 
-void Userprintf(const char *fmt, ...);
+int Userprintf(const char *fmt, ...);
 
 #define printf      Userprintf    
 

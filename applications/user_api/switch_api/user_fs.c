@@ -21,6 +21,7 @@
 
 #include "user_api.h"
 #include <stdarg.h>
+#include <stdio.h>
 
 #define stdio 1
 #define CONSOLEBUF_SIZE 128
@@ -123,7 +124,7 @@ int statfs(const char *path, struct statfs *buf){
     return (int)(KSwitch2(KS_USER_STAT_FS,(uintptr_t)path,(uintptr_t)buf));
 }
 
-void Userprintf(const char *fmt, ...)
+int Userprintf(const char *fmt, ...)
 {
     if(stdio != NONE)
     {
@@ -140,5 +141,6 @@ void Userprintf(const char *fmt, ...)
         write(stdio, logbuf, length);        
         va_end(args);
     }
+    return 0;
 }
 

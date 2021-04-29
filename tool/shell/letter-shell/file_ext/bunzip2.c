@@ -274,8 +274,8 @@ static int GetNextBlock(BunZipData_t *bd)
         if (ngrp >= groupCount)
             return RET_ERROR;
         hufGroup = bd->groups + ngrp;
-        base = hufGroup->base - 1;
-        limit = hufGroup->limit - 1;
+        base = (int *)hufGroup->base - 1;
+        limit = (int *)hufGroup->limit - 1;
 
  continue_this_group:
 

@@ -23,6 +23,8 @@
 #include <misc.h>
 #include <stm32f4xx.h>
 
+extern void _svcall(uintptr_t* contex);
+
 x_base __attribute__((naked)) DisableLocalInterrupt()
 {
     asm volatile ("MRS     r0, PRIMASK");

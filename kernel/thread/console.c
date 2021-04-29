@@ -500,9 +500,11 @@ int VsnPrintf(char *buf, int32 size, const char *fmt, va_list args)
             width = sizeof(void *) * 2;
             flags |= ZEROPAD | CAPITAL;
             /* Determine the machine word length */
+#ifdef ARCH_CPU_64BIT
             if(sizeof(long) == sizeof(long long))
                 pointer = LonglongToChar(buf, (unsigned long long)va_arg(args, void*), flags, precision, 16, width, 0, pointer, size);
             else
+#endif
                 pointer = LongToChar(buf, (unsigned long)va_arg(args, void*), flags, precision, 16, width, 0, pointer, size);
             
             if(pointer >= size) {

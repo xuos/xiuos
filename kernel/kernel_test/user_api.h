@@ -159,7 +159,7 @@ struct statfs {
 int statfs(const char *path, struct statfs *buf);
 #endif
 
-void UserPrintf(const char *fmt, ...);
+int UserPrintf(const char *fmt, ...);
 
 #else
 struct utask

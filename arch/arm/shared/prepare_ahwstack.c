@@ -290,8 +290,8 @@ struct ExceptionInfo
 void HwHardFaultException(struct ExceptionInfo *ExceptionInfo)
 {
     extern long ShowTask(void);
-    struct ExErrorStackContex* ExceptionStack = &ExceptionInfo->stackframe.ExErrorStackContex;
-    struct StackRegisterContent* context = &ExceptionInfo->stackframe;
+    struct ExErrorStackContex* ExceptionStack = (struct ExErrorStackContex*)&ExceptionInfo->stackframe.ExErrorStackContex;
+    struct StackRegisterContent* context = (struct StackRegisterContent*)&ExceptionInfo->stackframe;
 
     if (ExceptionHook != NONE) {
         x_err_t result = ExceptionHook(ExceptionStack);
@@ -344,8 +344,8 @@ void UpdateRunningTask(void)
 void MemFaultExceptionPrint(struct ExceptionInfo *ExceptionInfo)
 {
     extern long ShowTask(void);
-    struct ExErrorStackContex* ExceptionStack = &ExceptionInfo->stackframe.ExErrorStackContex;
-    struct StackRegisterContent* context = &ExceptionInfo->stackframe;
+    struct ExErrorStackContex* ExceptionStack = (struct ExErrorStackContex*)&ExceptionInfo->stackframe.ExErrorStackContex;
+    struct StackRegisterContent* context = (struct StackRegisterContent*)&ExceptionInfo->stackframe;
 
     if (ExceptionHook != NONE) {
         x_err_t result = ExceptionHook(ExceptionStack);
