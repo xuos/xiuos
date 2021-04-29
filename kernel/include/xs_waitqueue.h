@@ -48,23 +48,11 @@ struct WaitqueueNode
 };
 typedef struct WaitqueueNode WaitqueueNodeType;
 
-int __WqueueDefaultWake(struct WaitqueueNode *wait, void *key);
 void InitWqueue(WaitQueueType *queue);
 void WqueueAdd(WaitQueueType *queue, struct WaitqueueNode *node);
 void WqueueRemove(struct WaitqueueNode *node);
 int  WqueueWait(WaitQueueType *queue, x_ticks_t tick);
 void WakeupWqueue(WaitQueueType *queue, void *key);
-
-#define DEFINE_WAIT_FUNC(name, function)                \
-    struct WaitqueueNode name = {                      \
-        os_running_task,                              \
-        DOUBLE_LINKLIST_OBJ_INIT(((name).list)),             \
-                                                        \
-        function,                                       \
-        0                                               \
-    }
-
-#define DEFINE_WAIT(name) DEFINE_WAIT_FUNC(name, __WqueueDefaultWake)
 
 typedef struct
 {

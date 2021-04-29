@@ -647,8 +647,8 @@ struct utask
     int32_t     stack_size;  
     uint8_t     prio; 
 };
-typedef struct utask utask_x;
-int32_t UserTaskCreate(utask_x utask)
+typedef struct utask UtaskType;
+int32_t UserTaskCreate(UtaskType utask)
 {
    return KTaskCreate(utask.name, utask.func_entry, utask.func_param,utask.stack_size,utask.prio);
 }

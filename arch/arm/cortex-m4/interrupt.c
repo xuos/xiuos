@@ -82,7 +82,7 @@ void IsrEntry()
 uintptr_t *Svcall(unsigned int ipsr ,  uintptr_t* contex )
 {
 #ifdef TASK_ISOLATION
-    __svcall(contex);
+    _svcall(contex);
 #endif
     return contex;
 }

@@ -184,7 +184,7 @@ void Set485Input(uint8 ch_no)
 	}
 }
 
-void Set485Output(uint8	ch_no)
+void Set485Output(uint8 ch_no)
 {
 	struct PinStat pin_stat;
 	struct BusBlockWriteParam write_param;
@@ -1173,20 +1173,20 @@ static uint32 Ch438DevRegister(struct SerialHardwareDevice *serial_dev, char *de
 	serial_dev->ext_serial_mode = RET_TRUE;
     ret = SerialDeviceRegister(serial_dev, NONE, dev_name);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Serial device %s register error %d\n", dev_name, ret);
+        KPrintf("HwCh438Init Serial device %s register error %d\n", dev_name, ret);
         return ERROR;
     }
 
     ret = SerialDeviceAttachToBus(dev_name, CH438_BUS_NAME);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Serial device %s register error %d\n", dev_name, ret);
+        KPrintf("HwCh438Init Serial device %s register error %d\n", dev_name, ret);
         return ERROR;
     }
 
 	return ret;
 }
 
-int hw_ch438_init(void)
+int HwCh438Init(void)
 {
     static struct SerialBus serial_bus;
     static struct SerialDriver serial_drv;
@@ -1195,20 +1195,20 @@ int hw_ch438_init(void)
     
     ret = SerialBusInit(&serial_bus, CH438_BUS_NAME);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Serial bus init error %d\n", ret);
+        KPrintf("HwCh438Init Serial bus init error %d\n", ret);
         return ERROR;
     }
 
     serial_drv.configure = &Ch438DrvConfigure;
     ret = SerialDriverInit(&serial_drv, CH438_DRIVER_NAME);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Serial driver init error %d\n", ret);
+        KPrintf("HwCh438Init Serial driver init error %d\n", ret);
         return ERROR;
     }
 
     ret = SerialDriverAttachToBus(CH438_DRIVER_NAME, CH438_BUS_NAME);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Serial driver attach error %d\n", ret);
+        KPrintf("HwCh438Init Serial driver attach error %d\n", ret);
         return ERROR;
     }
 
@@ -1218,7 +1218,7 @@ int hw_ch438_init(void)
 	serial_dev_0.haldev.private_data = (void *)&dev_param_0;
 	ret = Ch438DevRegister(&serial_dev_0, CH438_DEVICE_NAME_0);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Ch438DevRegister error %d\n", ret);
+        KPrintf("HwCh438Init Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1228,7 +1228,7 @@ int hw_ch438_init(void)
 	serial_dev_1.haldev.private_data = (void *)&dev_param_1;
 	ret = Ch438DevRegister(&serial_dev_1, CH438_DEVICE_NAME_1);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Ch438DevRegister error %d\n", ret);
+        KPrintf("HwCh438Init Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1238,7 +1238,7 @@ int hw_ch438_init(void)
 	serial_dev_2.haldev.private_data = (void *)&dev_param_2;
 	ret = Ch438DevRegister(&serial_dev_2, CH438_DEVICE_NAME_2);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Ch438DevRegister error %d\n", ret);
+        KPrintf("HwCh438Init Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1248,7 +1248,7 @@ int hw_ch438_init(void)
 	serial_dev_3.haldev.private_data = (void *)&dev_param_3;
 	ret = Ch438DevRegister(&serial_dev_3, CH438_DEVICE_NAME_3);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Ch438DevRegister error %d\n", ret);
+        KPrintf("HwCh438Init Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1258,7 +1258,7 @@ int hw_ch438_init(void)
 	serial_dev_4.haldev.private_data = (void *)&dev_param_4;
 	ret = Ch438DevRegister(&serial_dev_4, CH438_DEVICE_NAME_4);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Ch438DevRegister error %d\n", ret);
+        KPrintf("HwCh438Init Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1268,7 +1268,7 @@ int hw_ch438_init(void)
 	serial_dev_5.haldev.private_data = (void *)&dev_param_5;
 	ret = Ch438DevRegister(&serial_dev_5, CH438_DEVICE_NAME_5);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Ch438DevRegister error %d\n", ret);
+        KPrintf("HwCh438Init Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1278,7 +1278,7 @@ int hw_ch438_init(void)
 	serial_dev_6.private_data = (void *)&dev_param_6;
 	ret = Ch438DevRegister(&serial_dev_6, CH438_DEVICE_NAME_6);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Ch438DevRegister error %d\n", ret);
+        KPrintf("HwCh438Init Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 
@@ -1288,7 +1288,7 @@ int hw_ch438_init(void)
 	serial_dev_7.private_data = (void *)&dev_param_7;
 	ret = Ch438DevRegister(&serial_dev_7, CH438_DEVICE_NAME_7);
     if (ret != EOK) {
-        KPrintf("hw_ch438_init Ch438DevRegister error %d\n", ret);
+        KPrintf("HwCh438Init Ch438DevRegister error %d\n", ret);
         return ERROR;
     }
 

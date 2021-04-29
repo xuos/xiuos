@@ -29,7 +29,7 @@ void KSerciveKTaskIdle(void)
     InitIdleKTask();
 }
 
-void xz_KServiceKTaskRecycle()
+void KServiceKTaskRecycle()
 {
     ZombieTaskRecycleInit();
 }
@@ -37,7 +37,7 @@ void xz_KServiceKTaskRecycle()
 void CreateKServiceKTask(void)
 {
     /* create zombie recycle task */
-    xz_KServiceKTaskRecycle();
+    KServiceKTaskRecycle();
 
     /* create idle task */
     KSerciveKTaskIdle();

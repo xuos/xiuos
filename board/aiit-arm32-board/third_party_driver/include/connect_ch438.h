@@ -287,7 +287,7 @@
 #define	DIR_485CH3_PIN	123	//485ch3 = ext_uart7
 
 void CH438RegTest(unsigned char num);
-void Set485Input(uint8	ch_no);
-void set_485_output(uint8	ch_no);
+void Set485Input(uint8 ch_no);
+void Set485Output(uint8 ch_no);
 
 #endif

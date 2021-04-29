@@ -22,14 +22,14 @@ class Animal    //parent class
 
 public:
 
-    virtual void eat()
+    virtual void Eat()
     {
 
         KPrintf("eat\n");
 
     }
 
-    void sleep()
+    void Sleep()
     {
         KPrintf("sleep\n");
     }
@@ -42,7 +42,7 @@ class Fish :public Animal    //subclass
 
 public:
 
-    void eat()
+    void Eat()
     {
         KPrintf("fish eat\n");
 
@@ -50,33 +50,28 @@ public:
     }
 };
 
-void doeat(Animal& animal)
+void Doeat(Animal& animal)
 {
-    animal.eat();
+    animal.Eat();
 }
 
-
-void mem_test2()
+void MemTest2()
 {
     int i;
     char *ptr = NULL; /* memory pointer */
 
-    for (i = 0; ; i++)
-    {
+    for (i = 0; ; i++) {
         /* allocate (1<<i) bytes memory every single time */
         ptr = (char *)operator new(1 << i);
 
         /* if allocate successfully */
-        if (ptr != NULL)
-        {
+        if (ptr != NULL) {
             KPrintf("get memory :%d byte\n", (1 << i));
             /* release the memory */
             operator delete(ptr);
             KPrintf("free memory :%d byte\n", (1 << i));
             ptr = NULL;
-        }
-        else
-        {
+        } else {
             KPrintf("try to get %d byte memory failed!\n", (1 << i));
             break;
             //return 0;
@@ -85,17 +80,18 @@ void mem_test2()
 
 }
 
-void overload_test(int a)
+void OverLoadTest(int a)
 {
     KPrintf("output is a int number: %d\n", a);
 }
-void overload_test(int a,int b )
+
+void OverLoadTestDouble(int a,int b )
 {
     KPrintf("output is 2 int number: %d and %d\n", a,b);
 }
 
 template<typename T>
-void myswap(T& a, T& b)
+void MySwap(T& a, T& b)
 {
     T temp = a;
     a = b;
@@ -104,19 +100,17 @@ void myswap(T& a, T& b)
 
 extern "C" int cppmain(void)
 {
-    mem_test2();
+    MemTest2();
 
     class Fish fish;
-    doeat(fish);
+    Doeat(fish);
 
     int a = 3;
     int b = 5;
-    void overload_test(int a, int b);
-    overload_test(a, b);
-    myswap(a,b);
+    void OverLoadTestDouble(int a, int b);
+    OverLoadTestDouble(a, b);
+    MySwap(a,b);
     KPrintf("with template the output is: %d and %d\n", a,b);
 
-
     return 0;
-
 }

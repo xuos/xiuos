@@ -71,7 +71,7 @@ static int SensorDeviceOpen(struct SensorDevice *sdev)
 
     result = ioctl(sdev->fd, OPE_INT, &cfg);
 
-    utask_x active_task;
+    UtaskType active_task;
     const char name[NAME_NUM_MAX] = "ps5308_task";
 
     strncpy(active_task.name, name, strlen(name));

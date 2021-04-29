@@ -105,7 +105,7 @@ int ZigbeeReceive(struct Adapter *padapter, char* rev_buffer, int buffer_len,int
     x_err_t ret = EOK;
     /* Set callback function */
     /* Create thread serial */
-    utask_x recv;
+    UtaskType recv;
     recv.name[0] = 'z';
     recv.func_entry = SerialThreadEntry;
     recv.func_param = NONE;
