@@ -453,7 +453,7 @@ static struct DynamicBuddyMemoryDone DynamicDone = {
 /**
  * This function initializes the static segment struction.
  *
- * @param StaticSegment the StaticSegment to be initialized
+ * @param static_segment the static_segment to be initialized
  */
 static void SmallMemInit(struct ByteMemory *byte_memory)
 {
@@ -520,28 +520,28 @@ static void SmallMemInit(struct ByteMemory *byte_memory)
  */
 static void SmallMemFree(void *pointer)
 {
-	struct segment *StaticSegment = NONE;
+	struct segment *static_segment = NONE;
 	struct DynamicAllocNode *node = NONE;
 
 	NULL_PARAM_CHECK(pointer);
 
 	/* get the allocNode */
 	node = PTR2ALLOCNODE((char*)pointer-SIZEOF_DYNAMICALLOCNODE_MEM);
-    StaticSegment = (struct segment*)(x_size_t)node->size;
+    static_segment = (struct segment*)(x_size_t)node->size;
 
-    /* update the statistic information of StaticSegment */
-	node->size = (x_size_t)StaticSegment->freelist;
-    StaticSegment->freelist = (uint8 *)node;
-    StaticSegment->block_free_count++;
+    /* update the statistic information of static_segment */
+	node->size = (x_size_t)static_segment->freelist;
+    static_segment->freelist = (uint8 *)node;
+    static_segment->block_free_count++;
 
     /* parameter detection */
-	CHECK(StaticSegment->block_free_count <= StaticSegment->block_total_count);
+	CHECK(static_segment->block_free_count <= static_segment->block_total_count);
 }
 
 /**
  * This funcation allocates a static memory block from static segment.
  *
- * @param StaticSegment the heart static segment structure to allocate static memory
+ * @param static_segment the heart static segment structure to allocate static memory
  * @param size the size to be allocated
  *
  * @return pointer address on success; NULL on failure
@@ -550,26 +550,26 @@ static void *SmallMemMalloc(struct ByteMemory *byte_memory, x_size_t size)
 {
 	void *result = NONE;
 	struct DynamicAllocNode *node = NONE;
-	struct segment *StaticSegment = NONE;
+	struct segment *static_segment = NONE;
 
 	NULL_PARAM_CHECK(byte_memory);
 
 	if (size == SIZEOF_32B)
-	   StaticSegment = &byte_memory->static_manager[0];
+	   static_segment = &byte_memory->static_manager[0];
 	else
-	   StaticSegment = &byte_memory->static_manager[1];
+	   static_segment = &byte_memory->static_manager[1];
 
 	/* current static segment has free static memory block */
-	if(StaticSegment->block_free_count>0) {
+	if(static_segment->block_free_count>0) {
 	    /* get the head static memory block */
-        result = StaticSegment->freelist;
-        node = PTR2ALLOCNODE(StaticSegment->freelist);
+        result = static_segment->freelist;
+        node = PTR2ALLOCNODE(static_segment->freelist);
 		node->prev_adj_size = STATIC_BLOCK_MASK;
 
 		/* update the statistic information of static segment */
-        StaticSegment->freelist = (uint8 *)(long)(node->size);
-        StaticSegment->block_free_count--;
-		node->size = (long)StaticSegment;
+        static_segment->freelist = (uint8 *)(long)(node->size);
+        static_segment->block_free_count--;
+		node->size = (long)static_segment;
 	}
 
 	if(result) {
@@ -727,7 +727,7 @@ void x_free(void *pointer)
 	node = PTR2ALLOCNODE((char*)pointer-SIZEOF_DYNAMICALLOCNODE_MEM);
     CHECK(ByteManager.done->JudgeAllocated(node));
 
-    /* judge release the memory block ro StaticSegment or dynamic buddy memory */
+    /* judge release the memory block ro static_segment or dynamic buddy memory */
 #ifdef KERNEL_SMALL_MEM_ALLOC
 	if(node->prev_adj_size & STATIC_BLOCK_MASK) {
 		ByteManager.static_manager->done->release(pointer);

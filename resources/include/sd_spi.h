@@ -67,11 +67,11 @@ typedef enum
 
 typedef enum
 {
-    SD_Respone_1 = 1,
-    SD_Respone_1b,
-    SD_Respone_2,
-    SD_Respone_3,
-    SD_Respone_7,
+    SD_RESPONE_1 = 1,
+    SD_RESPONE_1B,
+    SD_RESPONE_2,
+    SD_RESPONE_3,
+    SD_RESPONE_7,
 }SdRespone;
 
 struct SdCmdParam

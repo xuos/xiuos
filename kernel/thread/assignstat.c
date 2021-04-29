@@ -50,15 +50,15 @@ int32 JudgeAssignReadyBitmapIsEmpty(struct OsAssignReadyVector *ready_vector)
 
 struct TaskDescriptor * ChooseTaskWithHighestPrio(struct OsAssignReadyVector *ready_vector)
 {
-    struct TaskDescriptor *TargetTask = NONE;
+    struct TaskDescriptor *target_task = NONE;
 
     NULL_PARAM_CHECK(ready_vector);
 
-    TargetTask = SYS_DOUBLE_LINKLIST_ENTRY(ready_vector->priority_ready_vector[ready_vector->highest_prio].node_next,
+    target_task = SYS_DOUBLE_LINKLIST_ENTRY(ready_vector->priority_ready_vector[ready_vector->highest_prio].node_next,
                                   struct TaskDescriptor,
                                   task_dync_sched_member.sched_link);
 
-    return TargetTask;
+    return target_task;
 }
 
 void OsAssignReadyVectorInit(struct OsAssignReadyVector *ready_vector)

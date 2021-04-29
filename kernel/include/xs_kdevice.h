@@ -36,25 +36,6 @@
 extern "C" {
 #endif
 
-enum dev
-{
-    Dev_TYPE_Block,
-    Dev_TYPE_Char  ,   
-    Dev_TYPE_CAN ,     
-    Dev_TYPE_Graphic,
-    Dev_TYPE_I2CBUS,
-    Dev_TYPE_Miscellaneous,
-    Dev_TYPE_NetIf  ,
-    Dev_TYPE_RTC ,
-    Dev_TYPE_SPIBUS,
-    Dev_TYPE_SPIDevice,
-    Dev_TYPE_Timer,
-    Dev_TYPE_Touch,
-    Dev_TYPE_USBDevice,
-    Dev_TYPE_USBHost,
-    Dev_TYPE_Unknown
-};
-
 #define          OSIGN_OPER_CLOSE               (0U   <<  0) 
 #define          OSIGN_OPER_RDONLY              (1U   << 0)    
 #define          OSIGN_OPER_WRONLY              (1U   << 1)     

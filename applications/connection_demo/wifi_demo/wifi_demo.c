@@ -103,7 +103,7 @@ void PingWifi()
     }
 
     printf("Waiting for msg...\n");
-    struct ping_result result;
+    struct PingResult result;
     //www.baidu.com
     char *ip_str = "36.152.44.95";
 
@@ -123,7 +123,7 @@ void SetUpWifi()
     }
 
     printf("Waiting for msg...\n");
-    struct ping_result result; 
+    struct PingResult result; 
 
     at_adapter->parent.done.NetAiitOpen(&at_adapter->parent);
 
