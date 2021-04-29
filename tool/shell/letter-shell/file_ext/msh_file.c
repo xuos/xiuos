@@ -168,10 +168,10 @@ static int copy(const char *from, const char *to)
     int abs_from_len, abs_to_len;
     char *last_name;
     int last_name_len;
-    char *GetAbsolutePath(const char *parent, const char *filename);
+    char *GetAbsolutePath(const char *path);
 
-    abs_from = GetAbsolutePath(NULL, from);
-    abs_to = GetAbsolutePath(NULL, to);
+    abs_from = GetAbsolutePath(from);
+    abs_to = GetAbsolutePath(to);
     if (abs_from == NULL || abs_to == NULL)
         goto err;
 

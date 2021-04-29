@@ -59,93 +59,85 @@ static struct MountPoint *GetMountPoint(const char *path)
     return mp;
 }
 
-char *GetAbsolutePath(const char *parent, const char *filename)
+char *GetAbsolutePath(const char *path)
 {
-    char *abspath;
-    char *dst0, *dst, *src;
+    char *abspath, *tmp;
+    char *prev, *curr;
+    int len;
 
-    NULL_PARAM_CHECK(filename != NULL);
+    NULL_PARAM_CHECK(path);
 
-    if (parent == NULL)
-        parent = working_dir;
-
-    if (filename[0] != '/') {
-        abspath = (char *)malloc(strlen(parent) + strlen(filename) + 2);
-        if (abspath == NULL)
+    if (path[0] == '/') {
+        len = strlen(path) + 1;
+        tmp = (char *)malloc(len);
+        if (tmp == NULL)
             return NULL;
-        snprintf(abspath, strlen(parent) + strlen(filename) + 2,
-                "%s/%s", parent, filename);
+        strcpy(tmp, path);
     } else {
-        abspath = strdup(filename);
-        if (abspath == NULL)
+        len = strlen(working_dir) + strlen(path) + 2;
+        tmp = (char *)malloc(len);
+        if (tmp == NULL)
             return NULL;
+        strcpy(tmp, working_dir);
+        strcat(tmp, "/");
+        strcat(tmp, path);
     }
 
-    src = abspath;
-    dst = abspath;
+    abspath = (char *)malloc(len);
+    if (abspath == NULL) {
+        free(tmp);
+        return NULL;
+    }
+    memset(abspath, 0, len);
 
-    dst0 = dst;
-    while (1) {
-        char c = *src;
+    for (curr = tmp; curr < tmp + len; curr++)
+        if (*curr == '/')
+            *curr = '\0';
 
-        if (c == '.') {
-            if (!src[1]) {
-                src++;
-            } else if (src[1] == '/') {
-                src += 2;
-
-                while ((*src == '/') && (*src != '\0'))
-                    src ++;
-                continue;
-            } else if (src[1] == '.') {
-                if (!src[2]) {
-                    src += 2;
-                    goto up_one;
-                } else if (src[2] == '/') {
-                    src += 3;
-
-                    while ((*src == '/') && (*src != '\0'))
-                        src ++;
-                    goto up_one;
+    curr = tmp;
+    while (curr < tmp + len) {
+        if (*curr == '\0') {
+            curr++;
+            continue;
+        }
+        if (*curr == '.') {
+            if (strlen(curr) == 1) {
+                *curr = '\0';
+                curr++;
+            } else if (strlen(curr) == 2 && *(curr + 1) == '.') {
+                prev = curr - 1;
+                while (prev >= tmp && *prev == '\0')
+                    prev--;
+                if (prev >= tmp) {
+                    while (prev > tmp && *(prev - 1) != '\0')
+                        prev--;
+                    memset(prev, 0, strlen(prev));
                 }
+                *curr = *(curr + 1) = '\0';
+                curr += 2;
             }
+        } else {
+            curr += strlen(curr);
         }
-
-        while ((c = *src++) != '\0' && c != '/')
-            *dst++ = c;
-
-        if (c == '/') {
-            *dst ++ = '/';
-            while (c == '/')
-                c = *src++;
-
-            src --;
-        } else if (!c) {
-            break;
-        }
-
-        continue;
-
-up_one:
-        dst--;
-        if (dst < dst0) {
-            free(abspath);
-            return NULL;
-        }
-        while (dst0 < dst && dst[-1] != '/')
-            dst --;
     }
 
-    *dst = '\0';
+    curr = tmp;
+    while (curr < tmp + len) {
+        if (*curr == '\0') {
+            curr++;
+        } else {
+            strcat(abspath, "/");
+            strcat(abspath, curr);
+            curr += strlen(curr);
+        }
+    }
 
-    dst --;
-    if ((dst != abspath) && (*dst == '/'))
-        *dst = '\0';
-
-    if ('\0' == abspath[0]) {
+    if (abspath[0] == '\0') {
         abspath[0] = '/';
         abspath[1] = '\0';
     }
+
+    free(tmp);
 
     return abspath;
 }
@@ -453,7 +445,7 @@ int open(const char *path, int flags, ...)
         return -1;
     }
 
-    abspath = GetAbsolutePath(NULL, path);
+    abspath = GetAbsolutePath(path);
     mp = GetMountPoint(abspath);
     if (mp == NULL) {
         SYS_ERR("%s: mount point not found\n", __func__);
@@ -647,8 +639,8 @@ int rename(const char *from, const char *to)
         return -1;
     }
 
-    abs_from = GetAbsolutePath(NULL, from);
-    abs_to = GetAbsolutePath(NULL, to);
+    abs_from = GetAbsolutePath(from);
+    abs_to = GetAbsolutePath(to);
     mp_from = GetMountPoint(abs_from);
     mp_to = GetMountPoint(abs_to);
     if (mp_from == NULL || mp_from != mp_to) {
@@ -692,7 +684,7 @@ int unlink(const char *path)
         return -1;
     }
 
-    abspath = GetAbsolutePath(NULL, path);
+    abspath = GetAbsolutePath(path);
     mp = GetMountPoint(abspath);
     if (mp == NULL) {
         SYS_ERR("%s: no mount point found\n", __func__);
@@ -734,7 +726,7 @@ int stat(const char *path, struct stat *buf)
         return -1;
     }
 
-    abspath = GetAbsolutePath(NULL, path);
+    abspath = GetAbsolutePath(path);
 
     if (strcmp(abspath, "/") == 0) {
         buf->st_dev = 0;
@@ -879,7 +871,7 @@ int mkdir(const char *path, mode_t mode)
         return -1;
     }
 
-    abspath = GetAbsolutePath(NULL, path);
+    abspath = GetAbsolutePath(path);
     mp = GetMountPoint(abspath);
     if (mp == NULL) {
         SYS_ERR("%s: no mount point found\n", __func__);
@@ -929,7 +921,7 @@ DIR *opendir(const char *path)
     }
     memset(fdp, 0, sizeof(struct FileDescriptor));
 
-    abspath = GetAbsolutePath(NULL, path);
+    abspath = GetAbsolutePath(path);
     mp = GetMountPoint(abspath);
     if (mp == NULL) {
         SYS_ERR("%s: no mount point found\n", __func__);
@@ -1054,7 +1046,7 @@ int chdir(const char *path)
     }
     closedir(dirp);
 
-    abspath = GetAbsolutePath(NULL, path);
+    abspath = GetAbsolutePath(path);
 
     KMutexObtain(working_dir_lock, WAITING_FOREVER);
     strcpy(working_dir, abspath);
@@ -1126,7 +1118,7 @@ int statfs(const char *path, struct statfs *buf)
         return -1;
     }
 
-    abspath = GetAbsolutePath(NULL, path);
+    abspath = GetAbsolutePath(path);
     mp = GetMountPoint(abspath);
     if (mp == NULL) {
         SYS_ERR("%s: no mount point found\n", __func__);
