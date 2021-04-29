@@ -55,11 +55,11 @@ int SdioDeviceRegister(struct SdioHardwareDevice *sdio_device, const char *devic
     NULL_PARAM_CHECK(device_name);
 
     x_err_t ret = EOK;    
-    static x_bool DevLinkFlag = RET_FALSE;
+    static x_bool dev_link_flag = RET_FALSE;
 
-    if (DevLinkFlag) {
+    if (!dev_link_flag) {
         SdioDeviceLinkInit();
-        DevLinkFlag = RET_TRUE;
+        dev_link_flag = RET_TRUE;
     }
 
     if (DEV_INSTALL != sdio_device->haldev.dev_state) {

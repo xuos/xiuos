@@ -55,11 +55,11 @@ int WdtDeviceRegister(struct WdtHardwareDevice *wdt_device, const char *device_n
     NULL_PARAM_CHECK(device_name);
 
     x_err_t ret = EOK;
-    static x_bool DevLinkFlag = RET_FALSE;
+    static x_bool dev_link_flag = RET_FALSE;
 
-    if (DevLinkFlag) {
+    if (!dev_link_flag) {
         WdtDeviceLinkInit();
-        DevLinkFlag = RET_TRUE;
+        dev_link_flag = RET_TRUE;
     }
 
     if (DEV_INSTALL != wdt_device->haldev.dev_state) {

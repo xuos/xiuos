@@ -103,7 +103,7 @@ int I2cDeviceRegister(struct I2cHardwareDevice *i2c_device, void *i2c_param, con
     x_err_t ret = EOK;    
     static x_bool dev_link_flag = RET_FALSE;
 
-    if (dev_link_flag) {
+    if (!dev_link_flag) {
         I2cDeviceLinkInit();
         dev_link_flag = RET_TRUE;
     }

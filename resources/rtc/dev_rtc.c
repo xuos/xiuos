@@ -57,7 +57,7 @@ int RtcDeviceRegister(struct RtcHardwareDevice *rtc_device, void *rtc_param, con
     x_err_t ret = EOK;    
     static x_bool dev_link_flag = RET_FALSE;
 
-    if (dev_link_flag) {
+    if (!dev_link_flag) {
         RtcDeviceLinkInit();
         dev_link_flag = RET_TRUE;
     }
