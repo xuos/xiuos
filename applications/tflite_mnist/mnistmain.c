@@ -9,6 +9,16 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 * See the Mulan PSL v2 for more details.
 */
+
+/**
+* @file:    mnistmain.c
+* @brief:   start mnist function
+* @version: 1.0
+* @author:  AIIT XUOS Lab
+* @date:    2020/3/25
+*
+*/
+
 #include <xiuos.h>
 
 void mnist_app(void);
