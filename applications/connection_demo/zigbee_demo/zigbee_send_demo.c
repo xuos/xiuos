@@ -23,6 +23,7 @@
 #include <xs_klist.h>
 #include <xs_adapter_manager.h>
 #include <string.h>
+#include <user_api.h>
 adapter_t padapter;
 /* a demo function to send message through command line using zigbee*/
 /* first open zigbee to start demo*/
@@ -53,6 +54,7 @@ void ZigbeeSendDemo(int argc, char *argv[])
     /*Find from the list of registered adapters*/
     bool v = false;
     padapter->done.NetAiitSend(padapter, argv[1], strlen(argv[1]) ,true,10000,0, NULL,&v,NULL);
+        
 
 }
 #ifndef SEPARATE_COMPILE

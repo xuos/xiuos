@@ -5,3 +5,7 @@ default n
 menuconfig CONNECTION_COMMUNICATION_ZIGBEE_KD233
 bool "Enable zigbee for kd233"
 default n
+
+menuconfig CONNECTION_COMMUNICATION_ZIGBEE_STM32
+bool "Enable zigbee for STM32F407-DISCOVERY"
+default n
