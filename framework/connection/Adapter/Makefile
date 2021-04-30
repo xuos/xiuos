@@ -1,3 +1,6 @@
+
+SRC_DIR := src
+
 # ifeq ($(CONFIG_CONNECTION_COMMUNICATION_LORA), y)
 # SRC_DIR += lora
 # endif
@@ -14,9 +17,9 @@ ifeq ($(CONFIG_CONNECTION_COMMUNICATION_ZIGBEE), y)
 	SRC_DIR += zigbee
 endif
 
-# ifeq ($(CONFIG_CONNECTION_COMMUNICATION_NB_IOT), y)
-# SRC_DIR += nbiot
-# endif
+ifeq ($(CONFIG_CONNECTION_COMMUNICATION_NB_IOT), y)
+	SRC_DIR += nbiot
+endif
 
 # ifeq ($(CONFIG_CONNECTION_COMMUNICATION_4G), y)
 # SRC_DIR += 4G
@@ -30,6 +33,6 @@ endif
 # SRC_DIR += rs485
 # endif
 
-SRC_DIR += src
+
 
 include $(KERNEL_ROOT)/compiler.mk

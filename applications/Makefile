@@ -41,6 +41,10 @@ ifeq ($(CONFIG_CONNECTION_COMMUNICATION_WIFI), y)
 	SRC_DIR += connection_demo/wifi_demo
 endif
 
+ifeq ($(CONFIG_CONNECTION_COMMUNICATION_NB_IOT), y)
+	SRC_DIR += connection_demo/nbiot_demo
+endif
+
 # ifeq ($(CONFIG_CONNECTION_COMMUNICATION_4G), y)
 # 	SRC_DIR += connection_demo/4G_demo
 # endif
