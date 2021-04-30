@@ -39,11 +39,11 @@ static uint32 UdiskCloseNewApi(void *dev)
 
 /*manage the usb device operations*/
 static const struct UsbDevDone dev_done =
-    {
-        .open = UdiskOpenNewApi,
-        .close = UdiskCloseNewApi,
-        .write = UdiskWirte_new_api,
-        .read = UdiskRead_new_api,
+{
+    .open = UdiskOpenNewApi,
+    .close = UdiskCloseNewApi,
+    .write = UdiskWirte_new_api,
+    .read = UdiskRead_new_api,
 };
 
 /*Init usb bus*/

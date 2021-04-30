@@ -52,11 +52,11 @@ static I2cBusParam i2c_bus_param =
 
 #define SET_SDA(done, val)   done->SetSdaState(done->data, val)
 #define SET_SCL(done, val)   done->SetSclState(done->data, val)
-#define GET_SDA(done)        done->GetSdaState(done->data)
-#define GET_SCL(done)        done->GetSclState(done->data)
-#define SdaLow(done)        SET_SDA(done, 0)
-#define SdaHigh(done)       SET_SDA(done, 1)
-#define SclLow(done)          SET_SCL(done, 0)
+#define GET_SDA(done)          done->GetSdaState(done->data)
+#define GET_SCL(done)          done->GetSclState(done->data)
+#define SdaLow(done)            SET_SDA(done, 0)
+#define SdaHigh(done)           SET_SDA(done, 1)
+#define SclLow(done)              SET_SCL(done, 0)
 
 void I2cGpioInit(const I2cBusParam *bus_param)
 {
@@ -124,8 +124,7 @@ static x_err_t I2cBusReset(const I2cBusParam *bus_param)
     int32 i = 0;
     gpio_set_drive_mode(bus_param->i2c_sda_pin, GPIO_DM_INPUT_PULL_UP );   
     if (GPIO_LOW == gpio_get_pin(bus_param->i2c_sda_pin)) {
-        while (i++ < 9)
-        {
+        while (i++ < 9) {
             gpio_set_drive_mode(bus_param->i2c_scl_pin, GPIO_DM_OUTPUT );
             gpio_set_pin(bus_param->i2c_scl_pin , GPIO_PV_HIGH ); 
             usleep(100);
@@ -160,8 +159,7 @@ static x_err_t SclHigh(struct I2cHalDrvDone *done)
         goto done;
 
     start = CurrentTicksGain();
-    while (!GET_SCL(done))
-    {
+    while (!GET_SCL(done)) {
         if ((CurrentTicksGain() - start) > done->timeout)
             return -ETIMEOUT;
         DelayKTask((done->timeout + 1) >> 1);
@@ -282,8 +280,7 @@ static x_size_t I2cSendBytes(struct I2cBus *bus, struct I2cDataStandard *msg)
     int32 count = msg->len;
     uint16 ignore_nack = msg->flags & I2C_IGNORE_NACK;
 
-    while (count > 0)
-    {
+    while (count > 0) {
         ret = I2cWriteb(bus, *ptr);
 
         if ((ret > 0) || (ignore_nack && (ret == 0))) {
@@ -327,8 +324,7 @@ static x_size_t I2cRecvBytes(struct I2cBus *bus, struct I2cDataStandard *msg)
     int32 count = msg->len;
     const uint32 flags = msg->flags;
 
-    while (count > 0)
-    {
+    while (count > 0) {
         val = I2cReadb(bus);
         if (val >= 0) {
             *ptr = val;
@@ -427,8 +423,7 @@ static uint32 I2cWriteData(struct I2cHardwareDevice *i2c_dev, struct I2cDataStan
     uint16 ignore_nack;
 
     I2cStart(done);
-    while (NONE != msg)
-    {
+    while (NONE != msg) {
         ignore_nack = msg->flags & I2C_IGNORE_NACK;
         if (!(msg->flags & I2C_NO_START)) {
             if (i) {
@@ -471,8 +466,7 @@ static uint32 I2cReadData(struct I2cHardwareDevice *i2c_dev, struct I2cDataStand
     uint16 ignore_nack;
 
     I2cStart(done);
-    while (NONE != msg)
-    {
+    while (NONE != msg) {
         ignore_nack = msg->flags & I2C_IGNORE_NACK;
         if (!(msg->flags & I2C_NO_START)) {
             if (i) {

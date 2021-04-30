@@ -26,7 +26,7 @@
 struct HwCh376
 {
     HardwareDevType dev;
-    x_size_t MsgLen;
+    x_size_t msg_len;
     int sem;
     KTaskDescriptorType task;
 };

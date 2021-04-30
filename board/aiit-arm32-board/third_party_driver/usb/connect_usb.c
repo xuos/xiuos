@@ -37,11 +37,11 @@ static uint32 UdiskCloseNewApi(void *dev)
 
 /*manage the usb device operations*/
 static const struct UsbDevDone dev_done =
-    {
-        .open = UdiskOpenNewApi,
-        .close = UdiskCloseNewApi,
-        .write = UdiskWirte_new_api,
-        .read = UdiskRead_new_api,
+{
+    .open = UdiskOpenNewApi,
+    .close = UdiskCloseNewApi,
+    .write = UdiskWirte_new_api,
+    .read = UdiskRead_new_api,
 };
 
 /*Init usb bus*/
@@ -107,7 +107,6 @@ int Stm32HwUsbInit(void)
     static struct UsbDriver usb_driver;
     memset(&usb_driver, 0, sizeof(struct UsbDriver));
 
-
     ret = BoardUsbBusInit(&usb_bus, &usb_driver);
     if (EOK != ret) {
         KPrintf("board_usb_Init error ret %u\n", ret);
@@ -115,7 +114,7 @@ int Stm32HwUsbInit(void)
     }
 
     ret = BoardUsbDevBend();
-    if (EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_usb_Init error ret %u\n", ret);
         return ERROR;
     }

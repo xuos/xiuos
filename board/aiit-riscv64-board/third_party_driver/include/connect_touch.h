@@ -26,15 +26,14 @@
 #include "gpio.h" 
 #include <sleep.h>
 
-#define TP_CLK             0
-#define TP_CS                1
-#define TP_MISO           2
-#define TP_PEN             3
-#define TP_MOSI           4
+#define TP_CLK    0
+#define TP_CS       1
+#define TP_MISO  2
+#define TP_PEN    3
+#define TP_MOSI  4
 
 #define TP_PRES_DOWN 0x80  
-#define TP_CATH_PRES 0x40  
-
+#define TP_CATH_PRES   0x40  
 
 //touch screen control struct
 typedef struct
@@ -52,7 +51,8 @@ typedef struct
 extern touch_device_info tp_dev;	 	
 
 //save data struct
-typedef struct {
+typedef struct 
+{
     int ty_xfac;
 	int ty_yfac;
     short x_pos;

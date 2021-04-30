@@ -86,7 +86,7 @@ struct TaskDyncSchedMember {
     uint8               bitmap_row;
 #endif
     uint32              bitmap_column;
-    delay_t             delay;
+    DelayType             delay;
 };
 typedef struct TaskDyncSchedMember TaskDyncSchedMembeType;
 

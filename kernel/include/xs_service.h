@@ -100,16 +100,16 @@ enum KernelService
     KS_USER_END
 
   };
-#define SERVICETABLE ((struct Kernel_Service*)SERVICE_TABLE_ADDRESS)
+#define SERVICETABLE ((struct KernelService*)SERVICE_TABLE_ADDRESS)
 #endif
 
 typedef uintptr_t (*kservice)(uint32_t knum,uintptr_t *param,uint8_t param_num);
-struct Kernel_Service
+struct KernelService
 {
 	const kservice fun;
     const uint8_t param_num;
 };
 
-extern struct Kernel_Service g_service_table[] ;
+extern struct KernelService g_service_table[] ;
 
 #endif

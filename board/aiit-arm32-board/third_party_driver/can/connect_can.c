@@ -33,15 +33,14 @@ Modification:
 
 static struct CanSendConfigure   can_send_deconfig = 
 {
-         .stdid = 0x12,
-         .exdid = 0x12,
-         .ide = 0 ,
-         .rtr = 0,
-         .data_lenth = 8
+    .stdid = 0x12,
+    .exdid = 0x12,
+    .ide = 0 ,
+    .rtr = 0,
+    .data_lenth = 8
 };
 
-
-static  void CanGPIOInit(void)
+static void CanGPIOInit(void)
 {
     CAN_FilterInitTypeDef  can1_filter;
     GPIO_InitTypeDef           gpio_initstructure;
@@ -63,14 +62,14 @@ static  void CanGPIOInit(void)
 
 static void Can1NvicConfig(void)
 {
-            NVIC_InitTypeDef can_nvic_config;
+    NVIC_InitTypeDef can_nvic_config;
 
-            can_nvic_config.NVIC_IRQChannel = CAN1_RX0_IRQn;
-            can_nvic_config.NVIC_IRQChannelPreemptionPriority = 2;
-            can_nvic_config.NVIC_IRQChannelSubPriority = 2;
-            can_nvic_config.NVIC_IRQChannelCmd = ENABLE;
-            CAN_ITConfig(CAN1, CAN_IT_FMP0, ENABLE);
-            NVIC_Init(&can_nvic_config);
+    can_nvic_config.NVIC_IRQChannel = CAN1_RX0_IRQn;
+    can_nvic_config.NVIC_IRQChannelPreemptionPriority = 2;
+    can_nvic_config.NVIC_IRQChannelSubPriority = 2;
+    can_nvic_config.NVIC_IRQChannelCmd = ENABLE;
+    CAN_ITConfig(CAN1, CAN_IT_FMP0, ENABLE);
+    NVIC_Init(&can_nvic_config);
 }
 
 static uint32 CanModeInit(void *drv, struct BusConfigureInfo *configure_info)
@@ -129,18 +128,17 @@ static uint32 CanSendMsg(void * dev , struct BusBlockWriteParam *write_param )
     tx_data.RTR     =  0;
     tx_data.DLC     =  write_param->size;
 
-    for(i = 0;i<tx_data.DLC;i++)
-    {
+    for(i = 0;i < tx_data.DLC;i ++) {
         tx_data.Data[i] = data[i];
     }
 
     messege_box = CAN_Transmit(CAN1,&tx_data);
 
-    while(CAN_TransmitStatus(CAN1,messege_box)==  CAN_TxStatus_Failed &&timer_count){
-                          timer_count--;
+    while (CAN_TransmitStatus(CAN1,messege_box)==  CAN_TxStatus_Failed &&timer_count) {
+        timer_count--;
     }
 
-    if(timer_count<=0){
+    if (timer_count<=0) {
         return ERROR;
     }
     return EOK;
@@ -152,16 +150,15 @@ static uint32 CanRecvMsg(void *dev , struct BusBlockReadParam *databuf)
     int  i;
     uint8  * buf  = (uint8 *)databuf->buffer;
     CanRxMsg msg;
-    if(CAN_MessagePending(CAN1, CAN_FIFO0) == 0)
+    if (CAN_MessagePending(CAN1, CAN_FIFO0) == 0)
         return 0;
     CAN_Receive(CAN1, CAN_FIFO0, &msg);
-    for(i = 0 ;i<msg.DLC ;i++)
+    for(i = 0 ;i < msg.DLC;i ++)
          buf[i] = msg.Data[i];
     databuf->size  =  msg.DLC ; 
 
     return msg.DLC;
 }
-
 
 static struct CanDevDone dev_done = 
 {
@@ -171,9 +168,7 @@ static struct CanDevDone dev_done =
     .read   = CanRecvMsg
 };
 
-
 static struct CanHardwareDevice dev;
-
 
 #ifdef  CAN_USING_INTERRUPT
 void CAN1_RX0_IRQHandler(void)
@@ -181,12 +176,11 @@ void CAN1_RX0_IRQHandler(void)
     CanRxMsg   rxmsg;
     int i = 0;
     CAN_Receive(CAN1, 0, &rxmsg);
-    for(i = 0;i<8;i++)
+    for (i = 0;i < 8;i ++)
           KPrintf("rxbuf [%d] = :%d",i,rxmsg.Data[i]);
 }
 DECLARE_HW_IRQ(CAN1_RX0_IRQn, CAN1_RX0_IRQHandler, NONE);
 #endif
-
 
 static int BoardCanBusInit(struct Stm32Can *stm32can_bus, struct CanDriver *can_driver)
 {
@@ -194,28 +188,27 @@ static int BoardCanBusInit(struct Stm32Can *stm32can_bus, struct CanDriver *can_
 
     /*Init the can bus */
     ret = CanBusInit(&stm32can_bus->can_bus, stm32can_bus->bus_name);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("Board_can_init canBusInit error %d\n", ret);
         return ERROR;
     }
 
     /*Init the can driver*/
     ret = CanDriverInit(can_driver, CAN_DRIVER_NAME);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("Board_can_init canDriverInit error %d\n", ret);
         return ERROR;
     }
+
     /*Attach the can driver to the can bus*/
     ret = CanDriverAttachToBus(CAN_DRIVER_NAME, stm32can_bus->bus_name);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("Board_can_init CanDriverAttachToBus error %d\n", ret);
         return ERROR;
     } 
 
     return ret;
 }
-
-
 
 static x_err_t HwCanDeviceAttach(const char *bus_name, const char *device_name)
 {
@@ -232,13 +225,13 @@ static x_err_t HwCanDeviceAttach(const char *bus_name, const char *device_name)
     can_device->dev_done = &dev_done;
 
      result = CanDeviceRegister(can_device, NONE, device_name);
-    if(EOK != result){
+    if (EOK != result) {
         KPrintf("board_can_init canDeviceInit device %s error %d\n", "can1", result);
         return ERROR;
     }  
 
     result = CanDeviceAttachToBus(device_name, bus_name);
-    if (result != EOK){
+    if (result != EOK) {
         SYS_ERR("%s attach to %s faild, %d\n", device_name, bus_name, result);
     }
 
@@ -248,7 +241,6 @@ static x_err_t HwCanDeviceAttach(const char *bus_name, const char *device_name)
 
     return result;
 }
-
 
 struct Stm32Can  can1;
 
@@ -269,13 +261,13 @@ struct Stm32Can  can1;
     
     ret = BoardCanBusInit(stm32_can_bus, &can_driver);
    
-    if(EOK != ret){
+    if (EOK != ret) {
       KPrintf(" can_bus_init %s error ret %u\n", stm32_can_bus->bus_name, ret);
       return ERROR;
     }
 
      ret  =  HwCanDeviceAttach(CAN_BUS_NAME_1,CAN_1_DEVICE_NAME_1);  
-    if(EOK != ret) {
+    if (EOK != ret) {
       KPrintf(" HwCanDeviceAttach %s error ret %u\n", stm32_can_bus->bus_name, ret);
       return ERROR;
     }

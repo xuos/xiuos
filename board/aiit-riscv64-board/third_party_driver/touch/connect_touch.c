@@ -32,8 +32,8 @@ touch_device_info tp_dev =
 	0,	  	 		
 };	
 
-unsigned  char  CMD_RDX=0XD0;
-unsigned  char CMD_RDY=0X90;
+unsigned  char  CMD_RDX = 0XD0;
+unsigned  char CMD_RDY = 0X90;
 
 TP_modify_save  modify_save = 
 {
@@ -56,7 +56,7 @@ void TouchWriteByte(unsigned char num)
 	}		 			    
 } 	
 
-unsigned short TP_Read_AD(unsigned char CMD)	  
+unsigned short TpReadAd(unsigned char CMD)	  
 { 	 
 	unsigned char count=0; 	  
 	unsigned short Num=0; 
@@ -87,13 +87,15 @@ unsigned short TP_Read_AD(unsigned char CMD)
 
 #define READ_TIMES           5 	
 #define LOST_VAL                 1	  
-unsigned short TP_Read_XOY(unsigned  char     xy)
+
+unsigned short TpReadXoy(unsigned  char     xy)
 {
 	unsigned short i, j;
 	unsigned short buf[READ_TIMES];
 	unsigned short sum=0;
 	unsigned short temp;
-	for (i=0;i<READ_TIMES;i++)buf[i]=TP_Read_AD(xy);		 		    
+	for (i=0;i<READ_TIMES;i++)
+        buf[i]=TpReadAd(xy);		 		    
 	for (i=0;i<READ_TIMES-1; i++) {
 		for (j=i+1;j<READ_TIMES;j++) {
 			if (buf[i]>buf[j]) {
@@ -104,16 +106,17 @@ unsigned short TP_Read_XOY(unsigned  char     xy)
 		}
 	}	  
 	sum=0;
-	for(i=LOST_VAL;i<READ_TIMES-LOST_VAL;i++)sum+=buf[i];
+	for(i=LOST_VAL;i<READ_TIMES-LOST_VAL;i++)
+        sum+=buf[i];
 	temp=sum/(READ_TIMES-2*LOST_VAL);
 	return temp;   
 } 
 
-unsigned char TP_Read_XY(unsigned short *x, unsigned short *y)
+unsigned char TpReadXy(unsigned short *x, unsigned short *y)
 {
 	unsigned  short    xtemp,ytemp;			 	 		  
-	xtemp=TP_Read_XOY(CMD_RDX);
-	ytemp=TP_Read_XOY(CMD_RDY);	  												   
+	xtemp=TpReadXoy(CMD_RDX);
+	ytemp=TpReadXoy(CMD_RDY);	  												   
 
 	*x=xtemp;
 	*y=ytemp;
@@ -122,10 +125,10 @@ unsigned char TP_Read_XY(unsigned short *x, unsigned short *y)
 
 uint32 TouchRead(void *dev, struct BusBlockReadParam *read_param)
 {
-    uint32   ret  = EOK;
+    uint32 ret = EOK;
     NULL_PARAM_CHECK(read_param);
-    struct TouchDataStandard   * data   =  ( struct TouchDataStandard*)read_param->buffer;
-	TP_Read_XY(&data->x,&data->y);
+    struct TouchDataStandard *data = ( struct TouchDataStandard*)read_param->buffer;
+	TpReadXy(&data->x,&data->y);
 	return ret;
 }
 
@@ -138,10 +141,10 @@ unsigned char TP_Read_XY_TWICE(unsigned short *x, unsigned short *y)
 {
 	unsigned short fir_x, fir_y, sec_x, sec_y;
  	unsigned char flag;    
-    flag = TP_Read_XY(&fir_x, &fir_y);   
+    flag = TpReadXy(&fir_x, &fir_y);   
     if (flag == 0)
         return(0);
-    flag = TP_Read_XY(&sec_x, &sec_y);	   
+    flag = TpReadXy(&sec_x, &sec_y);	   
     if (flag == 0)
         return(0);   
     if (((sec_x <= fir_x && fir_x < sec_x + band_error) || (fir_x <= sec_x && sec_x < fir_x + band_error))
@@ -182,9 +185,8 @@ struct TouchDevDone touch_dev_done =
 void TP_Init(void)
 {
     TouchConfigure(NONE,NONE);
-    while (1)
-	{
-	 	TP_Read_XY(&tp_dev.x, &tp_dev.y);
+    while (1) {
+	 	TpReadXy(&tp_dev.x, &tp_dev.y);
 		KPrintf("tp_dev.x = %8d    ***  tp_dev.y= %8d \r\n", tp_dev.x, tp_dev.y);
 		MdelayKTask(100);
 	}			 
@@ -201,7 +203,7 @@ unsigned short my_abs(unsigned short x1, unsigned short x2)
 struct RiscTouch
 {
     char *BusName;
-    struct TouchBus touchbus;
+    struct TouchBus touch_bus;
 };
 
 struct RiscTouch touch;
@@ -211,7 +213,7 @@ static int BoardTouchBusInit(struct RiscTouch *risc_touch_bus, struct TouchDrive
     x_err_t ret = EOK;
 
     /*Init the touch bus */
-    ret = TouchBusInit(&risc_touch_bus->touchbus, risc_touch_bus->BusName);
+    ret = TouchBusInit(&risc_touch_bus->touch_bus, risc_touch_bus->BusName);
     if (EOK != ret) {
         KPrintf("Board_touch_init touchBusInit error %d\n", ret);
         return ERROR;
@@ -270,7 +272,7 @@ int HwTouchBusInit(void)
 
     risc_touch = &touch;
     risc_touch->BusName = TOUCH_BUS_NAME_1;
-    risc_touch->touchbus.private_data = &touch;
+    risc_touch->touch_bus.private_data = &touch;
 
     TouchConfigure(NONE,NONE);
 

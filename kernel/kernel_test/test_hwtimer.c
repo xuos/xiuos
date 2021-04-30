@@ -59,7 +59,7 @@ void TimeoutCb(void* param){
     hwtimer_dev->hwtimer_param.repeat = 1;
     hwtimer_dev->hwtimer_param.period_millisecond = 3000;
     hwtimer_dev->hwtimer_param.cb_info.param = NULL;
-    hwtimer_dev->hwtimer_param.cb_info.TimeoutCb = TimeoutCb;
+    hwtimer_dev->hwtimer_param.cb_info.timeout_callback = timeout_callback;
 
     BusDevOpen(dev);
 

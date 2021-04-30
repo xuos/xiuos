@@ -49,7 +49,7 @@ static uint32 Ch376Configure(void *drv, struct BusConfigureInfo *configure_info)
 
 static int HwCh376RxInd(void *dev, x_size_t length)
 {
-    sdio.MsgLen += length;
+    sdio.msg_len += length;
     KSemaphoreAbandon(sdio.sem);
 
     return EOK;
@@ -115,9 +115,9 @@ static uint32 Ch376Read(void *dev, struct BusBlockReadParam *read_param)
 {
     if (KSemaphoreObtain(sdio.sem, WAITING_FOREVER) == EOK) {
         while(KSemaphoreObtain(sdio.sem, TICK_PER_SECOND) != -ETIMEOUT);
-        read_param->size = sdio.MsgLen;
+        read_param->size = sdio.msg_len;
         BusDevReadData(sdio.dev, read_param);
-        sdio.MsgLen = 0;
+        sdio.msg_len = 0;
     }
     
     return read_param->read_length;

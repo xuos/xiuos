@@ -24,7 +24,7 @@
 #include <xs_assign.h>
 
 #ifdef ARCH_SMP
-struct   Spin_Lockfileops  spinlock;
+struct   SpinLockfileOps  spinlock;
 /*
  * lock scheduler
  */
@@ -50,7 +50,7 @@ static void EnablePreempt(void)
     EnableLocalInterrupt(lock);
 }
 
- void InitSpinLock(  struct   Spin_Lockfileops  * spinlock)
+ void InitSpinLock(  struct   SpinLockfileOps  * spinlock)
 {
         InitHwSpinlock(&spinlock->node_lock.lock);
         spinlock->SPinLock = _SpinLock;
@@ -60,19 +60,19 @@ static void EnablePreempt(void)
 
 }
 
-void _SpinLock(struct   Spin_Lockfileops  * spinlock)
+void _SpinLock(struct   SpinLockfileOps  * spinlock)
 {
     DisablePreempt();
     HwLockSpinlock(&spinlock->node_lock.lock);
 }
 
-void _UnlockSpinLock(struct   Spin_Lockfileops  * spinlock)
+void _UnlockSpinLock(struct   SpinLockfileOps  * spinlock)
 {
     HwUnlockSpinlock(&spinlock->node_lock.lock);
     EnablePreempt();
 }
 
-x_base _SpinLockIrqSave(struct   Spin_Lockfileops  * spinlock)
+x_base _SpinLockIrqSave(struct   SpinLockfileOps  * spinlock)
 {
     x_base lock = 0;
 
@@ -84,7 +84,7 @@ x_base _SpinLockIrqSave(struct   Spin_Lockfileops  * spinlock)
     return lock;
 }
 
-void _UnlockSpinLockIrqRestore(struct   Spin_Lockfileops  * spinlock, x_base lock)
+void _UnlockSpinLockIrqRestore(struct   SpinLockfileOps  * spinlock, x_base lock)
 {
     HwUnlockSpinlock(&spinlock->node_lock.lock);
     EnableLocalInterrupt(lock);

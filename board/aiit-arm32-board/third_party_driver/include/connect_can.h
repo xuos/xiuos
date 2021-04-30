@@ -32,13 +32,10 @@ struct Stm32Can
 
     CAN_InitTypeDef init;
 
-
     uint8 can_flag;
     struct CanBus can_bus;
 };
 
-
 int Stm32HwCanBusInit(void);
-
 
 #endif

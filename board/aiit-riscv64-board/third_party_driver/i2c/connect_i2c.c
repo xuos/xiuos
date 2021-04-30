@@ -52,11 +52,11 @@ static I2cBusParam i2c_bus_param =
 
 #define SET_SDA(done, val)   done->SetSdaState(done->data, val)
 #define SET_SCL(done, val)   done->SetSclState(done->data, val)
-#define GET_SDA(done)        done->GetSdaState(done->data)
-#define GET_SCL(done)        done->GetSclState(done->data)
-#define SdaLow(done)        SET_SDA(done, 0)
-#define SdaHigh(done)       SET_SDA(done, 1)
-#define SclLow(done)          SET_SCL(done, 0)
+#define GET_SDA(done)          done->GetSdaState(done->data)
+#define GET_SCL(done)           done->GetSclState(done->data)
+#define SdaLow(done)             SET_SDA(done, 0)
+#define SdaHigh(done)            SET_SDA(done, 1)
+#define SclLow(done)               SET_SCL(done, 0)
 
 void I2cGpioInit(const I2cBusParam *bus_param)
 {

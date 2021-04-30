@@ -29,7 +29,7 @@
 
 static int GetWeekDay(int year, int month, int day)
 {
-	if (month==1||month==2){
+	if (month==1||month==2) {
 		year -=1;
 		month +=12;
 	}

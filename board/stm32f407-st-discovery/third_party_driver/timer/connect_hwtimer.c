@@ -47,11 +47,9 @@ void TIM2_IRQHandler(int irq_num, void *arg)
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     KPrintf("hwtimer 2 ... come ...\n");
 
-    if (ptim2_cb_info)
-    {
-        if (ptim2_cb_info->TimeoutCb)
-        {
-            ptim2_cb_info->TimeoutCb(ptim2_cb_info->param);
+    if (ptim2_cb_info) {
+        if (ptim2_cb_info->timeout_callback) {
+            ptim2_cb_info->timeout_callback(ptim2_cb_info->param);
         }
     }
 }
@@ -98,10 +96,10 @@ uint32 HwtimerClose(void *dev)
 /*manage the hwtimer device operations*/
 static const struct HwtimerDevDone dev_done =
 {
-        .open = HwtimerOpen,
-        .close = HwtimerClose,
-        .write = NONE,
-        .read = NONE,
+    .open = HwtimerOpen,
+    .close = HwtimerClose,
+    .write = NONE,
+    .read = NONE,
 };
 
 /*Init hwtimer bus*/
@@ -120,14 +118,14 @@ static int BoardHwtimerBusInit(struct HwtimerBus *hwtimer_bus, struct HwtimerDri
     /*Init the hwtimer driver*/
     hwtimer_driver->configure = NONE;
     ret = HwtimerDriverInit(hwtimer_driver, HWTIMER_DRIVER_NAME_2);
-    if (EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_hwtimer_init HwtimerDriverInit error %d\n", ret);
         return ERROR;
     }
 
     /*Attach the hwtimer driver to the hwtimer bus*/
     ret = HwtimerDriverAttachToBus(HWTIMER_DRIVER_NAME_2, HWTIMER_BUS_NAME_2);
-    if (EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_hwtimer_init USEDriverAttachToBus error %d\n", ret);
         return ERROR;
     }
@@ -147,13 +145,13 @@ static int BoardHwtimerDevBend(void)
     hwtimer_device_2.dev_done = &dev_done;
 
     ret = HwtimerDeviceRegister(&hwtimer_device_2, NONE, HWTIMER_2_DEVICE_NAME_2);
-    if (EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_hwtimer_init HWTIMERDeviceInit device %s error %d\n", HWTIMER_2_DEVICE_NAME_2, ret);
         return ERROR;
     }
 
     ret = HwtimerDeviceAttachToBus(HWTIMER_2_DEVICE_NAME_2, HWTIMER_BUS_NAME_2);
-    if (EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_hwtimer_init HwtimerDeviceAttachToBus device %s error %d\n", HWTIMER_2_DEVICE_NAME_2, ret);
         return ERROR;
     }
@@ -172,15 +170,14 @@ int Stm32HwTimerInit(void)
     static struct HwtimerDriver hwtimer_driver;
     memset(&hwtimer_driver, 0, sizeof(struct HwtimerDriver));
 
-
     ret = BoardHwtimerBusInit(&hwtimer_bus, &hwtimer_driver);
-    if (EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_hwtimer_Init error ret %u\n", ret);
         return ERROR;
     }
 
     ret = BoardHwtimerDevBend();
-    if (EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_hwtimer_Init error ret %u\n", ret);
         return ERROR;
     }

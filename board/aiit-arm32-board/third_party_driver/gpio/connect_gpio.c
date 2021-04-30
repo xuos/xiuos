@@ -55,7 +55,7 @@ struct PinIrq
 {
     uint8 port_source;
     uint8 pin_source;
-    enum IRQn irq_exti_Channel;
+    enum IRQn irq_exti_channel;
     uint32 exti_line;
 };
 
@@ -510,8 +510,7 @@ static int32 GpioConfigMode(int mode, const struct PinIndex* index)
 
 static __inline int32 Bit2Bitnum(uint32 bit)
 {
-    for (int i = 0; i < 32; i++)
-    {
+    for (int i = 0; i < 32; i++) {
         if ((1UL << i) == bit) {
             return i;
         }
@@ -521,10 +520,9 @@ static __inline int32 Bit2Bitnum(uint32 bit)
 
 static __inline int32 Bitno2Bit(uint32 bitno)
 {
-    if (bitno <= 32){
+    if (bitno <= 32) {
         return 1UL << bitno;
-    }
-    else{
+    } else {
         return 0;
     }
 }
@@ -533,7 +531,7 @@ static const struct PinIrq *GetPinIrq(uint16_t pin)
     static struct PinIrq irq;
     const struct PinIndex* index = GetPin(pin);
 
-    if (index == NONE){
+    if (index == NONE) {
         return NONE;
     }
 
@@ -542,35 +540,35 @@ static const struct PinIrq *GetPinIrq(uint16_t pin)
     irq.port_source = ((uint32_t)index->gpio - GPIOA_BASE) / (GPIOB_BASE - GPIOA_BASE);
     switch (irq.pin_source)
     {
-    case 0 : irq.irq_exti_Channel = EXTI0_IRQn;break;
-    case 1 : irq.irq_exti_Channel = EXTI1_IRQn;break;
-    case 2 : irq.irq_exti_Channel = EXTI2_IRQn;break;
-    case 3 : irq.irq_exti_Channel = EXTI3_IRQn;break;
-    case 4 : irq.irq_exti_Channel = EXTI4_IRQn;break;
-    case 5 :
-    case 6 :
-    case 7 :
-    case 8 :
-    case 9 : irq.irq_exti_Channel = EXTI9_5_IRQn;break;
-    case 10 :
-    case 11 :
-    case 12 :
-    case 13 :
-    case 14 :
-    case 15 : irq.irq_exti_Channel = EXTI15_10_IRQn;break;
-    default : return NONE;
+        case 0 : irq.irq_exti_channel = EXTI0_IRQn;break;
+        case 1 : irq.irq_exti_channel = EXTI1_IRQn;break;
+        case 2 : irq.irq_exti_channel = EXTI2_IRQn;break;
+        case 3 : irq.irq_exti_channel = EXTI3_IRQn;break;
+        case 4 : irq.irq_exti_channel = EXTI4_IRQn;break;
+        case 5 :
+        case 6 :
+        case 7 :
+        case 8 :
+        case 9 : irq.irq_exti_channel = EXTI9_5_IRQn;break;
+        case 10 :
+        case 11 :
+        case 12 :
+        case 13 :
+        case 14 :
+        case 15 : irq.irq_exti_channel = EXTI15_10_IRQn;break;
+        default : return NONE;
     }
 
     return &irq;
 };
+
 static int32 GpioIrqRegister(int32 pin, int32 mode, void (*hdr)(void *args), void *args)
 {
     const struct PinIndex* index = GetPin(pin);
     int32 irqindex = -1;
 
     irqindex = Bit2Bitnum(index->pin);
-    if (irqindex < 0 || irqindex >= ITEM_NUM(pin_irq_hdr_tab))
-    {
+    if (irqindex < 0 || irqindex >= ITEM_NUM(pin_irq_hdr_tab)) {
         return -ENONESYS;
     }
 
@@ -584,7 +582,7 @@ static int32 GpioIrqRegister(int32 pin, int32 mode, void (*hdr)(void *args), voi
         CriticalAreaUnLock(level);
         return EOK;
     }
-    if (pin_irq_hdr_tab[irqindex].pin != -1){
+    if (pin_irq_hdr_tab[irqindex].pin != -1) {
         CriticalAreaUnLock(level);
         return -EDEV_BUSY;
     }
@@ -603,7 +601,7 @@ static uint32 GpioIrqFree(int32 pin)
     int32 irqindex = -1;
 
     irqindex = Bit2Bitnum(index->pin);
-    if (irqindex < 0 || irqindex >= ITEM_NUM(pin_irq_hdr_tab)){
+    if (irqindex < 0 || irqindex >= ITEM_NUM(pin_irq_hdr_tab)) {
         return ENONESYS;
     }
 
@@ -630,17 +628,17 @@ static int32 GpioIrqEnable(x_base pin)
     EXTI_InitTypeDef exit_init_structure;
 
     irqindex = Bit2Bitnum(index->pin);
-    if (irqindex < 0 || irqindex >= ITEM_NUM(pin_irq_hdr_tab)){
+    if (irqindex < 0 || irqindex >= ITEM_NUM(pin_irq_hdr_tab)) {
         return -ENONESYS;
     }
     x_base level = CriticalAreaLock();
-    if (pin_irq_hdr_tab[irqindex].pin == -1){
+    if (pin_irq_hdr_tab[irqindex].pin == -1) {
         CriticalAreaUnLock(level);
         return -ENONESYS;
     }
 
     irq = GetPinIrq(pin);
-    if (irq == NONE){
+    if (irq == NONE) {
         CriticalAreaUnLock(level);
         return -ENONESYS;
     }
@@ -649,19 +647,19 @@ static int32 GpioIrqEnable(x_base pin)
     exit_init_structure.EXTI_Mode = EXTI_Mode_Interrupt;
     switch (pin_irq_hdr_tab[irqindex].mode)
     {
-    case GPIO_IRQ_EDGE_RISING:
-        exit_init_structure.EXTI_Trigger = EXTI_Trigger_Rising;
-        break;
-    case GPIO_IRQ_EDGE_FALLING:
-        exit_init_structure.EXTI_Trigger = EXTI_Trigger_Falling;
-        break;
-    case GPIO_IRQ_EDGE_BOTH:
-        exit_init_structure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
-        break;
+        case GPIO_IRQ_EDGE_RISING:
+            exit_init_structure.EXTI_Trigger = EXTI_Trigger_Rising;
+            break;
+        case GPIO_IRQ_EDGE_FALLING:
+            exit_init_structure.EXTI_Trigger = EXTI_Trigger_Falling;
+            break;
+        case GPIO_IRQ_EDGE_BOTH:
+            exit_init_structure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+            break;
     }
     exit_init_structure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&exit_init_structure);
-    NVIC_InitStructure.NVIC_IRQChannel = irq->irq_exti_Channel;
+    NVIC_InitStructure.NVIC_IRQChannel = irq->irq_exti_channel;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -724,7 +722,7 @@ static uint32 Stm32PinInit(void)
 {
     static x_bool PinInitFlag = RET_FALSE;
 
-    if(!PinInitFlag) {
+    if (!PinInitFlag) {
         RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
         PinInitFlag = RET_TRUE;
     }
@@ -742,15 +740,15 @@ static uint32 Stm32GpioDrvConfigure(void *drv, struct BusConfigureInfo *configur
 
     switch (configure_info->configure_cmd)
     {
-    case OPE_INT:
-        ret = Stm32PinInit();
-        break;    
-    case OPE_CFG:
-        param = (struct PinParam *)configure_info->private_data;
-        ret = Stm32PinConfigure(param);
-        break;
-    default:
-        break;
+        case OPE_INT:
+            ret = Stm32PinInit();
+            break;    
+        case OPE_CFG:
+            param = (struct PinParam *)configure_info->private_data;
+            ret = Stm32PinConfigure(param);
+            break;
+        default:
+            break;
     }
 
     return ret;
@@ -764,10 +762,9 @@ uint32 Stm32PinWrite(void *dev, struct BusBlockWriteParam *write_param)
     const struct PinIndex* index = GetPin(pinstat->pin);
     NULL_PARAM_CHECK(index);
 
-    if (GPIO_LOW == pinstat->val){
+    if (GPIO_LOW == pinstat->val) {
         GPIO_ResetBits(index->gpio, index->pin);
-    }
-    else{
+    } else {
         GPIO_SetBits(index->gpio, index->pin);
     }
     return EOK;
@@ -781,7 +778,7 @@ uint32 Stm32PinRead(void *dev, struct BusBlockReadParam *read_param)
     const struct PinIndex* index = GetPin(pinstat->pin);
     NULL_PARAM_CHECK(index);
     
-    if(GPIO_ReadInputDataBit(index->gpio, index->pin) == Bit_RESET) {
+    if (GPIO_ReadInputDataBit(index->gpio, index->pin) == Bit_RESET) {
         pinstat->val = GPIO_LOW;
     } else {
         pinstat->val = GPIO_HIGH;
@@ -804,7 +801,7 @@ int Stm32HwGpioInit(void)
     static struct PinBus pin;
 
     ret = PinBusInit(&pin, PIN_BUS_NAME);
-    if(ret != EOK){
+    if (ret != EOK) {
         KPrintf("gpio bus init error %d\n", ret);
         return ERROR;
     }
@@ -813,12 +810,12 @@ int Stm32HwGpioInit(void)
     drv.configure = &Stm32GpioDrvConfigure;
     
     ret = PinDriverInit(&drv, PIN_DRIVER_NAME, NONE);
-    if(ret != EOK){
+    if (ret != EOK) {
         KPrintf("pin driver init error %d\n", ret);
         return ERROR;
     }
     ret = PinDriverAttachToBus(PIN_DRIVER_NAME, PIN_BUS_NAME);
-    if(ret != EOK) {
+    if (ret != EOK) {
         KPrintf("pin driver attach error %d\n", ret);
         return ERROR;
     }
@@ -827,12 +824,12 @@ int Stm32HwGpioInit(void)
     dev.dev_done = &dev_done;
 
     ret = PinDeviceRegister(&dev, NONE, PIN_DEVICE_NAME);
-    if(ret != EOK) {
+    if (ret != EOK) {
         KPrintf("pin device register error %d\n", ret);
         return ERROR;
     }
     ret = PinDeviceAttachToBus(PIN_DEVICE_NAME, PIN_BUS_NAME);
-    if(ret != EOK) {
+    if (ret != EOK) {
         KPrintf("pin device register error %d\n", ret);
         return ERROR;
     }
@@ -843,8 +840,7 @@ int Stm32HwGpioInit(void)
 static __inline void PinIrqHdr(int irqno)
 {
     EXTI_ClearITPendingBit(Bitno2Bit(irqno));
-    if (pin_irq_hdr_tab[irqno].hdr)
-    {
+    if (pin_irq_hdr_tab[irqno].hdr) {
        pin_irq_hdr_tab[irqno].hdr(pin_irq_hdr_tab[irqno].args);
     }
 }
@@ -881,19 +877,19 @@ DECLARE_HW_IRQ(EXTI4_IRQn, EXTI4_IRQHandler, NONE);
 
 void EXTI9_5_IRQHandler(int irq_num, void *arg)
 {
-    if (EXTI_GetITStatus(EXTI_Line5) != RESET){
+    if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
         PinIrqHdr(5);
     }
-    if (EXTI_GetITStatus(EXTI_Line6) != RESET){
+    if (EXTI_GetITStatus(EXTI_Line6) != RESET) {
         PinIrqHdr(6);
     }
-    if (EXTI_GetITStatus(EXTI_Line7) != RESET){
+    if (EXTI_GetITStatus(EXTI_Line7) != RESET) {
         PinIrqHdr(7);
     }
-    if (EXTI_GetITStatus(EXTI_Line8) != RESET){
+    if (EXTI_GetITStatus(EXTI_Line8) != RESET) {
         PinIrqHdr(8);
     }
-    if (EXTI_GetITStatus(EXTI_Line9) != RESET){
+    if (EXTI_GetITStatus(EXTI_Line9) != RESET) {
         PinIrqHdr(9);
     }
 }
@@ -907,10 +903,10 @@ void EXTI15_10_IRQHandler(int irq_num, void *arg)
     if (EXTI_GetITStatus(EXTI_Line11) != RESET) {
         PinIrqHdr(11);
     }
-    if (EXTI_GetITStatus(EXTI_Line12) != RESET){
+    if (EXTI_GetITStatus(EXTI_Line12) != RESET) {
         PinIrqHdr(12);
     }
-    if (EXTI_GetITStatus(EXTI_Line13) != RESET){
+    if (EXTI_GetITStatus(EXTI_Line13) != RESET) {
         PinIrqHdr(13);
     }
     if (EXTI_GetITStatus(EXTI_Line14) != RESET) {

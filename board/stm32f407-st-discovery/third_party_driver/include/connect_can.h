@@ -21,6 +21,7 @@
 #ifndef CONNECT_CAN_H
 #define CONNECT_CAN_H
 
+#include <device.h>
 #include "hardware_can.h"
 
 #ifdef __cplusplus

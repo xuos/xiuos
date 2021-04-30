@@ -64,16 +64,16 @@ static uint32 WdtConfigure(void *drv, struct BusConfigureInfo *args)
 {
     switch (args->configure_cmd)
     {
-    case OPER_WDT_SET_TIMEOUT:
-        if (WdgSet((uint16_t)*(int *)args->private_data) != 0) {
+        case OPER_WDT_SET_TIMEOUT:
+            if (WdgSet((uint16_t)*(int *)args->private_data) != 0) {
+                return ERROR;
+            }
+            break;
+        case OPER_WDT_KEEPALIVE:
+            IWDG_ReloadCounter();
+            break;
+        default:
             return ERROR;
-        }
-        break;
-    case OPER_WDT_KEEPALIVE:
-        IWDG_ReloadCounter();
-        break;
-    default:
-        return ERROR;
     }
     return EOK;
 }
@@ -107,12 +107,12 @@ int HwWdtInit(void)
 
     drv.configure = WdtConfigure;
     ret = WdtDriverInit(&drv, WDT_DRIVER_NAME);
-    if(ret != EOK){
+    if (ret != EOK) {
         KPrintf("Watchdog driver init error %d\n", ret);
         return ERROR;
     }
     ret = WdtDriverAttachToBus(WDT_DRIVER_NAME, WDT_BUS_NAME);
-    if(ret != EOK){
+    if (ret != EOK) {
         KPrintf("Watchdog driver attach error %d\n", ret);
         return ERROR;
     }
@@ -120,12 +120,12 @@ int HwWdtInit(void)
     dev.dev_done = &dev_done;
 
     ret = WdtDeviceRegister(&dev, WDT_DEVICE_NAME);
-    if(ret != EOK){
+    if (ret != EOK) {
         KPrintf("Watchdog device register error %d\n", ret);
         return ERROR;
     }
     ret = WdtDeviceAttachToBus(WDT_DEVICE_NAME, WDT_BUS_NAME);
-    if(ret != EOK){
+    if (ret != EOK) {
         KPrintf("Watchdog device register error %d\n", ret);
         return ERROR;
     }

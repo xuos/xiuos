@@ -42,13 +42,11 @@ int FlashW25qxxSpiDeviceInit(void)
     tmpreg = RCC->AHB1ENR & RCC_AHB1ENR_GPIOBEN;
     (void)tmpreg;
 
-    if(EOK != HwSpiDeviceAttach(SPI_BUS_NAME_1, "spi1_dev0", GPIOB, GPIO_Pin_0))
-    {
+    if (EOK != HwSpiDeviceAttach(SPI_BUS_NAME_1, "spi1_dev0", GPIOB, GPIO_Pin_0)) {
         return ERROR;
     }
 
-    if(NONE == SpiFlashInit(SPI_BUS_NAME_1, "spi1_dev0", SPI_1_DRV_NAME, "W25Q64"))
-    {
+    if (NONE == SpiFlashInit(SPI_BUS_NAME_1, "spi1_dev0", SPI_1_DRV_NAME, "W25Q64")) {
         return ERROR;
     }
 

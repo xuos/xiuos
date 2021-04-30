@@ -29,7 +29,7 @@ extern "C" {
 
 struct HwtimerCallBackInfo
 {
-    void (*TimeoutCb) (void* param);
+    void (*timeout_callback) (void* param);
     void *param;
 };
 
