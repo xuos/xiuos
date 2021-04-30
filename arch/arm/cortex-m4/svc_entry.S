@@ -34,7 +34,6 @@ SVC_Entry:
     MOVEQ   r2, #0x01
     STMFD   r1!, {r2}
 #endif
-    //LDR     sp, =__stack_tp
     PUSH    {lr}
     BL		Svcall				/* R0=IRQ, R1=register save (msp) */
     POP     {lr}

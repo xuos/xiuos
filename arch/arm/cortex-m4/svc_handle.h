@@ -42,7 +42,6 @@
 #define REG_INT_R9              (7)  /* R9 */
 #define REG_INT_R10             (8)  /* R10 */
 #define REG_INT_R11             (9)  /* R11 */
-//#define REG_INT_EXC_RETURN      (10) /* EXC_RETURN */
 #else
 #define REG_INT_PRIMASK         (0)  /* PRIMASK */
 #define REG_INT_R4              (1)  /* R4 */
@@ -53,17 +52,7 @@
 #define REG_INT_R9              (6)  /* R9 */
 #define REG_INT_R10             (7)  /* R10 */
 #define REG_INT_R11             (8)  /* R11 */
-//#define REG_INT_EXC_RETURN      (9) /* EXC_RETURN */
 #endif
 
-#define EXC_RETURN_BASE          0xffffffe1
-
-
-#define EXC_RETURN_PROCESS_STACK (1 << 2)
-#define EXC_RETURN_THREAD_MODE   (1 << 3)
-#define EXC_RETURN_STD_CONTEXT   (1 << 4)
-
-#define EXC_RETURN_PRIVTHR     (EXC_RETURN_BASE | EXC_RETURN_STD_CONTEXT | EXC_RETURN_THREAD_MODE |EXC_RETURN_PROCESS_STACK)
-#define EXC_RETURN_UNPRIVTHR   (EXC_RETURN_BASE | EXC_RETURN_STD_CONTEXT | EXC_RETURN_THREAD_MODE |EXC_RETURN_PROCESS_STACK)
 
 #endif
