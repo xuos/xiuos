@@ -67,6 +67,7 @@ struct PingResult
     void *user_data;                             /* user-specific data */
 };
 
+#define NBIOT_ADAPTER_ID 0x02U
 #define ETHERNET_ADAPTER_ID 0x03U
 #define WIFI_ADAPTER_ID 0x04U
 #define fourG_ADAPTER_ID 0x05U

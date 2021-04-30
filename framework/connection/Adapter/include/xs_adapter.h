@@ -30,7 +30,7 @@
 enum AdapterType {
     ADAPTER_LORA = 0,       /* Lora */
     ADAPTER_4G ,            /* 4G */
-    ADAPTER_NBIOT ,         /* _NBIot */
+    ADAPTER_NBIOT ,         /* NBIot */
     ADAPTER_WIFI ,          /* WIFI */
     ADAPTER_ETHERNET ,      /* ETHERNET */
     ADAPTER_BLUETOOTH ,     /* BLUETOOTH */

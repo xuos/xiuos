@@ -389,14 +389,21 @@ static int ATAgentInit(ATAgentType agent)
 static int SerialBusCheck(struct ATAgent *agent, const char *device_name, struct SerialCfgParam *pserial_cfg)
 {
     int ret = EOK;
-	struct SerialDataCfg data_cfg;
-    memset(&data_cfg, 0, sizeof(struct SerialDataCfg));
 
 	agent->fd = open(device_name,O_RDWR);
 
-	data_cfg.serial_baud_rate = 57600;
-    ioctl(agent->fd, OPE_INT, &data_cfg);
+	if (!pserial_cfg) {
+        struct SerialDataCfg data_cfg;
+        memset(&data_cfg, 0, sizeof(struct SerialDataCfg));
+        data_cfg.serial_baud_rate = 57600;
+        ioctl(agent->fd, OPE_INT, &data_cfg);
 
+        return EOK;
+    }
+    
+    ioctl(agent->fd, OPE_INT, &pserial_cfg->data_cfg);
+
+    return EOK;
 }
 
 int InitATAgent(const char *agent_name, const char *device_name, uint32 maintain_max, struct SerialCfgParam *pserial_cfg)
@@ -415,7 +422,7 @@ int InitATAgent(const char *agent_name, const char *device_name, uint32 maintain
     }
 
     if (i >= AT_AGENT_MAX) {
-        printf("agent buffer(%d) is full .", AT_AGENT_MAX);
+        printf("agent buffer(%d) is full.", AT_AGENT_MAX);
         result = -ERROR;
         return result;
     }
