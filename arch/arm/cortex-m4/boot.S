@@ -42,12 +42,23 @@
   */
 
 /**
-* @file coreclock.c
+* @file boot.S
 * @brief derived from ST standard peripheral library
 * @version 1.0 
 * @author AIIT XUOS Lab
 * @date 2021-04-25
 */
+
+/*************************************************
+File name: boot.S
+Description: Reset and init function
+Others: 
+History: 
+1. Date: 2021-04-29
+Author: AIIT XUOS Lab
+Modification: 
+1. take startup_stm32f407xx.s for XiUOS
+*************************************************/
 
   .syntax unified
   .cpu cortex-m4

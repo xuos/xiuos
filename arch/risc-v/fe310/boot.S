@@ -17,9 +17,10 @@ History:
 1. Date: 2021-04-25
 Author: AIIT XUOS Lab
 Modification: 
-1. Modify entry function name
-2. Modify OS startup function
-3. Add interrupt entry function.
+1. See LICENSE details in xiuos/arch/risc-v/fe310/LICENSE
+2. Modify entry function name
+3. Modify OS startup function
+4. Add interrupt entry function.
 *************************************************/
 
 #include <sifive/smp.h>

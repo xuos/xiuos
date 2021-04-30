@@ -21,7 +21,7 @@ static void SvcDispatch(void)
 {
   __asm__ __volatile__
     (
-        " mov r12, sp\n"                /* Calculate (orig_SP - new_SP) */
+        " mov r12, sp\n"
         " sub r12, r12, #36\n"
         " and r12, r12, #7\n"
         " add r12, r12, #36\n"
@@ -56,14 +56,11 @@ void _svcall(uintptr_t* contex)
     switch (svc_number) {
     case 0:  //svc handler 
         tid->task_dync_sched_member.svc_return = contex[REG_INT_PC];
-        //tid->task_dync_sched_member.exc_return = contex[REG_INT_EXC_RETURN];
         tid->task_dync_sched_member.isolation_status = 1;
         contex[REG_INT_PC] = (uint32_t)SvcDispatch & ~1;
-        //contex[REG_INT_EXC_RETURN] = EXC_RETURN_PRIVTHR;
         break;
     case 1:   // svc return 
         contex[REG_INT_PC] = tid->task_dync_sched_member.svc_return;
-        //contex[REG_INT_EXC_RETURN] = tid->task_dync_sched_member.exc_return;
         tid->task_dync_sched_member.isolation_status = 0;
         break;
     default:
@@ -76,7 +73,6 @@ uintptr_t SvcHandle(uintptr_t *sp)
 {
     uint32_t service_num = 0;
     service_num = ((uint32_t) sp[0]);  //r0 
-    //KPrintf("SvcHandle service_num :%d\n ",service_num);
     uint8_t param_num =  g_service_table[service_num].param_num;
     uintptr_t *param = sp + 1;
     return g_service_table[service_num].fun(service_num,param,param_num) ;
@@ -86,7 +82,6 @@ uintptr_t SvcHandle(uintptr_t *sp)
 uint32_t GetTaskPrivilege(void){
     uint32_t unprivileg = 0;
     struct TaskDescriptor *task = GetKTaskDescriptor();
-    //KPrintf("GetTaskPrivilege : %s\n", task->task_base_info.name);
     if (task->task_dync_sched_member.isolation_flag == 1 && task->task_dync_sched_member.isolation_status == 0) {
        unprivileg = 1;
     } else {

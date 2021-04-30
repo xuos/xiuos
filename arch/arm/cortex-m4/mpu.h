@@ -26,7 +26,6 @@
 
 
 #define MPU_MAX_REGION_NUM       8
-#define MPU_SYS_REGION_RESERVER  8
 
 
 /* MPU Control Register Bit Definitions */

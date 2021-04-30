@@ -150,14 +150,11 @@ uint8 KTaskStackSetup(struct TaskDescriptor *task)
     StackContex->primask = 0x00000000L;
 #ifdef SEPARATE_COMPILE
     if(task->task_dync_sched_member.isolation_flag == 1 ) {
-        //StackContex->exc_ret = EXC_RETURN_UNPRIVTHR;
         StackContex->ExErrorStackContex.lr  = (unsigned long)USERSPACE->us_taskquit;
     } else {
-        //StackContex->exc_ret = EXC_RETURN_PRIVTHR;
         StackContex->ExErrorStackContex.lr  = (unsigned long)KTaskQuit; 
     }
 #else
-    //StackContex->exc_ret = EXC_RETURN_PRIVTHR;
     StackContex->ExErrorStackContex.lr  = (unsigned long)KTaskQuit; 
 #endif
 

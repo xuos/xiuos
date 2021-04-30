@@ -117,7 +117,6 @@ int8_t MpuAddRegion(void *task_mpu, x_base addr , size_t size , uint8_t type)
 
     l2size  = MpuLog2Ceil(size);
     addr = MPU_ALIGN(addr , 1 << l2size );
-    // KPrintf( "region:%d , size : 0x%08x, l2size: %d  , mpu_size : 0x%08x \n",region, size, l2size , MPU_RASR_REGION_SIZE(l2size) );
     mpu->region[region].config.rasr =  flag |MPU_RASR_REGION_SIZE(l2size)  | MPU_ENABLE;
     mpu->region[region].config.rbar =  addr | MPU_RBAR_VALID | region ;     //rbar must set region number
 
