@@ -128,13 +128,13 @@ make BOARD=hifive1-emulator
 
 ### 3.1 编译并安装Q‎EMU
 
-官网下载Q‎EMU源码编译安装，推荐使用[Q‎EMU v5.2.0](https://download.qemu.org/qemu-5.2.0.tar.xz)版本，如果官网下载速度慢，也可从下面链接下载Q‎EMU v5.2.0源码压缩包[下载地址](https://download.qemu.org/qemu-5.2.0.tar.xz)，用户可执行下面的命令进行下载并安装`QUME`。
+官网下载Q‎EMU源码编译安装，推荐使用[Q‎EMU v5.0.0](https://download.qemu.org/qemu-5.0.0.tar.xz)版本，如果官网下载速度慢，也可从下面链接下载Q‎EMU v5.0.0源码压缩包[下载地址](http://101.36.126.201:8011/qemu-5.0.0.tar.xz)，用户可执行下面的命令进行下载并安装`QEMU`。
 
 ```
-wget https://download.qemu.org/qemu-5.2.0.tar.xz
-tar -xvf qemu-5.2.0.tar.xz
+wget https://download.qemu.org/qemu-5.0.0.tar.xz
+tar -xvf qemu-5.0.0.tar.xz
 sudo apt  install   ninja-build libpixman-1-dev
-cd qemu-5.2.0
+cd qemu-5.0.0
 ./configure --target-list=riscv32-softmmu
 make
 sudo make install
