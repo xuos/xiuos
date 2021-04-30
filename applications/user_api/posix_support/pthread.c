@@ -18,7 +18,7 @@
 * @date:    2020/4/20
 *
 */
-
+#include<string.h>
 #include "include/pthread.h"
 
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
