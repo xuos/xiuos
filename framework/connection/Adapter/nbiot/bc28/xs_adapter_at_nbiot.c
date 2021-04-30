@@ -153,7 +153,7 @@ int NBIoTSocketCreate(struct AdapterAT *adapterAT, uint8_t socket_fd, uint8_t ty
         printf("error socket type \n");
         return -1 ;
     }
-    
+
     printf("cmd : %s\n", at_cmd);
     ATOrderSend(adapterAT->agent, REPLY_TIME_OUT, reply, at_cmd);
     MdelayKTask(3000);
@@ -180,7 +180,7 @@ __exit:
  * @param is_client - whether it is a client
  * @return success: EOK, failure: -ERROR
  */
-int NBIoTSocketConnect(struct AdapterAT *adapterAT , uint8_t socket_fd , struct ADDRESS_IPV4 dst_ip , uint16_t dst_port, uint8 is_client)
+int NBIoTSocketConnect(struct AdapterAT *adapterAT , uint8_t socket_fd , struct AddressIpv4 dst_ip , uint16_t dst_port, uint8 is_client)
 {
     int result;
 

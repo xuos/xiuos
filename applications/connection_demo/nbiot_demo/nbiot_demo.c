@@ -24,6 +24,8 @@
 #include <xs_adapter_manager.h>
 #include <xs_adapter_at_nbiot.h>
 
+extern void RegisterAdapterNBIoT(void);
+
 void NbiotEnable(void)
 {
     RegisterAdapterNBIoT();
@@ -39,7 +41,7 @@ void NbiotEnable(void)
     at_adapter->atdone.ATSocketCreate(at_adapter, 1, SOCKET_TYPE_STREAM, NET_TYPE_AF_INET);
     UserTaskDelay(1000);
 
-    struct ADDRESS_IPV4 addr;
+    struct AddressIpv4 addr;
     addr.ipv4 = IpTint("115.236.53.226");
     at_adapter->atdone.ATSocketConnect(at_adapter, 1, addr, 8989, 0);
 

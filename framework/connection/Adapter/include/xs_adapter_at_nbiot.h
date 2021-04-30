@@ -47,7 +47,7 @@ int NbiotOpen(struct Adapter *padapter);
 int NbiotSend(struct Adapter *padapter, const char* data, int len, bool block, int time_out, int delay, send_success cb, void* param, void* reserved);
 int NBIotRecv(struct Adapter *padapter, char *rev_buffer, int buffer_len, int time_out, bool block);
 
-int NBIoTSocketConnect(struct AdapterAT *adapterAT , uint8_t socket_fd , struct ADDRESS_IPV4 dst_ip , uint16_t dst_port, uint8 is_client);
+int NBIoTSocketConnect(struct AdapterAT *adapterAT , uint8_t socket_fd , struct AddressIpv4 dst_ip , uint16_t dst_port, uint8 is_client);
 int NBIoTSocketCreate(struct AdapterAT *adapterAT, uint8_t socket_fd, uint8_t type, uint8_t af_type );
 int NBIoTSocketClose(struct AdapterAT *adapterAT, uint8_t socket_fd );
 
