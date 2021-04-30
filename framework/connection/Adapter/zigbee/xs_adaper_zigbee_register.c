@@ -15,7 +15,7 @@
 * @brief:   register zigbee in initialization
 * @version: 1.0
 * @author:  AIIT XUOS Lab
-* @date:    2020/4/25
+* @date:    2021/4/30
 *
 */
 #include <xs_adapter_zigbee.h>

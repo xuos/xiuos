@@ -14,7 +14,7 @@
 #  @brief:   print image digit at command line
 #  @version: 1.0
 #  @author:  AIIT XUOS Lab
-#  @date:    2020/4/30
+#  @date:    2021/4/30
 # ==========================================================================================
 
 

@@ -15,7 +15,7 @@
 * @brief:   store digits in this file
 * @version: 1.0
 * @author:  AIIT XUOS Lab
-* @date:    2020/4/30
+* @date:    2021/4/30
 *
 */
 const float mnist_digit[] = {

@@ -15,7 +15,7 @@
 * @brief:   mnist function
 * @version: 1.0
 * @author:  AIIT XUOS Lab
-* @date:    2020/4/30
+* @date:    2021/4/30
 *
 */
 #include <xiuos.h>
