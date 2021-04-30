@@ -40,15 +40,14 @@ static uint32 SdioConfigure(void *drv, struct BusConfigureInfo *ConfigureInfo)
     NULL_PARAM_CHECK(drv);
     NULL_PARAM_CHECK(ConfigureInfo);
 
-    if(ConfigureInfo->configure_cmd == OPER_BLK_GETGEOME)
-    {
+    if (ConfigureInfo->configure_cmd == OPER_BLK_GETGEOME) {
         NULL_PARAM_CHECK(ConfigureInfo->private_data);
         struct DeviceBlockArrange *args = (struct DeviceBlockArrange *)ConfigureInfo->private_data;
         SD_GetCardInfo(&SDCardInfo);
 
         args->size_perbank = SDCardInfo.CardBlockSize;
         args->block_size = SDCardInfo.CardBlockSize;
-        if(SDCardInfo.CardType == SDIO_HIGH_CAPACITY_SD_CARD)
+        if (SDCardInfo.CardType == SDIO_HIGH_CAPACITY_SD_CARD)
             args->bank_num = (SDCardInfo.SD_csd.DeviceSize + 1)  * 1024;
         else
             args->bank_num = SDCardInfo.CardCapacity;
@@ -64,13 +63,11 @@ static uint32 SdioOpen(void *dev)
 {
     NULL_PARAM_CHECK(dev);
 
-    if(SDLock >= 0)
-    {
+    if (SDLock >= 0) {
         KSemaphoreDelete(SDLock);
     }
     SDLock = KSemaphoreCreate(1);
-    if (SDLock < 0)
-    {
+    if (SDLock < 0) {
         return ERROR;
     }
 
@@ -92,26 +89,22 @@ static uint32 SdioRead(void *dev, struct BusBlockReadParam *read_param)
 
     KSemaphoreObtain(SDLock, WAITING_FOREVER);
 
-    if(((uint32)read_param->buffer & 0x03) != 0)
-    {
+    if (((uint32)read_param->buffer & 0x03) != 0) {
         uint64_t sector;
         uint8_t* temp;
 
         sector = (uint64_t)read_param->pos * SDCARD_SECTOR_SIZE;
         temp = (uint8_t*)read_param->buffer;
 
-        for (uint8 i = 0; i < read_param->size; i++)
-        {
+        for (uint8 i = 0; i < read_param->size; i++) {
             ret = SD_ReadBlock((uint8_t *)SDBuffer, sector, 1);
-            if(ret != SD_OK)
-            {
+            if (ret != SD_OK) {
                 KPrintf("read failed: %d, buffer 0x%08x\n", ret, temp);
                 return 0;
             }
 #if defined (SD_DMA_MODE)
             ret = SD_WaitReadOperation();
-            if(ret != SD_OK)
-            {
+            if (ret != SD_OK) {
                 KPrintf("read failed: %d, buffer 0x%08x\n", ret, temp);
                 return 0;
             }
@@ -121,19 +114,15 @@ static uint32 SdioRead(void *dev, struct BusBlockReadParam *read_param)
             sector += SDCARD_SECTOR_SIZE;
             temp += SDCARD_SECTOR_SIZE;
         }
-    }
-    else
-    {
+    } else {
         ret = SD_ReadBlock((uint8_t *)read_param->buffer, (uint64_t)read_param->pos * SDCARD_SECTOR_SIZE, read_param->size);
-        if(ret != SD_OK)
-        {
+        if (ret != SD_OK) {
             KPrintf("read failed: %d, buffer 0x%08x\n", ret, (uint8_t *)read_param->buffer);
             return 0;
         }
 #if defined (SD_DMA_MODE)
         ret = SD_WaitReadOperation();
-        if(ret != SD_OK)
-        {
+        if (ret != SD_OK) {
             KPrintf("read failed: %d, buffer 0x%08x\n", ret, (uint8_t *)read_param->buffer);
             return 0;
         }
@@ -151,28 +140,24 @@ static uint32 SdioWrite(void *dev, struct BusBlockWriteParam *write_param)
 
     KSemaphoreObtain(SDLock, WAITING_FOREVER);
 
-    if(((uint32)write_param->buffer & 0x03) != 0)
-    {
+    if (((uint32)write_param->buffer & 0x03) != 0) {
         uint64_t sector;
         uint8_t* temp;
 
         sector = (uint64_t)write_param->pos * SDCARD_SECTOR_SIZE;
         temp = (uint8_t*)write_param->buffer;
 
-        for (uint8 i = 0; i < write_param->size; i++)
-        {
+        for (uint8 i = 0; i < write_param->size; i++) {
             memcpy(SDBuffer, temp, SDCARD_SECTOR_SIZE);
 
             ret = SD_WriteBlock((uint8_t *)SDBuffer, sector, 1);
-            if(ret != SD_OK)
-            {
+            if (ret != SD_OK) {
                 KPrintf("write failed: %d, buffer 0x%08x\n", ret, temp);
                 return 0;
             }
 #if defined (SD_DMA_MODE)
             ret = SD_WaitWriteOperation();
-            if(ret != SD_OK)
-            {
+            if (ret != SD_OK) {
                 KPrintf("write failed: %d, buffer 0x%08x\n", ret, temp);
                 return 0;
             }
@@ -180,19 +165,15 @@ static uint32 SdioWrite(void *dev, struct BusBlockWriteParam *write_param)
             sector += SDCARD_SECTOR_SIZE;
             temp += SDCARD_SECTOR_SIZE;
         }
-    }
-    else
-    {
+    } else {
         ret = SD_WriteBlock((uint8_t *)write_param->buffer, (uint64_t)write_param->pos * SDCARD_SECTOR_SIZE, write_param->size);
-        if(ret != SD_OK)
-        {
+        if (ret != SD_OK) {
             KPrintf("write failed: %d, buffer 0x%08x\n", ret, (uint8_t *)write_param->buffer);
             return 0;
         }
 #if defined (SD_DMA_MODE)
         ret = SD_WaitWriteOperation();
-        if(ret != SD_OK)
-        {
+        if (ret != SD_OK) {
             KPrintf("write failed: %d, buffer 0x%08x\n", ret, (uint8_t *)write_param->buffer);
             return 0;
         }
@@ -220,42 +201,36 @@ int HwSdioInit(void)
 
     x_err_t ret = EOK;
     ret = SD_Init();
-    if(ret != SD_OK)
-    {
+    if (ret != SD_OK) {
         KPrintf("SD init failed!"); 
         return ERROR;
     }
     
     ret = SdioBusInit(&bus, SDIO_BUS_NAME);
-    if(ret != EOK)
-    {
+    if (ret != EOK) {
         KPrintf("Sdio bus init error %d\n", ret);
         return ERROR;
     }
 
     ret = SdioDriverInit(&drv, SDIO_DRIVER_NAME);
-    if(ret != EOK)
-    {
+    if (ret != EOK) {
         KPrintf("Sdio driver init error %d\n", ret);
         return ERROR;
     }
     ret = SdioDriverAttachToBus(SDIO_DRIVER_NAME, SDIO_BUS_NAME);
-    if(ret != EOK)
-    {
+    if (ret != EOK) {
         KPrintf("Sdio driver attach error %d\n", ret);
         return ERROR;
     }
 
     dev.dev_done = &dev_done;
     ret = SdioDeviceRegister(&dev, SDIO_DEVICE_NAME);
-    if(ret != EOK)
-    {
+    if (ret != EOK) {
         KPrintf("Sdio device register error %d\n", ret);
         return ERROR;
     }
     ret = SdioDeviceAttachToBus(SDIO_DEVICE_NAME, SDIO_BUS_NAME);
-    if(ret != EOK)
-    {
+    if (ret != EOK) {
         KPrintf("Sdio device register error %d\n", ret);
         return ERROR;
     }

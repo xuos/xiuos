@@ -28,8 +28,8 @@
 extern "C" {
 #endif
 
-#define KERNEL_CONSOLE_BUS_NAME SERIAL_BUS_NAME_1
-#define KERNEL_CONSOLE_DRV_NAME SERIAL_DRV_NAME_1
+#define KERNEL_CONSOLE_BUS_NAME        SERIAL_BUS_NAME_1
+#define KERNEL_CONSOLE_DRV_NAME        SERIAL_DRV_NAME_1
 #define KERNEL_CONSOLE_DEVICE_NAME SERIAL_1_DEVICE_NAME_0
 
 struct UsartHwCfg
@@ -50,7 +50,7 @@ struct Stm32Usart
         x_size_t LastRecvIndex;
     } dma;
 
-    struct SerialBus SerialBus;
+    struct SerialBus serial_bus;
 };
 
 int Stm32HwUsartInit(void);

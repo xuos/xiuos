@@ -40,16 +40,13 @@ Modification:
 #include <sysctl.h>
 
 #ifdef BSP_USING_TOUCH
-   #include "connect_touch.h"
+#include "connect_touch.h"
 #endif
 
-void drv_lcd_clear(uint16_t color);
-void LCD_DrawLine(uint16 x1, uint16 y1, uint16 x2, uint16 y2,uint16 color);							
-void LCD_DrawRectangle(uint16 x1, uint16 y1, uint16 x2, uint16 y2,uint16 color);		   			
-void LCD_Draw_Circle(uint16 x0,uint16 y0,uint8 r,uint16 color);
+void DrvLcdClear(uint16_t color);
+void LcdDrawLine(uint16 x1, uint16 y1, uint16 x2, uint16 y2,uint16 color);							
+void LcdDrawRectangle(uint16 x1, uint16 y1, uint16 x2, uint16 y2,uint16 color);		   			
+void LcdDrawCircle(uint16 x0,uint16 y0,uint8 r,uint16 color);
 
-void LCD_ShowChar(uint16 x,uint16 y,uint8 num,uint8 size,uint16 color,uint16 back_color);
-void LCD_ShowString(uint16 x,uint16 y,uint16 width,uint16 height,uint8 size,uint8 *p,uint16 color,uint16 back_color);
-void Clear_handwriting (void);
 int HwLcdInit(void);
 #endif

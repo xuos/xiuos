@@ -32,8 +32,8 @@ static struct HwtimerCallBackInfo *ptim2_cb_info = NULL;
 int timer_callback(void *ctx) 
 {
     if (ptim2_cb_info) {
-        if (ptim2_cb_info->TimeoutCb) {
-            ptim2_cb_info->TimeoutCb(ptim2_cb_info->param);
+        if (ptim2_cb_info->timeout_callback) {
+            ptim2_cb_info->timeout_callback(ptim2_cb_info->param);
         }
     }
     return 0;

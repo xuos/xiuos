@@ -554,7 +554,7 @@ uintptr_t KsStatfs(uint32_t knum,uintptr_t *param, uint8_t num )
 }
 #endif
 
-struct Kernel_Service g_service_table[256]  __attribute__ ((section (".g_service_table"))) = 
+struct KernelService g_service_table[256]  __attribute__ ((section (".g_service_table"))) = 
 {
 	 [KS_USER_PRINT_INFO]           = { KsPrintInfo, 1 },
 

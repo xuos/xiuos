@@ -83,7 +83,7 @@ static uint32 RtcConfigure(void *drv, struct BusConfigureInfo *configure_info)
             rtc_timer_set_clock_count_value(1);
             rtc_timer_set_mode(RTC_TIMER_RUNNING);
 
-            if(rtc_timer_set(tm_new.tm_year+1900,tm_new.tm_mon+1,tm_new.tm_mday,
+            if (rtc_timer_set(tm_new.tm_year+1900,tm_new.tm_mon+1,tm_new.tm_mday,
                             tm_new.tm_hour,tm_new.tm_min,tm_new.tm_sec)==-1)
                 return ERROR;
         }

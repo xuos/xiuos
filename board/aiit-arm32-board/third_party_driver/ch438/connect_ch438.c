@@ -20,14 +20,14 @@
 
 #include <connect_ch438.h>
 
-static const uint8 offsetadd[] = {0x00,0x10,0x20,0x30,0x08,0x18,0x28,0x38,};		/* uart offset address*/
-static const uint8 Interruptnum[8] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,};	/* SSR register data*/
+static const uint8 offset_addr[] = {0x00,0x10,0x20,0x30,0x08,0x18,0x28,0x38,};		/* uart offset address*/
+static const uint8 interrupt_num[8] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,};	/* SSR register data*/
 static BusType ch438_pin;
-static int Ch438Sem = NONE;
+static int ch438_sem = NONE;
 
 static void Ch438Irq(void *parameter)
 {
-	KSemaphoreAbandon(Ch438Sem);
+	KSemaphoreAbandon(ch438_sem);
 }
 
 /**
@@ -43,8 +43,7 @@ static void Stm32Udelay(uint32 us)
 
     ticks = us * reload / (1000000 / TICK_PER_SECOND);
     told = SysTick->VAL;
-    while (1)
-    {
+    while (1) {
         tnow = SysTick->VAL;
         if (tnow != told) {
             if (tnow < told) {
@@ -612,14 +611,13 @@ void WriteCH438Data(uint8 addr, uint8 dat)
 ********************************************************************************************************/
 void WriteCH438Block(uint8 maddr, uint8 mlen, uint8 *mbuf)   
 {
-    while (mlen--) 	
-	{
+    while (mlen--) {
 		WriteCH438Data(maddr, *mbuf++);
 	}
 }
 
 /*********************************************************************************************************
-** Function name: CH438UartSend
+** Function name: Ch438UartSend
 ** Function: active FIFO mode, CH438 send multibyte data by uart 0, max length is 128 bytes a single time
 ** input: send data cache address, send data length
 **
@@ -631,15 +629,14 @@ void WriteCH438Block(uint8 maddr, uint8 mlen, uint8 *mbuf)
 ** date:
 **-------------------------------------------------------------------------------------------------------
 ********************************************************************************************************/
-void  CH438UartSend( uint8	ext_uart_no,uint8 *data, uint8 Num )
+void  Ch438UartSend( uint8	ext_uart_no,uint8 *data, uint8 Num )
 {
 	uint8 REG_LSR_ADDR,REG_THR_ADDR;
 	
-	REG_LSR_ADDR = offsetadd[ext_uart_no] | REG_LSR0_ADDR;
-	REG_THR_ADDR = offsetadd[ext_uart_no] | REG_THR0_ADDR;
+	REG_LSR_ADDR = offset_addr[ext_uart_no] | REG_LSR0_ADDR;
+	REG_THR_ADDR = offset_addr[ext_uart_no] | REG_THR0_ADDR;
 			
-    while (1)
-    {
+    while (1) {
         while((ReadCH438Data(REG_LSR_ADDR) & BIT_LSR_TEMT) == 0);    /* wait for sending data done, THR and TSR is NULL */
 
         if (Num <= 128) {
@@ -654,7 +651,7 @@ void  CH438UartSend( uint8	ext_uart_no,uint8 *data, uint8 Num )
 }
 
 /*********************************************************************************************************
-** Function name: CH438UARTRcv
+** Function name: Ch438UartRcv
 ** Function: forbidden FIFO mode, CH438 receive multibyte data from uart 0
 ** input: recv data address
 **
@@ -666,7 +663,7 @@ void  CH438UartSend( uint8	ext_uart_no,uint8 *data, uint8 Num )
 ** date:
 **-------------------------------------------------------------------------------------------------------
 ********************************************************************************************************/
-uint8 CH438UARTRcv(uint8 ext_uart_no, uint8 *buf, x_size_t size)
+uint8 Ch438UartRcv(uint8 ext_uart_no, uint8 *buf, x_size_t size)
 {
     uint8 rcv_num = 0;
 	uint8 dat = 0;
@@ -676,13 +673,12 @@ uint8 CH438UARTRcv(uint8 ext_uart_no, uint8 *buf, x_size_t size)
 	
 	read_buffer = buf;
 	
-	REG_LSR_ADDR = offsetadd[ext_uart_no] | REG_LSR0_ADDR;
-	REG_RBR_ADDR = offsetadd[ext_uart_no] | REG_RBR0_ADDR;
+	REG_LSR_ADDR = offset_addr[ext_uart_no] | REG_LSR0_ADDR;
+	REG_RBR_ADDR = offset_addr[ext_uart_no] | REG_RBR0_ADDR;
 			
 	while ((ReadCH438Data(REG_LSR_ADDR) & BIT_LSR_DATARDY) == 0);    /* wait for data is ready */
 
-    while (((ReadCH438Data(REG_LSR_ADDR) & BIT_LSR_DATARDY) == 0x01) && (size != 0))
-    {
+    while (((ReadCH438Data(REG_LSR_ADDR) & BIT_LSR_DATARDY) == 0x01) && (size != 0)) {
 		dat = ReadCH438Data(REG_RBR_ADDR);
 
 		*read_buffer = dat;
@@ -705,50 +701,42 @@ static void Timeout438Proc(void *parameter)
 {
 	uint8_t	rbr,lsr;
 	
-	while( ( ReadCH438Data( REG_LSR0_ADDR ) & BIT_LSR_DATARDY ) == 0x01 )
-	{
+	while( ( ReadCH438Data( REG_LSR0_ADDR ) & BIT_LSR_DATARDY ) == 0x01 ) {
 		rbr =  ReadCH438Data( REG_RBR0_ADDR );
 		KPrintf("0.RBR=%02x\r\n",rbr);
 	}
 
-	while( ( ReadCH438Data( REG_LSR1_ADDR ) & BIT_LSR_DATARDY ) == 0x01 )
-	{
+	while( ( ReadCH438Data( REG_LSR1_ADDR ) & BIT_LSR_DATARDY ) == 0x01 ) {
 		rbr =  ReadCH438Data( REG_RBR1_ADDR );
 		KPrintf("1.RBR=%02x\r\n",rbr);
 	}
 
-	while( ( ReadCH438Data( REG_LSR2_ADDR ) & BIT_LSR_DATARDY ) == 0x01 )
-	{
+	while( ( ReadCH438Data( REG_LSR2_ADDR ) & BIT_LSR_DATARDY ) == 0x01 ) {
 		rbr =  ReadCH438Data( REG_RBR2_ADDR );
 		KPrintf("2.RBR=%02x\r\n",rbr);
 	}
 
-	while( ( ReadCH438Data( REG_LSR3_ADDR ) & BIT_LSR_DATARDY ) == 0x01 )
-	{
+	while( ( ReadCH438Data( REG_LSR3_ADDR ) & BIT_LSR_DATARDY ) == 0x01 ) {
 		rbr =  ReadCH438Data( REG_RBR3_ADDR );
 		KPrintf("3.RBR=%02x\r\n",rbr);
 	}
 
-	while( ( ReadCH438Data( REG_LSR4_ADDR ) & BIT_LSR_DATARDY ) == 0x01 )
-	{
+	while( ( ReadCH438Data( REG_LSR4_ADDR ) & BIT_LSR_DATARDY ) == 0x01 ) {
 		rbr =  ReadCH438Data( REG_RBR4_ADDR );
 		KPrintf("4.RBR=%02x\r\n",rbr);
 	}
 
-	while( ( ReadCH438Data( REG_LSR5_ADDR ) & BIT_LSR_DATARDY ) == 0x01 )
-	{
+	while( ( ReadCH438Data( REG_LSR5_ADDR ) & BIT_LSR_DATARDY ) == 0x01 ) {
 		rbr =  ReadCH438Data( REG_RBR5_ADDR );
 		KPrintf("5.RBR=%02x\r\n",rbr);
 	}
 
-	while( ( ReadCH438Data( REG_LSR6_ADDR ) & BIT_LSR_DATARDY ) == 0x01 )
-	{
+	while( ( ReadCH438Data( REG_LSR6_ADDR ) & BIT_LSR_DATARDY ) == 0x01 ) {
 		rbr =  ReadCH438Data( REG_RBR6_ADDR );
 		KPrintf("6.RBR=%02x\r\n",rbr);
 	}
 
-	while( ( ReadCH438Data( REG_LSR7_ADDR ) & BIT_LSR_DATARDY ) == 0x01 )
-	{
+	while( ( ReadCH438Data( REG_LSR7_ADDR ) & BIT_LSR_DATARDY ) == 0x01 ) {
 		rbr =  ReadCH438Data( REG_RBR7_ADDR );
 		KPrintf("7.RBR=%02x\r\n",rbr);
 	}
@@ -804,7 +792,7 @@ void Set485Output(uint8 ch_no)
 	}
 }
 
-void CH438_PORT_INIT( uint8 ext_uart_no,uint32	BaudRate )
+void Ch438PortInit( uint8 ext_uart_no,uint32	BaudRate )
 {
 	uint32 div;
 	uint8 DLL,DLM,dlab;
@@ -818,15 +806,15 @@ void CH438_PORT_INIT( uint8 ext_uart_no,uint32	BaudRate )
 	uint8 REG_THR_ADDR;
 	uint8 REG_IIR_ADDR;
 	
-	REG_LCR_ADDR = offsetadd[ext_uart_no] | REG_LCR0_ADDR;
-	REG_DLL_ADDR = offsetadd[ext_uart_no] | REG_DLL0_ADDR;
-	REG_DLM_ADDR = offsetadd[ext_uart_no] | REG_DLM0_ADDR;
-	REG_IER_ADDR = offsetadd[ext_uart_no] | REG_IER0_ADDR;
-	REG_MCR_ADDR = offsetadd[ext_uart_no] | REG_MCR0_ADDR;
-	REG_FCR_ADDR = offsetadd[ext_uart_no] | REG_FCR0_ADDR;
-	REG_RBR_ADDR = offsetadd[ext_uart_no] | REG_RBR0_ADDR;
-	REG_THR_ADDR = offsetadd[ext_uart_no] | REG_THR0_ADDR;
-	REG_IIR_ADDR = offsetadd[ext_uart_no] | REG_IIR0_ADDR;
+	REG_LCR_ADDR = offset_addr[ext_uart_no] | REG_LCR0_ADDR;
+	REG_DLL_ADDR = offset_addr[ext_uart_no] | REG_DLL0_ADDR;
+	REG_DLM_ADDR = offset_addr[ext_uart_no] | REG_DLM0_ADDR;
+	REG_IER_ADDR = offset_addr[ext_uart_no] | REG_IER0_ADDR;
+	REG_MCR_ADDR = offset_addr[ext_uart_no] | REG_MCR0_ADDR;
+	REG_FCR_ADDR = offset_addr[ext_uart_no] | REG_FCR0_ADDR;
+	REG_RBR_ADDR = offset_addr[ext_uart_no] | REG_RBR0_ADDR;
+	REG_THR_ADDR = offset_addr[ext_uart_no] | REG_THR0_ADDR;
+	REG_IIR_ADDR = offset_addr[ext_uart_no] | REG_IIR0_ADDR;
 			
     WriteCH438Data(REG_IER_ADDR, BIT_IER_RESET);             /* reset the uart */
 	MdelayKTask(50);
@@ -869,15 +857,15 @@ void CH438PortInitParityCheck(uint8 ext_uart_no, uint32 BaudRate)
 	uint8 REG_THR_ADDR;
 	uint8 REG_IIR_ADDR;
 	
-	REG_LCR_ADDR = offsetadd[ext_uart_no] | REG_LCR0_ADDR;
-	REG_DLL_ADDR = offsetadd[ext_uart_no] | REG_DLL0_ADDR;
-	REG_DLM_ADDR = offsetadd[ext_uart_no] | REG_DLM0_ADDR;
-	REG_IER_ADDR = offsetadd[ext_uart_no] | REG_IER0_ADDR;
-	REG_MCR_ADDR = offsetadd[ext_uart_no] | REG_MCR0_ADDR;
-	REG_FCR_ADDR = offsetadd[ext_uart_no] | REG_FCR0_ADDR;
-	REG_RBR_ADDR = offsetadd[ext_uart_no] | REG_RBR0_ADDR;
-	REG_THR_ADDR = offsetadd[ext_uart_no] | REG_THR0_ADDR;
-	REG_IIR_ADDR = offsetadd[ext_uart_no] | REG_IIR0_ADDR;
+	REG_LCR_ADDR = offset_addr[ext_uart_no] | REG_LCR0_ADDR;
+	REG_DLL_ADDR = offset_addr[ext_uart_no] | REG_DLL0_ADDR;
+	REG_DLM_ADDR = offset_addr[ext_uart_no] | REG_DLM0_ADDR;
+	REG_IER_ADDR = offset_addr[ext_uart_no] | REG_IER0_ADDR;
+	REG_MCR_ADDR = offset_addr[ext_uart_no] | REG_MCR0_ADDR;
+	REG_FCR_ADDR = offset_addr[ext_uart_no] | REG_FCR0_ADDR;
+	REG_RBR_ADDR = offset_addr[ext_uart_no] | REG_RBR0_ADDR;
+	REG_THR_ADDR = offset_addr[ext_uart_no] | REG_THR0_ADDR;
+	REG_IIR_ADDR = offset_addr[ext_uart_no] | REG_IIR0_ADDR;
 			
     WriteCH438Data(REG_IER_ADDR, BIT_IER_RESET);             /* reset the uart */
 	MdelayKTask(50);
@@ -913,7 +901,7 @@ static uint32 Stm32Ch438Configure(struct SerialCfgParam *ext_serial_cfg)
 	switch (ext_serial_cfg->data_cfg.port_configure)
 	{
 		case PORT_CFG_INIT:
-			CH438_PORT_INIT(ext_serial_cfg->data_cfg.ext_uart_no, ext_serial_cfg->data_cfg.serial_baud_rate);
+			Ch438PortInit(ext_serial_cfg->data_cfg.ext_uart_no, ext_serial_cfg->data_cfg.serial_baud_rate);
 			break;
 		case PORT_CFG_PARITY_CHECK:
 			CH438PortInitParityCheck(ext_serial_cfg->data_cfg.ext_uart_no, ext_serial_cfg->data_cfg.serial_baud_rate);
@@ -1040,11 +1028,11 @@ static uint32 Stm32Ch438DrvConfigure(void *drv, struct BusConfigureInfo *configu
 
     switch (configure_info->configure_cmd)
     {
-    case OPE_INT:
-        ret = Stm32Ch438Init(serial_drv, ext_serial_cfg);
-        break;
-    default:
-        break;
+		case OPE_INT:
+			ret = Stm32Ch438Init(serial_drv, ext_serial_cfg);
+			break;
+		default:
+			break;
     }
 
     return ret;
@@ -1058,7 +1046,7 @@ static uint32 Stm32Ch438WriteData(void *dev, struct BusBlockWriteParam *write_pa
 	struct SerialHardwareDevice *serial_dev = (struct SerialHardwareDevice *)dev;
 	struct SerialDevParam *dev_param = (struct SerialDevParam *)serial_dev->haldev.private_data;
 
-	CH438UartSend(dev_param->ext_uart_no, (uint8 *)write_param->buffer, write_param->size);
+	Ch438UartSend(dev_param->ext_uart_no, (uint8 *)write_param->buffer, write_param->size);
 
 	return EOK;
 }
@@ -1088,7 +1076,7 @@ static uint32 Stm32Ch438ReadData(void *dev, struct BusBlockReadParam *read_param
 	struct SerialHardwareDevice *serial_dev = (struct SerialHardwareDevice *)dev;
 	struct SerialDevParam *dev_param = (struct SerialDevParam *)serial_dev->haldev.private_data;
 
-	result = KSemaphoreObtain(Ch438Sem, WAITING_FOREVER);
+	result = KSemaphoreObtain(ch438_sem, WAITING_FOREVER);
 	if (EOK == result) {
 		gInterruptStatus = ReadCH438Data(REG_SSR_ADDR);		
 		if (!gInterruptStatus) { 
@@ -1102,18 +1090,18 @@ static uint32 Stm32Ch438ReadData(void *dev, struct BusBlockReadParam *read_param
 			dat = ReadCH438Data(REG_IIR0_ADDR);	
 			dat = dat ;	
 		} else {
-			if (gInterruptStatus & Interruptnum[dev_param->ext_uart_no]) {   /* check which uart port triggers interrupt*/
-				REG_LCR_ADDR = offsetadd[dev_param->ext_uart_no] | REG_LCR0_ADDR;
-				REG_DLL_ADDR = offsetadd[dev_param->ext_uart_no] | REG_DLL0_ADDR;
-				REG_DLM_ADDR = offsetadd[dev_param->ext_uart_no] | REG_DLM0_ADDR;
-				REG_IER_ADDR = offsetadd[dev_param->ext_uart_no] | REG_IER0_ADDR;
-				REG_MCR_ADDR = offsetadd[dev_param->ext_uart_no] | REG_MCR0_ADDR;
-				REG_FCR_ADDR = offsetadd[dev_param->ext_uart_no] | REG_FCR0_ADDR;
-				REG_RBR_ADDR = offsetadd[dev_param->ext_uart_no] | REG_RBR0_ADDR;
-				REG_THR_ADDR = offsetadd[dev_param->ext_uart_no] | REG_THR0_ADDR;
-				REG_IIR_ADDR = offsetadd[dev_param->ext_uart_no] | REG_IIR0_ADDR;
-				REG_LSR_ADDR = offsetadd[dev_param->ext_uart_no] | REG_LSR0_ADDR;
-				REG_MSR_ADDR = offsetadd[dev_param->ext_uart_no] | REG_MSR0_ADDR;				
+			if (gInterruptStatus & interrupt_num[dev_param->ext_uart_no]) {   /* check which uart port triggers interrupt*/
+				REG_LCR_ADDR = offset_addr[dev_param->ext_uart_no] | REG_LCR0_ADDR;
+				REG_DLL_ADDR = offset_addr[dev_param->ext_uart_no] | REG_DLL0_ADDR;
+				REG_DLM_ADDR = offset_addr[dev_param->ext_uart_no] | REG_DLM0_ADDR;
+				REG_IER_ADDR = offset_addr[dev_param->ext_uart_no] | REG_IER0_ADDR;
+				REG_MCR_ADDR = offset_addr[dev_param->ext_uart_no] | REG_MCR0_ADDR;
+				REG_FCR_ADDR = offset_addr[dev_param->ext_uart_no] | REG_FCR0_ADDR;
+				REG_RBR_ADDR = offset_addr[dev_param->ext_uart_no] | REG_RBR0_ADDR;
+				REG_THR_ADDR = offset_addr[dev_param->ext_uart_no] | REG_THR0_ADDR;
+				REG_IIR_ADDR = offset_addr[dev_param->ext_uart_no] | REG_IIR0_ADDR;
+				REG_LSR_ADDR = offset_addr[dev_param->ext_uart_no] | REG_LSR0_ADDR;
+				REG_MSR_ADDR = offset_addr[dev_param->ext_uart_no] | REG_MSR0_ADDR;				
 							
 				InterruptStatus = ReadCH438Data( REG_IIR_ADDR ) & 0x0f;    /* read the status of the uart port*/
 
@@ -1125,7 +1113,7 @@ static uint32 Stm32Ch438ReadData(void *dev, struct BusBlockReadParam *read_param
 						break;
 					case INT_RCV_OVERTIME:	/* RECV OVERTIME INTERRUPT*/
 					case INT_RCV_SUCCESS:	/*  RECV INTERRUPT SUCCESSFULLY*/
-						rcv_num = CH438UARTRcv(dev_param->ext_uart_no, (uint8 *)read_param->buffer, read_param->size);
+						rcv_num = Ch438UartRcv(dev_param->ext_uart_no, (uint8 *)read_param->buffer, read_param->size);
 						read_param->read_length = rcv_num;
 						break;
 					case INT_RCV_LINES:		/* RECV LINES INTERRUPT */
@@ -1162,8 +1150,8 @@ static void Stm32Ch438InitDefault(struct SerialDriver *serial_drv)
 	configure_info.configure_cmd = OPE_CFG;
 	configure_info.private_data = (void *)&PinCfg;
 
-	Ch438Sem = KSemaphoreCreate(0);
-	if (Ch438Sem < 0) {
+	ch438_sem = KSemaphoreCreate(0);
+	if (ch438_sem < 0) {
 		KPrintf("Ch438InitDefault create sem failed .\n");
 		return ;
 	}
@@ -1375,21 +1363,21 @@ void CH438RegTest(unsigned char num)//for test
 {
 	uint8 dat;
 	
-	KPrintf("current test serilnum:  %02x \r\n",offsetadd[num]);
-	KPrintf("IER: %02x\r\n",ReadCH438Data(offsetadd[num] | REG_IER0_ADDR));//?IER
-	KPrintf("IIR: %02x\r\n",ReadCH438Data(offsetadd[num] | REG_IIR0_ADDR));//?IIR
-	KPrintf("LCR: %02x\r\n",ReadCH438Data(offsetadd[num] | REG_LCR0_ADDR));//?LCR
-	KPrintf("MCR: %02x\r\n",ReadCH438Data(offsetadd[num] | REG_MCR0_ADDR));//?MCR
-	KPrintf("LSR: %02x\r\n",ReadCH438Data(offsetadd[num] | REG_LSR0_ADDR));//?LSR
-	KPrintf("MSR: %02x\r\n",ReadCH438Data(offsetadd[num] | REG_MSR0_ADDR));//?MSR
-	KPrintf("FCR: %02x\r\n",ReadCH438Data(offsetadd[num] | REG_FCR0_ADDR));//?FCR
-	KPrintf("SSR: %02x\r\n",ReadCH438Data( offsetadd[num] | REG_SSR_ADDR ));//?SSR
+	KPrintf("current test serilnum:  %02x \r\n",offset_addr[num]);
+	KPrintf("IER: %02x\r\n",ReadCH438Data(offset_addr[num] | REG_IER0_ADDR));//?IER
+	KPrintf("IIR: %02x\r\n",ReadCH438Data(offset_addr[num] | REG_IIR0_ADDR));//?IIR
+	KPrintf("LCR: %02x\r\n",ReadCH438Data(offset_addr[num] | REG_LCR0_ADDR));//?LCR
+	KPrintf("MCR: %02x\r\n",ReadCH438Data(offset_addr[num] | REG_MCR0_ADDR));//?MCR
+	KPrintf("LSR: %02x\r\n",ReadCH438Data(offset_addr[num] | REG_LSR0_ADDR));//?LSR
+	KPrintf("MSR: %02x\r\n",ReadCH438Data(offset_addr[num] | REG_MSR0_ADDR));//?MSR
+	KPrintf("FCR: %02x\r\n",ReadCH438Data(offset_addr[num] | REG_FCR0_ADDR));//?FCR
+	KPrintf("SSR: %02x\r\n",ReadCH438Data( offset_addr[num] | REG_SSR_ADDR ));//?SSR
 	
-	KPrintf("SCR0: %02x\r\n",(unsigned short)ReadCH438Data(offsetadd[num] | REG_SCR0_ADDR));//?SCR
+	KPrintf("SCR0: %02x\r\n",(unsigned short)ReadCH438Data(offset_addr[num] | REG_SCR0_ADDR));//?SCR
 	dat = 0x55;
-	WriteCH438Data(offsetadd[num] | REG_SCR0_ADDR, dat);
-	KPrintf("SCR55: %02x\r\n",(unsigned short)ReadCH438Data(offsetadd[num] | REG_SCR0_ADDR));//?SCR
+	WriteCH438Data(offset_addr[num] | REG_SCR0_ADDR, dat);
+	KPrintf("SCR55: %02x\r\n",(unsigned short)ReadCH438Data(offset_addr[num] | REG_SCR0_ADDR));//?SCR
 	dat = 0xAA;
-	WriteCH438Data(offsetadd[num] | REG_SCR0_ADDR, dat);
-	KPrintf("SCRAA: %02x\r\n",(unsigned short)ReadCH438Data(offsetadd[num] | REG_SCR0_ADDR));//?SCR
+	WriteCH438Data(offset_addr[num] | REG_SCR0_ADDR, dat);
+	KPrintf("SCRAA: %02x\r\n",(unsigned short)ReadCH438Data(offset_addr[num] | REG_SCR0_ADDR));//?SCR
 }

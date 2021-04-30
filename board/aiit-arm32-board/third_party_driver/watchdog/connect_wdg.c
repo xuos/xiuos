@@ -65,16 +65,16 @@ static uint32 WdtConfigure(void *drv, struct BusConfigureInfo *args)
 {
     switch (args->configure_cmd)
     {
-    case OPER_WDT_SET_TIMEOUT:
-        if (WdgSet((uint16_t)*(int *)args->private_data) != 0) {
+        case OPER_WDT_SET_TIMEOUT:
+            if (WdgSet((uint16_t)*(int *)args->private_data) != 0) {
+                return ERROR;
+            }
+            break;
+        case OPER_WDT_KEEPALIVE:
+            IWDG_ReloadCounter();
+            break;
+        default:
             return ERROR;
-        }
-        break;
-    case OPER_WDT_KEEPALIVE:
-        IWDG_ReloadCounter();
-        break;
-    default:
-        return ERROR;
     }
     return EOK;
 }

@@ -95,7 +95,7 @@ static uint32 RtcConfigure(void *drv, struct BusConfigureInfo *configure_info)
 			rtc_date_structure.RTC_Date = tm_new.tm_mday;
 			rtc_date_structure.RTC_WeekDay = GetWeekDay(tm_new.tm_year+1900,tm_new.tm_mon+1,tm_new.tm_mday);
 			RTC_SetDate(RTC_Format_BIN, &rtc_date_structure);
-			if (tm_new.tm_hour > 11){
+			if (tm_new.tm_hour > 11) {
 				rtc_time_structure.RTC_H12 = RTC_H12_PM;
 			}
 			else{

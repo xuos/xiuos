@@ -25,9 +25,9 @@
 DECLARE_ID_MANAGER(k_mq_id_manager, ID_NUM_MAX);
 DoubleLinklistType k_mq_list = {&k_mq_list, &k_mq_list};
 
-struct mq_message
+struct MqMessage
 {
-    struct mq_message *next;
+    struct MqMessage *next;
 };
 
 static struct MsgQueue *GetMsgQueueById(int32 id)
@@ -195,7 +195,7 @@ static x_err_t _MsgQueueRecv(struct MsgQueue *mq,
     x_ubase lock = 0;
     uint32 tick_delta = 0;
     int32 timeout = 0;
-    struct mq_message *msg = NONE;
+    struct MqMessage *msg = NONE;
     struct TaskDescriptor *task = NONE;
 
     NULL_PARAM_CHECK(mq);

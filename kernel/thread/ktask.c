@@ -42,8 +42,8 @@ DoubleLinklistType xiaoshan_task_head ={&xiaoshan_task_head, &xiaoshan_task_head
 #define BITMAP_CACULATE_COLUMN_OFFSET(offset,n)     (offset = n / 8)
 #endif
 
-#define BITMAP_SETCOLUMN(column,offset)             (column = 1 << offset)
-#define BITMAP_SETROW(row,offset)                   (row    = 1 << offset)
+#define BITMAP_SETCOLUMN(column,offset)             (column = (1 << offset))
+#define BITMAP_SETROW(row,offset)                   (row = (1 << offset))
 #define BITLOWMASK_3BIT                             (0x7)
 
 

@@ -159,8 +159,7 @@ static uint32 SpiWriteData(struct SpiHardwareDevice *spi_dev, struct SpiDataStan
     uint8 device_master_id = dev_param->spi_dma_param->spi_master_id;
     uint8 cs_gpio_pin = dev_param->spi_slave_param->spi_cs_gpio_pin;
 
-    while (NONE != spi_datacfg)
-    {
+    while (NONE != spi_datacfg) {
         uint32_t * tx_buff = NONE;
         int i;
         x_ubase dummy = 0xFFFFFFFFU;
@@ -227,8 +226,7 @@ static uint32 SpiReadData(struct SpiHardwareDevice *spi_dev, struct SpiDataStand
     uint8 device_master_id = dev_param->spi_dma_param->spi_master_id;
     uint8 cs_gpio_pin = dev_param->spi_slave_param->spi_cs_gpio_pin;
 
-    while (NONE != spi_datacfg)
-    {
+    while (NONE != spi_datacfg) {
         uint32_t * rx_buff = NONE;
         int i;
         x_ubase dummy = 0xFFFFFFFFU;

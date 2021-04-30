@@ -29,10 +29,10 @@
  * shell cmd param：i2c device name,if null means default i2c device name
 */
 
-#define    HS_I2C_BUS_NAME                          I2C_BUS_NAME_1   /* I2C bus name */
-#define    HS_I2C_DEV_NAME                           I2C_1_DEVICE_NAME_0/* I2C device name */
-#define    HS_I2C_DRV_NAME                           I2C_DRV_NAME_1    /* I2C driver name */
-#define    ADDR                                                         0x44    /* slave address */
+#define HS_I2C_BUS_NAME     I2C_BUS_NAME_1           /* I2C bus name */
+#define HS_I2C_DEV_NAME     I2C_1_DEVICE_NAME_0/* I2C device name */
+#define HS_I2C_DRV_NAME     I2C_DRV_NAME_1           /* I2C driver name */
+#define ADDR                                  0x44                                      /* slave address */
 
 static struct Bus *i2c_bus = NONE;     /* I2C bus handle */
 

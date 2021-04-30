@@ -32,38 +32,31 @@ static void SerialCfgParamCheck(struct SerialCfgParam *serial_cfg_default, struc
     struct SerialDataCfg *data_cfg_default = &serial_cfg_default->data_cfg;
     struct SerialDataCfg *data_cfg_new = &serial_cfg_new->data_cfg;
 
-    if((data_cfg_default->serial_baud_rate != data_cfg_new->serial_baud_rate) && (data_cfg_new->serial_baud_rate))
-    {
+    if ((data_cfg_default->serial_baud_rate != data_cfg_new->serial_baud_rate) && (data_cfg_new->serial_baud_rate)) {
         data_cfg_default->serial_baud_rate = data_cfg_new->serial_baud_rate;
     }
 
-    if((data_cfg_default->serial_bit_order != data_cfg_new->serial_bit_order) && (data_cfg_new->serial_bit_order))
-    {
+    if ((data_cfg_default->serial_bit_order != data_cfg_new->serial_bit_order) && (data_cfg_new->serial_bit_order)) {
         data_cfg_default->serial_bit_order = data_cfg_new->serial_bit_order;
     }
 
-    if((data_cfg_default->serial_buffer_size != data_cfg_new->serial_buffer_size) && (data_cfg_new->serial_buffer_size))
-    {
+    if ((data_cfg_default->serial_buffer_size != data_cfg_new->serial_buffer_size) && (data_cfg_new->serial_buffer_size)) {
         data_cfg_default->serial_buffer_size = data_cfg_new->serial_buffer_size;
     }
 
-    if((data_cfg_default->serial_data_bits != data_cfg_new->serial_data_bits) && (data_cfg_new->serial_data_bits))
-    {
+    if ((data_cfg_default->serial_data_bits != data_cfg_new->serial_data_bits) && (data_cfg_new->serial_data_bits)) {
         data_cfg_default->serial_data_bits = data_cfg_new->serial_data_bits;
     }
 
-    if((data_cfg_default->serial_invert_mode != data_cfg_new->serial_invert_mode) && (data_cfg_new->serial_invert_mode))
-    {
+    if ((data_cfg_default->serial_invert_mode != data_cfg_new->serial_invert_mode) && (data_cfg_new->serial_invert_mode)) {
         data_cfg_default->serial_invert_mode = data_cfg_new->serial_invert_mode;
     }
 
-    if((data_cfg_default->serial_parity_mode != data_cfg_new->serial_parity_mode) && (data_cfg_new->serial_parity_mode))
-    {
+    if ((data_cfg_default->serial_parity_mode != data_cfg_new->serial_parity_mode) && (data_cfg_new->serial_parity_mode)) {
         data_cfg_default->serial_parity_mode = data_cfg_new->serial_parity_mode;
     }
 
-    if((data_cfg_default->serial_stop_bits != data_cfg_new->serial_stop_bits) && (data_cfg_new->serial_stop_bits))
-    {
+    if ((data_cfg_default->serial_stop_bits != data_cfg_new->serial_stop_bits) && (data_cfg_new->serial_stop_bits)) {
         data_cfg_default->serial_stop_bits = data_cfg_new->serial_stop_bits;
     }
 }
@@ -81,8 +74,7 @@ static uint32 SerialInit(struct SerialDriver *serial_drv, struct BusConfigureInf
     NULL_PARAM_CHECK(serial_drv);
     struct SerialCfgParam *serial_cfg = (struct SerialCfgParam *)serial_drv->private_data;
 
-    if(configure_info->private_data)
-    {
+    if (configure_info->private_data) {
         struct SerialCfgParam *serial_cfg_new = (struct SerialCfgParam *)configure_info->private_data;
         SerialCfgParamCheck(serial_cfg, serial_cfg_new);
     }
@@ -116,15 +108,15 @@ static uint32 SerialDrvConfigure(void *drv, struct BusConfigureInfo *configure_i
 
     switch (configure_info->configure_cmd)
     {
-    case OPE_INT:
-        ret = SerialInit(serial_drv, configure_info);
-        break;
-    case OPE_CFG:
-        serial_operation_cmd = *(int *)configure_info->private_data;
-        ret = SerialConfigure(serial_drv, serial_operation_cmd);
-        break;
-    default:
-        break;
+        case OPE_INT:
+            ret = SerialInit(serial_drv, configure_info);
+            break;
+        case OPE_CFG:
+            serial_operation_cmd = *(int *)configure_info->private_data;
+            ret = SerialConfigure(serial_drv, serial_operation_cmd);
+            break;
+        default:
+            break;
     }
 
     return ret;
@@ -178,24 +170,21 @@ static int BoardSerialBusInit(struct SerialBus *serial_bus, struct SerialDriver 
 
     /*Init the serial bus */
     ret = SerialBusInit(serial_bus, bus_name);
-    if(EOK != ret)
-    {
+    if (EOK != ret) {
         KPrintf("InitHwUart SerialBusInit error %d\n", ret);
         return ERROR;
     }
 
     /*Init the serial driver*/
     ret = SerialDriverInit(serial_driver, drv_name);
-    if(EOK != ret)
-    {
+    if (EOK != ret) {
         KPrintf("InitHwUart SerialDriverInit error %d\n", ret);
         return ERROR;
     }
 
     /*Attach the serial driver to the serial bus*/
     ret = SerialDriverAttachToBus(drv_name, bus_name);
-    if(EOK != ret)
-    {
+    if (EOK != ret) {
         KPrintf("InitHwUart SerialDriverAttachToBus error %d\n", ret);
         return ERROR;
     } 
@@ -209,15 +198,13 @@ static int BoardSerialDevBend(struct SerialHardwareDevice *serial_device, void *
     x_err_t ret = EOK;
 
     ret = SerialDeviceRegister(serial_device, serial_param, dev_name);
-    if(EOK != ret)
-    {
+    if (EOK != ret) {
         KPrintf("InitHwUart SerialDeviceInit device %s error %d\n", dev_name, ret);
         return ERROR;
     }  
 
     ret = SerialDeviceAttachToBus(dev_name, bus_name);
-    if(EOK != ret)
-    {
+    if (EOK != ret) {
         KPrintf("InitHwUart SerialDeviceAttachToBus device %s error %d\n", dev_name, ret);
         return ERROR;
     }  
@@ -258,15 +245,13 @@ int InitHwUart(void)
     serial_device.haldev.private_data = (void *)&serial_dev_param;
 
     ret = BoardSerialBusInit(&serial_bus, &serial_driver, SERIAL_BUS_NAME, SERIAL_DRV_NAME);
-    if(EOK != ret)
-    {
+    if (EOK != ret) {
         KPrintf("InitHwUart uarths error ret %u\n", ret);
         return ERROR;
     }
 
     ret = BoardSerialDevBend(&serial_device, (void *)&serial_cfg, SERIAL_BUS_NAME, SERIAL_DEVICE_NAME);
-    if(EOK != ret)
-    {
+    if (EOK != ret) {
         KPrintf("InitHwUart uarths error ret %u\n", ret);
         return ERROR;
     }    

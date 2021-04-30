@@ -49,11 +49,11 @@ static BusType pin;
 
 #define SET_SDA(done, val)   done->SetSdaState(done->data, val)
 #define SET_SCL(done, val)   done->SetSclState(done->data, val)
-#define GET_SDA(done)        done->GetSdaState(done->data)
-#define GET_SCL(done)        done->GetSclState(done->data)
-#define SdaLow(done)          SET_SDA(done, 0)
-#define SdaHigh(done)          SET_SDA(done, 1)
-#define SclLow(done)          SET_SCL(done, 0)
+#define GET_SDA(done)          done->GetSdaState(done->data)
+#define GET_SCL(done)          done->GetSclState(done->data)
+#define SdaLow(done)             SET_SDA(done, 0)
+#define SdaHigh(done)            SET_SDA(done, 1)
+#define SclLow(done)               SET_SCL(done, 0)
 
 static void I2cGpioInit(const I2cBusParam *bus_param)
 {
@@ -117,7 +117,6 @@ static void I2cGpioInit(const I2cBusParam *bus_param)
     i2c_sda_stat.val = GPIO_HIGH;
     write_param.buffer = (void *)&i2c_sda_stat;
     BusDevWriteData(pin->owner_haldev, &write_param);
-    
 }
 
 static void SetSdaState(void *data, uint8 sda_state)
@@ -192,8 +191,7 @@ static uint8 GetSclState(void *data)
 
     ticks = us * reload / (1000000 / TICK_PER_SECOND);
     told = SysTick->VAL;
-    while (1)
-    {
+    while (1) {
         tnow = SysTick->VAL;
         if (tnow != told) {
             if (tnow < told) {
@@ -227,8 +225,7 @@ static x_err_t I2cBusReset(const I2cBusParam *bus_param)
     int32 i = 0;
 
     if (GPIO_LOW == GetSdaState((void *)bus_param)) {
-        while (i++ < 9)
-        {
+        while (i++ < 9) {
             SetSclState((void *)bus_param,GPIO_HIGH);
             Stm32Udelay(100);
             SetSclState((void *)bus_param,GPIO_LOW);
@@ -258,13 +255,12 @@ static x_err_t SclHigh(struct I2cHalDrvDone *done)
 
     SET_SCL(done, 1);
 
-    if(!done->GetSclState)
+    if (!done->GetSclState)
         goto done;
 
     start = CurrentTicksGain();
-    while (!GET_SCL(done))
-    {
-        if((CurrentTicksGain() - start) > done->timeout)
+    while (!GET_SCL(done)) {
+        if ((CurrentTicksGain() - start) > done->timeout)
             return -ETIMEOUT;
         DelayKTask((done->timeout + 1) >> 1);
     }
@@ -310,7 +306,7 @@ static __inline x_bool I2cWaitack(struct I2cHalDrvDone *done)
      GET_SDA(done);    
     I2cDelay(done);
 
-    if(SclHigh(done) < 0) {
+    if (SclHigh(done) < 0) {
         KPrintf("wait ack timeout");
         return -ETIMEOUT;
     }
@@ -384,8 +380,7 @@ static x_size_t I2cSendBytes(struct I2cBus *bus, struct I2cDataStandard *msg)
     int32 count = msg->len;
     uint16 ignore_nack = msg->flags & I2C_IGNORE_NACK;
 
-    while (count > 0)
-    {
+    while (count > 0) {
         ret = I2cWriteb(bus, *ptr);
 
         if ((ret > 0) || (ignore_nack && (ret == 0))) {
@@ -431,8 +426,7 @@ static x_size_t I2cRecvBytes(struct I2cBus *bus, struct I2cDataStandard *msg)
     int32 count = msg->len;
     const uint32 flags = msg->flags;
 
-    while (count > 0)
-    {
+    while (count > 0) {
         val = I2cReadb(bus);
         if (val >= 0) {
             *ptr = val;
@@ -536,8 +530,7 @@ static uint32 I2cWriteData(struct I2cHardwareDevice *i2c_dev, struct I2cDataStan
     uint16 ignore_nack;
 
     I2cStart(done);
-    while (NONE != msg)
-    {
+    while (NONE != msg) {
         ignore_nack = msg->flags & I2C_IGNORE_NACK;
         if (!(msg->flags & I2C_NO_START)) {
             if (i) {
@@ -579,8 +572,7 @@ static uint32 I2cReadData(struct I2cHardwareDevice *i2c_dev, struct I2cDataStand
     uint16 ignore_nack;
 
     I2cStart(done);
-    while (NONE != msg)
-    {
+    while (NONE != msg) {
         ignore_nack = msg->flags & I2C_IGNORE_NACK;
         if (!(msg->flags & I2C_NO_START)) {
             if (i) {

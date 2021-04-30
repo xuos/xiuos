@@ -45,16 +45,16 @@ struct SpinLock
     HwSpinlock lock;
 };
 
-struct Spin_Lockfileops
-{                                                                                                                         //定义自旋锁
-    struct SpinLock node_lock;                                                    //原有的自旋锁结构体
-    void (*SPinLock)(struct Spin_Lockfileops  *spinlock);
-    void (*UnlockSpinLock)(struct Spin_Lockfileops  *spinlock);
-    void (*UnlockSpinLockIrqRestore)(struct Spin_Lockfileops  *spinlock, x_base level);
-    x_base (*SpinLockIrqSave)(struct Spin_Lockfileops  *spinlock);
+struct SpinLockfileOps
+{                                                                                                                //define spin lock
+    struct SpinLock node_lock;                                                    //last spin lock node struct
+    void (*SPinLock)(struct SpinLockfileOps  *spinlock);
+    void (*UnlockSpinLock)(struct SpinLockfileOps  *spinlock);
+    void (*UnlockSpinLockIrqRestore)(struct SpinLockfileOps  *spinlock, x_base level);
+    x_base (*SpinLockIrqSave)(struct SpinLockfileOps  *spinlock);
 };
 
-extern struct Spin_Lockfileops  spinlock;
+extern struct SpinLockfileOps  spinlock;
 extern HwSpinlock _CriticalLock;
 
 void InitHwSpinlock(HwSpinlock *lock);
@@ -82,11 +82,11 @@ void ExecSecondaryCpuIdleKtask(void);
 #ifdef ARCH_SMP
 struct SpinLock;
 
-void InitSpinLock(struct   Spin_Lockfileops  * spinlock);
-void _SpinLock(struct   Spin_Lockfileops  * spinlock);
-void _UnlockSpinLock(struct   Spin_Lockfileops  * spinlock);
-x_base _SpinLockIrqSave(struct   Spin_Lockfileops  * spinlock);
-void _UnlockSpinLockIrqRestore(struct Spin_Lockfileops  * spinlock, x_base level);
+void InitSpinLock(struct   SpinLockfileOps  * spinlock);
+void _SpinLock(struct   SpinLockfileOps  * spinlock);
+void _UnlockSpinLock(struct   SpinLockfileOps  * spinlock);
+x_base _SpinLockIrqSave(struct   SpinLockfileOps  * spinlock);
+void _UnlockSpinLockIrqRestore(struct SpinLockfileOps  * spinlock, x_base level);
 
 #else
 #define InitSpinLock(lock)                 /* nothing */

@@ -31,8 +31,8 @@
 extern "C" {
 #endif
 
-#define MERGE_FLAG(src, flag) *(src) |= flag
-#define CLEAR_FLAG(src, flag) *(src) &= ~flag
+#define MERGE_FLAG(src, flag) (*(src) |= flag)
+#define CLEAR_FLAG(src, flag)  (*(src) &= ~flag)
 
 extern struct Assign Assign;
 

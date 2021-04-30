@@ -39,7 +39,6 @@ HardwareDevType CanDeviceFind(const char *dev_name, enum DevType dev_type)
     DoubleLinklistType *node = NONE;
     DoubleLinklistType *head = &candev_linklist;
     for (node = head->node_next; node != head; node = node->node_next) {    
-   
         device = SYS_DOUBLE_LINKLIST_ENTRY(node, struct HardwareDev, dev_link);
         if ((!strcmp(device->dev_name, dev_name)) && (dev_type == device->dev_type)) {
             return device;

@@ -54,7 +54,7 @@ struct Stm32Spi
 {
     SPI_TypeDef *instance;
 
-    char *BusName;
+    char *bus_name;
 
     SPI_InitTypeDef init;
 
@@ -65,11 +65,11 @@ struct Stm32Spi
     }dma;
 
     uint8 spi_dma_flag;
-    struct SpiBus SpiBus;
+    struct SpiBus spi_bus;
 };
 
 int Stm32HwSpiInit(void);
-x_err_t HwSpiDeviceAttach(const char *BusName, const char *device_name, GPIO_TypeDef *cs_gpiox, uint16_t cs_gpio_pin);
+x_err_t HwSpiDeviceAttach(const char *bus_name, const char *device_name, GPIO_TypeDef *cs_gpiox, uint16_t cs_gpio_pin);
 
 #ifdef __cplusplus
 }

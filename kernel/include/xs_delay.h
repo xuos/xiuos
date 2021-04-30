@@ -30,13 +30,14 @@
 #define TASK_DELAY_INACTIVE 0
 #define TASK_DELAY_ACTIVE   1
 
-struct Delay {
+struct Delay 
+{
 	struct TaskDescriptor *task;
 	x_ticks_t ticks;
 	uint8 status;
 	DoubleLinklistType  link;
 };
-typedef  struct Delay *delay_t;
+typedef  struct Delay *DelayType;
 
 x_err_t KTaskSetDelay(struct TaskDescriptor *task, x_ticks_t ticks);
 x_err_t KTaskUnSetDelay(struct TaskDescriptor *task);

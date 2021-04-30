@@ -222,8 +222,7 @@ static uint32 SdHwInit(SpiSdDeviceType spi_sd_dev)
         SpiDevConfigureCs(&spi_sd_dev->spi_dev->haldev, 0, 1);
 
         SD_TIMEOUT(start_time, 3 * SPI_SD_TIMEOUT_NUM);
-    }
-    while(0x01 != g_sd_cmd_param.sd_respone_data[0]);
+    }while(0x01 != g_sd_cmd_param.sd_respone_data[0]);
 
     return EOK;
 }
@@ -268,8 +267,7 @@ static uint32 SdConfirmType(SpiSdDeviceType spi_sd_dev)
         }
 
         SD_TIMEOUT(start_time, 3 * SPI_SD_TIMEOUT_NUM);
-    }
-    while(0xAA != g_sd_cmd_param.sd_respone_data[4]);
+    }while(0xAA != g_sd_cmd_param.sd_respone_data[4]);
 
     return EOK;
 }

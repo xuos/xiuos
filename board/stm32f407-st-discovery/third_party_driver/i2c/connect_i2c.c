@@ -49,11 +49,11 @@ static BusType pin;
 
 #define SET_SDA(done, val)   done->SetSdaState(done->data, val)
 #define SET_SCL(done, val)   done->SetSclState(done->data, val)
-#define GET_SDA(done)        done->GetSdaState(done->data)
-#define GET_SCL(done)        done->GetSclState(done->data)
-#define SdaLow(done)          SET_SDA(done, 0)
+#define GET_SDA(done)          done->GetSdaState(done->data)
+#define GET_SCL(done)          done->GetSclState(done->data)
+#define SdaLow(done)           SET_SDA(done, 0)
 #define SdaHigh(done)          SET_SDA(done, 1)
-#define SclLow(done)          SET_SCL(done, 0)
+#define SclLow(done)             SET_SCL(done, 0)
 
 static void I2cGpioInit(const I2cBusParam *bus_param)
 {
@@ -192,8 +192,7 @@ static uint8 GetSclState(void *data)
 
     ticks = us * reload / (1000000 / TICK_PER_SECOND);
     told = SysTick->VAL;
-    while (1)
-    {
+    while (1) {
         tnow = SysTick->VAL;
         if (tnow != told) {
             if (tnow < told) {
@@ -227,8 +226,7 @@ static x_err_t I2cBusReset(const I2cBusParam *bus_param)
     int32 i = 0;
 
     if (GPIO_LOW == GetSdaState((void *)bus_param)) {
-        while (i++ < 9)
-        {
+        while (i++ < 9) {
             SetSclState((void *)bus_param,GPIO_HIGH);
             Stm32Udelay(100);
             SetSclState((void *)bus_param,GPIO_LOW);
@@ -384,8 +382,7 @@ static x_size_t I2cSendBytes(struct I2cBus *bus, struct I2cDataStandard *msg)
     int32 count = msg->len;
     uint16 ignore_nack = msg->flags & I2C_IGNORE_NACK;
 
-    while (count > 0)
-    {
+    while (count > 0) {
         ret = I2cWriteb(bus, *ptr);
 
         if ((ret > 0) || (ignore_nack && (ret == 0))) {
@@ -430,8 +427,7 @@ static x_size_t I2cRecvBytes(struct I2cBus *bus, struct I2cDataStandard *msg)
     int32 count = msg->len;
     const uint32 flags = msg->flags;
 
-    while (count > 0)
-    {
+    while (count > 0) {
         val = I2cReadb(bus);
         if (val >= 0) {
             *ptr = val;
@@ -529,8 +525,7 @@ static uint32 I2cWriteData(struct I2cHardwareDevice *i2c_dev, struct I2cDataStan
     uint16 ignore_nack;
 
     I2cStart(done);
-    while (NONE != msg)
-    {
+    while (NONE != msg) {
         ignore_nack = msg->flags & I2C_IGNORE_NACK;
         if (!(msg->flags & I2C_NO_START)) {
             if (i) {
@@ -573,8 +568,7 @@ static uint32 I2cReadData(struct I2cHardwareDevice *i2c_dev, struct I2cDataStand
     uint16 ignore_nack;
 
     I2cStart(done);
-    while (NONE != msg)
-    {
+    while (NONE != msg) {
         ignore_nack = msg->flags & I2C_IGNORE_NACK;
         if (!(msg->flags & I2C_NO_START)) {
             if (i) {
@@ -623,7 +617,7 @@ static int BoardI2cBusInit(struct I2cBus *i2c_bus, struct I2cDriver *i2c_driver)
     /*Init the i2c bus */
     i2c_bus->private_data = (void *)&i2c_hal_drv_done;
     ret = I2cBusInit(i2c_bus, I2C_BUS_NAME_1);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_i2c_init I2cBusInit error %d\n", ret);
         return ERROR;
     }
@@ -631,14 +625,14 @@ static int BoardI2cBusInit(struct I2cBus *i2c_bus, struct I2cDriver *i2c_driver)
     /*Init the i2c driver*/
     i2c_driver->private_data = (void *)&i2c_hal_drv_done;
     ret = I2cDriverInit(i2c_driver, I2C_DRV_NAME_1);
-    if(EOK != ret) {
+    if (EOK != ret) {
         KPrintf("board_i2c_init I2cDriverInit error %d\n", ret);
         return ERROR;
     }
 
     /*Attach the i2c driver to the i2c bus*/
     ret = I2cDriverAttachToBus(I2C_DRV_NAME_1, I2C_BUS_NAME_1);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_i2c_init I2cDriverAttachToBus error %d\n", ret);
         return ERROR;
     } 
@@ -656,13 +650,13 @@ static int BoardI2cDevBend(void)
     i2c_device0.i2c_dev_done = &i2c_dev_done;
 
     ret = I2cDeviceRegister(&i2c_device0, NONE, I2C_1_DEVICE_NAME_0);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_i2c_init I2cDeviceInit device %s error %d\n", I2C_1_DEVICE_NAME_0, ret);
         return ERROR;
     }  
 
     ret = I2cDeviceAttachToBus(I2C_1_DEVICE_NAME_0, I2C_BUS_NAME_1);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_i2c_init I2cDeviceAttachToBus device %s error %d\n", I2C_1_DEVICE_NAME_0, ret);
         return ERROR;
     }  
@@ -684,13 +678,13 @@ int Stm32HwI2cInit(void)
     I2cGpioInit(&i2c_bus_param);
 
     ret = BoardI2cBusInit(&i2c_bus, &i2c_driver);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_i2c_Init error ret %u\n", ret);
         return ERROR;
     }
 
     ret = BoardI2cDevBend();
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("board_i2c_Init error ret %u\n", ret);
         return ERROR;
     }   

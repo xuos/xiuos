@@ -199,7 +199,7 @@ static void DmaUartConfig(struct Stm32UsartDma *dma, USART_TypeDef *uart_device,
 
 static void DMAConfiguration(struct SerialHardwareDevice *serial_dev, USART_TypeDef *uart_device)
 {
-    struct Stm32Usart *serial = CONTAINER_OF(serial_dev->haldev.owner_bus, struct Stm32Usart, SerialBus);
+    struct Stm32Usart *serial = CONTAINER_OF(serial_dev->haldev.owner_bus, struct Stm32Usart, serial_bus);
     struct Stm32UsartDma *dma = &serial->dma; 
     struct SerialCfgParam *serial_cfg = (struct SerialCfgParam *)serial_dev->private_data;
 
@@ -229,7 +229,7 @@ static void SerialCfgParamCheck(struct SerialCfgParam *serial_cfg_default, struc
     struct SerialDataCfg *data_cfg_default = &serial_cfg_default->data_cfg;
     struct SerialDataCfg *data_cfg_new = &serial_cfg_new->data_cfg;
 
-    if((data_cfg_default->serial_baud_rate != data_cfg_new->serial_baud_rate) && (data_cfg_new->serial_baud_rate)){
+    if((data_cfg_default->serial_baud_rate != data_cfg_new->serial_baud_rate) && (data_cfg_new->serial_baud_rate)) {
         data_cfg_default->serial_baud_rate = data_cfg_new->serial_baud_rate;
     }
 
@@ -237,7 +237,7 @@ static void SerialCfgParamCheck(struct SerialCfgParam *serial_cfg_default, struc
         data_cfg_default->serial_bit_order = data_cfg_new->serial_bit_order;
     }
 
-    if((data_cfg_default->serial_buffer_size != data_cfg_new->serial_buffer_size) && (data_cfg_new->serial_buffer_size)){
+    if((data_cfg_default->serial_buffer_size != data_cfg_new->serial_buffer_size) && (data_cfg_new->serial_buffer_size)) {
         data_cfg_default->serial_buffer_size = data_cfg_new->serial_buffer_size;
     }
 
@@ -249,7 +249,7 @@ static void SerialCfgParamCheck(struct SerialCfgParam *serial_cfg_default, struc
         data_cfg_default->serial_invert_mode = data_cfg_new->serial_invert_mode;
     }
 
-    if((data_cfg_default->serial_parity_mode != data_cfg_new->serial_parity_mode) && (data_cfg_new->serial_parity_mode)){
+    if((data_cfg_default->serial_parity_mode != data_cfg_new->serial_parity_mode) && (data_cfg_new->serial_parity_mode)) {
         data_cfg_default->serial_parity_mode = data_cfg_new->serial_parity_mode;
     }
 
@@ -265,7 +265,7 @@ static uint32 Stm32SerialInit(struct SerialDriver *serial_drv, struct BusConfigu
     struct SerialCfgParam *serial_cfg = (struct SerialCfgParam *)serial_drv->private_data;
     struct UsartHwCfg *serial_hw_cfg = (struct UsartHwCfg *)serial_cfg->hw_cfg.private_data;
 
-    if(configure_info->private_data){
+    if (configure_info->private_data) {
         struct SerialCfgParam *serial_cfg_new = (struct SerialCfgParam *)configure_info->private_data;
         SerialCfgParamCheck(serial_cfg, serial_cfg_new);
     }
@@ -276,25 +276,21 @@ static uint32 Stm32SerialInit(struct SerialDriver *serial_drv, struct BusConfigu
 
     if (serial_cfg->data_cfg.serial_data_bits == DATA_BITS_8) {
         USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-    }
-    else if (serial_cfg->data_cfg.serial_data_bits == DATA_BITS_9) {
+    } else if (serial_cfg->data_cfg.serial_data_bits == DATA_BITS_9) {
         USART_InitStructure.USART_WordLength = USART_WordLength_9b;
     }
 
     if (serial_cfg->data_cfg.serial_stop_bits == STOP_BITS_1){
         USART_InitStructure.USART_StopBits = USART_StopBits_1;
-    }
-    else if (serial_cfg->data_cfg.serial_stop_bits == STOP_BITS_2){
+    } else if (serial_cfg->data_cfg.serial_stop_bits == STOP_BITS_2) {
         USART_InitStructure.USART_StopBits = USART_StopBits_2;
     }
 
-    if (serial_cfg->data_cfg.serial_parity_mode == PARITY_NONE){
+    if (serial_cfg->data_cfg.serial_parity_mode == PARITY_NONE) {
         USART_InitStructure.USART_Parity = USART_Parity_No;
-    }
-    else if (serial_cfg->data_cfg.serial_parity_mode == PARITY_ODD){
+    } else if (serial_cfg->data_cfg.serial_parity_mode == PARITY_ODD) {
         USART_InitStructure.USART_Parity = USART_Parity_Odd;
-    }
-    else if (serial_cfg->data_cfg.serial_parity_mode == PARITY_EVEN){
+    } else if (serial_cfg->data_cfg.serial_parity_mode == PARITY_EVEN) {
         USART_InitStructure.USART_Parity = USART_Parity_Even;
     }
 
@@ -352,7 +348,7 @@ static int Stm32SerialGetchar(struct SerialHardwareDevice *serial_dev)
     struct UsartHwCfg *serial_hw_cfg = (struct UsartHwCfg *)serial_cfg->hw_cfg.private_data;
 
     int ch = -1;
-    if (serial_hw_cfg->uart_device->SR & USART_FLAG_RXNE)      {
+    if (serial_hw_cfg->uart_device->SR & USART_FLAG_RXNE) {
         ch = serial_hw_cfg->uart_device->DR & 0xff;
     }
 
@@ -379,8 +375,7 @@ static void DmaRxDoneIsr(struct Stm32Usart *serial, struct SerialDriver *serial_
     struct SerialCfgParam *serial_cfg = (struct SerialCfgParam *)serial_drv->private_data;
     struct UsartHwCfg *serial_hw_cfg = (struct UsartHwCfg *)serial_cfg->hw_cfg.private_data;
 
-    if (DMA_GetFlagStatus(dma->RxStream, dma->RxFlag) != RESET)
-    {
+    if (DMA_GetFlagStatus(dma->RxStream, dma->RxFlag) != RESET) {
         x_base level = CriticalAreaLock();
 
         x_size_t recv_len = dma->SettingRecvLen - dma->LastRecvIndex;
@@ -399,17 +394,17 @@ static void UartIsr(struct Stm32Usart *serial, struct SerialDriver *serial_drv, 
     struct SerialCfgParam *serial_cfg = (struct SerialCfgParam *)serial_drv->private_data;
     struct UsartHwCfg *serial_hw_cfg = (struct UsartHwCfg *)serial_cfg->hw_cfg.private_data;
 
-    if(USART_GetITStatus(serial_hw_cfg->uart_device, USART_IT_RXNE) != RESET){
+    if (USART_GetITStatus(serial_hw_cfg->uart_device, USART_IT_RXNE) != RESET) {
         SerialSetIsr(serial_dev, SERIAL_EVENT_RX_IND);
         USART_ClearITPendingBit(serial_hw_cfg->uart_device, USART_IT_RXNE);
     }
-    if(USART_GetITStatus(serial_hw_cfg->uart_device, USART_IT_IDLE) != RESET){
+    if (USART_GetITStatus(serial_hw_cfg->uart_device, USART_IT_IDLE) != RESET) {
         DmaUartRxIdleIsr(serial_dev, dma, serial_hw_cfg->uart_device);
     }
-    if (USART_GetITStatus(serial_hw_cfg->uart_device, USART_IT_TC) != RESET){
+    if (USART_GetITStatus(serial_hw_cfg->uart_device, USART_IT_TC) != RESET) {
         USART_ClearITPendingBit(serial_hw_cfg->uart_device, USART_IT_TC);
     }
-    if (USART_GetFlagStatus(serial_hw_cfg->uart_device, USART_FLAG_ORE) == SET){
+    if (USART_GetFlagStatus(serial_hw_cfg->uart_device, USART_FLAG_ORE) == SET) {
         USART_ReceiveData(serial_hw_cfg->uart_device);
     }
 }
@@ -560,15 +555,15 @@ static uint32 Stm32SerialDrvConfigure(void *drv, struct BusConfigureInfo *config
 
     switch (configure_info->configure_cmd)
     {
-    case OPE_INT:
-        ret = Stm32SerialInit(serial_drv, configure_info);
-        break;
-    case OPE_CFG:
-        serial_operation_cmd = *(int *)configure_info->private_data;
-        ret = Stm32SerialConfigure(serial_drv, serial_operation_cmd);
-        break;
-    default:
-        break;
+        case OPE_INT:
+            ret = Stm32SerialInit(serial_drv, configure_info);
+            break;
+        case OPE_CFG:
+            serial_operation_cmd = *(int *)configure_info->private_data;
+            ret = Stm32SerialConfigure(serial_drv, serial_operation_cmd);
+            break;
+        default:
+            break;
     }
 
     return ret;
@@ -605,21 +600,21 @@ static int BoardSerialBusInit(struct SerialBus *serial_bus, struct SerialDriver 
 
     /*Init the serial bus */
     ret = SerialBusInit(serial_bus, bus_name);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("hw_serial_init SerialBusInit error %d\n", ret);
         return ERROR;
     }
 
     /*Init the serial driver*/
     ret = SerialDriverInit(serial_driver, drv_name);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("hw_serial_init SerialDriverInit error %d\n", ret);
         return ERROR;
     }
 
     /*Attach the serial driver to the serial bus*/
     ret = SerialDriverAttachToBus(drv_name, bus_name);
-    if(EOK != ret) {
+    if (EOK != ret) {
         KPrintf("hw_serial_init SerialDriverAttachToBus error %d\n", ret);
         return ERROR;
     } 
@@ -633,13 +628,13 @@ static int BoardSerialDevBend(struct SerialHardwareDevice *serial_device, void *
     x_err_t ret = EOK;
 
     ret = SerialDeviceRegister(serial_device, serial_param, dev_name);
-    if(EOK != ret) {
+    if (EOK != ret) {
         KPrintf("hw_serial_init SerialDeviceInit device %s error %d\n", dev_name, ret);
         return ERROR;
     }  
 
     ret = SerialDeviceAttachToBus(dev_name, bus_name);
-    if(EOK != ret) {
+    if (EOK != ret) {
         KPrintf("hw_serial_init SerialDeviceAttachToBus device %s error %d\n", dev_name, ret);
         return ERROR;
     }  
@@ -682,14 +677,14 @@ int Stm32HwUsartInit(void)
 
     NVIC_Configuration(serial_hw_cfg_1.irq);
 
-    ret = BoardSerialBusInit(&serial_1.SerialBus, &serial_driver_1, SERIAL_BUS_NAME_1, SERIAL_DRV_NAME_1);
-    if(EOK != ret){
+    ret = BoardSerialBusInit(&serial_1.serial_bus, &serial_driver_1, SERIAL_BUS_NAME_1, SERIAL_DRV_NAME_1);
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart1 error ret %u\n", ret);
         return ERROR;
     }
 
     ret = BoardSerialDevBend(&serial_device_1, (void *)&serial_cfg_1, SERIAL_BUS_NAME_1, SERIAL_1_DEVICE_NAME_0);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart1 error ret %u\n", ret);
         return ERROR;
     }    
@@ -723,14 +718,14 @@ int Stm32HwUsartInit(void)
 
     NVIC_Configuration(serial_hw_cfg_2.irq);
 
-    ret = BoardSerialBusInit(&serial_2.SerialBus, &serial_driver_2, SERIAL_BUS_NAME_2, SERIAL_DRV_NAME_2);
-    if(EOK != ret){
+    ret = BoardSerialBusInit(&serial_2.serial_bus, &serial_driver_2, SERIAL_BUS_NAME_2, SERIAL_DRV_NAME_2);
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart2 error ret %u\n", ret);
         return ERROR;
     }
 
     ret = BoardSerialDevBend(&serial_device_2, (void *)&serial_cfg_2, SERIAL_BUS_NAME_2, SERIAL_2_DEVICE_NAME_0);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart2 error ret %u\n", ret);
         return ERROR;
     }    
@@ -764,14 +759,14 @@ int Stm32HwUsartInit(void)
 
     NVIC_Configuration(serial_hw_cfg_3.irq);
 
-    ret = BoardSerialBusInit(&serial_3.SerialBus, &serial_driver_3, SERIAL_BUS_NAME_3, SERIAL_DRV_NAME_3);
-    if(EOK != ret){
+    ret = BoardSerialBusInit(&serial_3.serial_bus, &serial_driver_3, SERIAL_BUS_NAME_3, SERIAL_DRV_NAME_3);
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart3 error ret %u\n", ret);
         return ERROR;
     }
 
     ret = BoardSerialDevBend(&serial_device_3, (void *)&serial_cfg_3, SERIAL_BUS_NAME_3, SERIAL_3_DEVICE_NAME_0);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart3 error ret %u\n", ret);
         return ERROR;
     }    
@@ -805,14 +800,14 @@ int Stm32HwUsartInit(void)
 
     NVIC_Configuration(serial_hw_cfg_4.irq);
 
-    ret = BoardSerialBusInit(&serial_4.SerialBus, &serial_driver_4, SERIAL_BUS_NAME_4, SERIAL_DRV_NAME_4);
-    if(EOK != ret){
+    ret = BoardSerialBusInit(&serial_4.serial_bus, &serial_driver_4, SERIAL_BUS_NAME_4, SERIAL_DRV_NAME_4);
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart4 error ret %u\n", ret);
         return ERROR;
     }
 
     ret = BoardSerialDevBend(&serial_device_4, (void *)&serial_cfg_4, SERIAL_BUS_NAME_4, SERIAL_4_DEVICE_NAME_0);
-    if(EOK != ret) {
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart4 error ret %u\n", ret);
         return ERROR;
     }    
@@ -846,14 +841,14 @@ int Stm32HwUsartInit(void)
 
     NVIC_Configuration(serial_hw_cfg_5.irq);
 
-    ret = BoardSerialBusInit(&serial_5.SerialBus, &serial_driver_5, SERIAL_BUS_NAME_5, SERIAL_DRV_NAME_5);
-    if(EOK != ret){
+    ret = BoardSerialBusInit(&serial_5.serial_bus, &serial_driver_5, SERIAL_BUS_NAME_5, SERIAL_DRV_NAME_5);
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart5 error ret %u\n", ret);
         return ERROR;
     }
 
     ret = BoardSerialDevBend(&serial_device_5, (void *)&serial_cfg_5, SERIAL_BUS_NAME_5, SERIAL_5_DEVICE_NAME_0);
-    if(EOK != ret){
+    if (EOK != ret) {
         KPrintf("Stm32HwUsartInit usart5 error ret %u\n", ret);
         return ERROR;
     }    

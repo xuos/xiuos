@@ -30,9 +30,9 @@ static uint8 mempool[2048];
 static struct MemGather gm;
 static GatherMemType gm_d;
 
-#define TASK_PRIORITY      25
-#define TASK_STACK_SIZE    2048
-#define TASK_TIMESLICE     5
+#define TASK_PRIORITY           25
+#define TASK_STACK_SIZE     2048
+#define TASK_TIMESLICE        5
 
 /* thread control pointer */
 static int32 tid1;
@@ -284,9 +284,9 @@ void GatherblockLimitTest(char *name, int count, int blocksize){
 }
 
 #ifdef  ARCH_ARM
-#define     CACHE_COUNT  1024
+#define CACHE_COUNT  1024
 #else
-#define     CACHE_COUNT  8000
+#define CACHE_COUNT  8000
 #endif
 
 struct MemGather *pools[CACHE_COUNT];
