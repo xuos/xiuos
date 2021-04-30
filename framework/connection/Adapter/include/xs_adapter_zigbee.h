@@ -15,7 +15,7 @@
 * @brief:   head file
 * @version: 1.0
 * @author:  AIIT XUOS Lab
-* @date:    2020/4/25
+* @date:    2021/4/25
 *
 */
 #ifndef XS_ADAPTER_ZIGBEE_H

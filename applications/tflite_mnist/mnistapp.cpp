@@ -9,6 +9,15 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 * See the Mulan PSL v2 for more details.
 */
+
+/**
+* @file:    mnistapp.cpp
+* @brief:   mnist function
+* @version: 1.0
+* @author:  AIIT XUOS Lab
+* @date:    2021/4/30
+*
+*/
 #include <xiuos.h>
 
 #include "tensorflow/lite/micro/all_ops_resolver.h"

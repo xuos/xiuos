@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # ==========================================================================================
 # Copyright (c) 2020 AIIT XUOS Lab
 # XiOS is licensed under Mulan PSL v2.
@@ -8,8 +9,14 @@
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 # See the Mulan PSL v2 for more details.
+
+#  @file:    mnist-c-digit.py
+#  @brief:   print image digit at command line
+#  @version: 1.0
+#  @author:  AIIT XUOS Lab
+#  @date:    2021/4/30
 # ==========================================================================================
-#!/usr/bin/env python3
+
 
 import tensorflow as tf
 
