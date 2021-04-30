@@ -27,7 +27,7 @@
 #ifdef SEPARATE_COMPILE
 // #include <board.h>
 
-enum KernelService
+enum KernelServiceEnum
 { 
     KS_USER_PRINT_INFO = 0,
     KS_USER_TASK_CREATE , 
