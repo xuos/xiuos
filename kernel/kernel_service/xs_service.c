@@ -22,6 +22,9 @@
 #include <string.h>
 #include <xs_ktask.h>
 #include <xs_service.h>
+#include <xs_sem.h>
+#include <xs_memory.h>
+#include <xs_mutex.h>
 
 #ifdef FS_VFS
 #include <iot-vfs_posix.h>
