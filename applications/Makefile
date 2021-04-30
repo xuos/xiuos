@@ -25,9 +25,9 @@ ifeq ($(CONFIG_RESOURCES_SPI_SD), y)
 	SRC_FILES += spi_sd_card_mount.c
 endif
 
-# ifeq ($(CONFIG_CONNECTION_COMMUNICATION_BOOTSTART_LORA_NET_SAMPLE), y)
-# 	SRC_DIR += connection_demo/adhoc_lora_demo
-# endif
+ifeq ($(CONFIG_CONNECTION_COMMUNICATION_BOOTSTART_LORA_NET_SAMPLE), y)
+	SRC_DIR += connection_demo/adhoc_lora_demo
+endif
 
 ifeq ($(CONFIG_CONNECTION_COMMUNICATION_ZIGBEE), y)
 	SRC_DIR += connection_demo/zigbee_demo

@@ -26,6 +26,9 @@
 #ifdef CONNECTION_COMMUNICATION_ZIGBEE
 #include <xs_adapter_zigbee.h>
 #endif
+#ifdef CONNECTION_COMMUNICATION_LORA
+#include <xs_adapter_lora.h>
+#endif
 
 
 // Zigbee Adapter List
@@ -48,8 +51,7 @@ void* ZigbeeAdapterFind(char* name)
     DoubleLinklistType* phead = &zigbee_adapter_list;
     struct AdapterZigbee* padapter = NONE;
     
-    for(pnode = phead->node_next; pnode != phead; pnode = pnode->node_next)
-    {
+    for(pnode = phead->node_next; pnode != phead; pnode = pnode->node_next) {
         padapter = (struct AdapterZigbee*)SYS_DOUBLE_LINKLIST_ENTRY(pnode, struct Adapter, link);
         // KPrintf("ZigbeeReceiveDemo bbb\n"); 
         if (0 == strcmp(padapter->name, name)){
@@ -61,7 +63,37 @@ void* ZigbeeAdapterFind(char* name)
 }
 #endif
 
+// Lora Adapter List
+#ifdef CONNECTION_COMMUNICATION_LORA
+static DoubleLinklistType lora_adapter_list;
 
+void LoraAdapterInit()
+{
+    InitDoubleLinkList(&lora_adapter_list);
+}
+
+void LoraAdapterRegister(adapter_t padapter)
+{
+    DoubleLinkListInsertNodeAfter(&lora_adapter_list, &(padapter->link));
+}
+
+void* LoraAdapterFind(char* name)
+{
+    DoubleLinklistType* pnode = NONE;
+    DoubleLinklistType* phead = &lora_adapter_list;
+    struct AdapterLora* padapter = NONE;
+
+    for(pnode = phead->node_next; pnode != phead; pnode = pnode->node_next) {
+        padapter = (struct AdapterLora*)SYS_DOUBLE_LINKLIST_ENTRY(pnode, struct Adapter, link);
+
+        if (0 == strcmp(padapter->name, name)) {
+            return padapter;
+        }
+    }
+
+    return padapter;
+}
+#endif
 
 // AT Adapter List
 static DoubleLinklistType at_adapter_list;
@@ -86,8 +118,7 @@ void* ATAdapterFind(uint32 adapter_id)
     struct AdapterAT* padapter = NONE;
 
     
-    for(pnode = phead->node_next; pnode != phead; pnode = pnode->node_next)
-    {
+    for(pnode = phead->node_next; pnode != phead; pnode = pnode->node_next) {
         padapter = (struct AdapterAT*)SYS_DOUBLE_LINKLIST_ENTRY(pnode, struct AdapterAT, link);
 
         if (padapter->at_adapter_id == adapter_id){

@@ -1,9 +1,9 @@
 
 SRC_DIR := src
 
-# ifeq ($(CONFIG_CONNECTION_COMMUNICATION_LORA), y)
-# SRC_DIR += lora
-# endif
+ifeq ($(CONFIG_CONNECTION_COMMUNICATION_LORA), y)
+SRC_DIR += lora
+endif
 
 ifeq ($(CONFIG_CONNECTION_COMMUNICATION_ETHERNET), y)
 SRC_DIR += ethernet
