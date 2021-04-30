@@ -18,7 +18,7 @@
 * @date:    2021/4/30
 *
 */
-
+#include <xs_adapter_manager.h>
 #include "xs_adapter_zigbee.h"
 #include <user_api.h>
 #include <bus_serial.h>
@@ -32,7 +32,10 @@ int use_aiit = 1;
 #define SAMPLE_UART_NAME       "/dev/uart3_dev3"  
 int use_aiit = 0; 
 #endif
-
+#ifdef CONNECTION_COMMUNICATION_ZIGBEE_STM32
+#define SAMPLE_UART_NAME       "/dev/usart3_dev3"  
+int use_aiit = 0; 
+#endif
 
 static int serial_fd;
 static int32_t zigbeereceive;
@@ -74,8 +77,11 @@ int ZigbeeOpen(struct Adapter *padapter)
 int ZigbeeSend(struct Adapter *padapter, const char* data, int len, bool block, int time_out, int delay, send_success cb, void* param, void* reserved)
 {   
     write(serial_fd,data,strlen(data));
+
+
     return 0;
 }
+
 
 /*thread to read message from srial port*/
 void SerialThreadEntry(void *parameter)
@@ -129,34 +135,47 @@ int ZigbeeReceive(struct Adapter *padapter, char* rev_buffer, int buffer_len,int
 
 void ZigbeeSettingDemo(int argc, char *argv[])
 {
+    
+    adapter_t padapter = ZigbeeAdapterFind("zigbee");
+    if (NONE == padapter){
+        KPrintf("adapter find failed!\n");
+        return;
+    }
+    /*Open adapter*/
+    if (0 != padapter->done.NetAiitOpen(padapter)){
+        KPrintf("adapter open failed!\n");
+        return;
+    }
+
+    ZigbeeOpen(padapter);
     /*zigbee communication settings*/
     /*it can be changed if needed*/
     char *set0 = "+++";
     char *set1_1 = "AT+DEV=C"; /*set device type for coordinater*/
     char *set1_2 = "AT+DEV=E"; /*set device type for end device*/
     char *set2 = "AT+MODE=1"; /*device mode 1 : passthrough */
-    char *set3 = "AT+PANID=15D8"; /* set PANID*/
+    char *set3 = "AT+PANID=A1B2"; /* set PANID*/
     char *set4 = "AT+CH=11"; /* set channel*/
     char *set5 = "AT+EXIT";  /* exit AT mode*/
     write(serial_fd,set0,strlen(set0));
-
+    UserTaskDelay(1000);
     /*type something in the command line to set this zigbee as coordinater*/
     /*otherwise it is an end device*/
     if (argc == 2){
         write(serial_fd,set1_1,strlen(set1_1));
-        UserTaskDelay(500); /*zigbee needs some time to process input message*/ 
+        UserTaskDelay(1000); /*zigbee needs some time to process input message*/ 
     }else{
         write(serial_fd,set1_2,strlen(set1_2));
-        UserTaskDelay(500);
+        UserTaskDelay(1000);
     }
     write(serial_fd,set2,strlen(set2));
-    UserTaskDelay(500);
+    UserTaskDelay(1000);
     write(serial_fd,set3,strlen(set3));
-    UserTaskDelay(500);
+    UserTaskDelay(1000);
     write(serial_fd,set4,strlen(set4));
-    UserTaskDelay(500);
+    UserTaskDelay(1000);
     write(serial_fd,set5,strlen(set5));
-    UserTaskDelay(500);
+    UserTaskDelay(1000);
     printf("zigbee setting success!\n");
 }
 #ifndef SEPARATE_COMPILE
