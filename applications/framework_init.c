@@ -17,7 +17,7 @@ extern int SensorFrameworkInit(void);
 extern int RegisterAdapterEthernet(void);
 extern int RegisterAdapterWifi(void);
 extern int RegisterAdapterZigbee(void);
-extern int LORA_sx12xx_spi_device_init();
+extern int LoraSx12xxSpiDeviceInit();
 
 extern int D124VoiceInit(void);
 extern int Hs300xTemperatureInit(void);
@@ -94,7 +94,7 @@ static struct InitDesc connection_desc[] =
 #endif
 
 #ifdef CONNECTION_COMMUNICATION_LORA
-	{ "lora adpter", LORA_sx12xx_spi_device_init},
+	{ "lora adpter", LoraSx12xxSpiDeviceInit},
 #endif
 
 #ifdef CONNECTION_COMMUNICATION_ZIGBEE

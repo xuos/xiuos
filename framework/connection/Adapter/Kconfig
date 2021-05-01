@@ -1,7 +1,13 @@
 menuconfig CONNECTION_COMMUNICATION_WIFI
     bool "Enable Wifi"
     default n
-
+    
+menuconfig CONNECTION_COMMUNICATION_LORA
+bool "Enable LORA"
+default n
+if CONNECTION_COMMUNICATION_LORA
+source "$KERNEL_DIR/framework/connection/Adapter/lora/Kconfig"
+endif
 
 menuconfig CONNECTION_COMMUNICATION_ETHERNET
     bool "Enable Ethernet"

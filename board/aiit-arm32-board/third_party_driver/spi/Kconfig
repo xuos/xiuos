@@ -22,6 +22,45 @@ if BSP_USING_SPI2
     config SPI_2_DRV_NAME
         string "spi bus 2 driver name"
         default "spi2_drv"
+    menuconfig CONNECTION_COMMUNICATION_LORA_USING_SX1278
+    bool "Using spi lora SX1278"
+    default n
+    if CONNECTION_COMMUNICATION_LORA_USING_SX1278
+    config SX12XX_SPI_DEVICE_NAME
+        string "SX1278 device spi name"
+        default "spi2_dev0"
+    config SX12XX_DEVICE_NAME
+        string "SX1278 device name"
+        default "spi2_lora"
+
+    config CONNECTION_COMMUNICATION_LORA_SX12XX_RST_PIN
+        int
+        default 10
+
+    config CONNECTION_COMMUNICATION_LORA_SX12XX_DO0_PIN
+        int
+        default 10
+
+    config CONNECTION_COMMUNICATION_LORA_SX12XX_DO1_PIN
+        int
+        default 10
+
+    config CONNECTION_COMMUNICATION_LORA_SX12XX_DO2_PIN
+        int
+        default 10
+    
+    config CONNECTION_COMMUNICATION_LORA_SX12XX_DO3_PIN
+        int
+        default 10
+    
+    config CONNECTION_COMMUNICATION_LORA_SX12XX_DO4_PIN
+        int
+        default 10
+    
+    config CONNECTION_COMMUNICATION_LORA_SX12XX_DO5_PIN
+        int
+        default 10
+    endif
 endif
 
 config BSP_USING_SPI3

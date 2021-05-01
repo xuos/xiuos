@@ -44,6 +44,11 @@ menu "aiit-arm32-board feature"
                     string "wifi uart name"
                     default "/dev/usart3_dev3"
             endif
+            if CONNECTION_COMMUNICATION_LORA
+                config LORA_SPI_NAME
+                    string "lora spi name"
+                    default "/dev/spi2_lora"
+            endif
         endmenu
 
     endmenu

@@ -1,0 +1,30 @@
+#LORA adhoc configuration
+#Set same netID, and then join one adhoc net.
+
+menuconfig CONNECTION_COMMUNICATION_BOOTSTART_LORA_NET_SAMPLE
+    bool "use bootstart lora net sample"
+    default n
+
+    if CONNECTION_COMMUNICATION_BOOTSTART_LORA_NET_SAMPLE
+    menuconfig CONNECTION_COMMUNICATION_SET_AS_LORA_CLIENT
+        bool "set this as lora client "
+        default n
+
+        if CONNECTION_COMMUNICATION_SET_AS_LORA_CLIENT
+        config CONNECTION_COMMUNICATION_LORA_CLIENT_NAME 
+        string "config lora net client name"
+        default "lora_client_name0"
+
+        config CONNECTION_COMMUNICATION_LORA_CLIENT_PKG_COUNT
+        int "config lora send pkg count"
+        default 1000
+        endif
+
+    menuconfig CONNECTION_COMMUNICATION_SET_AS_LORA_GATEWAY
+        bool "set this as lora gateway"
+        default n
+
+    config CONNECTION_COMMUNICATION_LORA_NET_ID
+    string "config lora net ID"
+    default "intelligence grain"
+    endif

@@ -46,7 +46,11 @@ menu "aiit-riscv64-board feature"
                     string "wifi uart name"
                     default "/dev/uart3_dev3"
             endif
-
+            if CONNECTION_COMMUNICATION_LORA
+                config LORA_SPI_NAME
+                    string "lora spi name"
+                    default "/dev/spi1_lora"
+            endif
         endmenu
 
     endmenu
