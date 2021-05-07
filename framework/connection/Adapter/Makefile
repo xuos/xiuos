@@ -25,14 +25,8 @@ endif
 # SRC_DIR += 4G
 # endif
 
-# ifeq ($(CONFIG_CONNECTION_COMMUNICATION_BLUETOOTH), y)
-# SRC_DIR += bluetooth
-# endif
-
-# ifeq ($(CONFIG_CONNECTION_COMMUNICATION_RS485), y)
-# SRC_DIR += rs485
-# endif
-
-
+ifeq ($(CONFIG_CONNECTION_COMMUNICATION_BLUETOOTH), y)
+SRC_DIR += bluetooth
+endif
 
 include $(KERNEL_ROOT)/compiler.mk

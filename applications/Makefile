@@ -49,6 +49,10 @@ endif
 # 	SRC_DIR += connection_demo/4G_demo
 # endif
 
+ifeq ($(CONFIG_CONNECTION_COMMUNICATION_BLUETOOTH), y)
+	SRC_DIR += connection_demo/bluetooth_demo
+endif
+
 ifeq ($(CONFIG_APPLICATION_SENSOR),y)
 	SRC_DIR += sensor_app
 endif
