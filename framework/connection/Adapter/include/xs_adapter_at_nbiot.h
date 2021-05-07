@@ -25,7 +25,10 @@
 #include "xs_adapter_at.h"
 #include "xs_adapter_at_agent.h"
 #include "xs_adapter_def.h"
-#include "../../../applications/user_api/switch_api/user_api.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <user_api.h>
 
 #define MAX_SOCKET_NUM 8 
 

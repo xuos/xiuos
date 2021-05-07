@@ -28,8 +28,6 @@ extern void RegisterAdapterNBIoT(void);
 
 void NbiotEnable(void)
 {
-    RegisterAdapterNBIoT();
-
     struct AdapterAT* at_adapter =  ATAdapterFind(NBIOT_ADAPTER_ID);
 
     UserTaskDelay(5000);
