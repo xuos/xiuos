@@ -26,7 +26,7 @@ Author: AIIT XUOS Lab
 Modification: Use malloc, realloc, calloc and free functions
 *************************************************/
 
-#include "../user_api/switch_api/user_api.h"
+#include <user_api.h>
 
 void *_malloc_r (struct _reent *ptr, size_t size)
 {
