@@ -156,8 +156,11 @@ int NBIoTSocketCreate(struct AdapterAT *adapterAT, uint8_t socket_fd, uint8_t ty
 
     printf("cmd : %s\n", at_cmd);
     ATOrderSend(adapterAT->agent, REPLY_TIME_OUT, reply, at_cmd);
-    MdelayKTask(3000);
-    printf("bak : %s\n", adapterAT->agent->maintain_buffer);
+    UserTaskDelay(3000);
+    printf("bak : ");
+    for(int i = 0; i < strlen(reply->reply_buffer); i++)
+        printf(" 0x%02x", reply->reply_buffer[i]);
+    printf("\n");
 
     struct Socket (*socketlist)[MAX_SOCKET_NUM] = &adapterAT->socket;
     memset(socketlist[socket_fd], 0, sizeof(struct Socket));
@@ -219,7 +222,7 @@ int NBIoTSocketConnect(struct AdapterAT *adapterAT , uint8_t socket_fd , struct 
 
     printf("cmd : %s\n", at_cmd);
     ATOrderSend(adapterAT->agent, REPLY_TIME_OUT, reply, at_cmd);
-    MdelayKTask(300);
+    UserTaskDelay(300);
     
     socketlist[socket_fd]->dst_ip = dst_ip;
     socketlist[socket_fd]->dst_port = dst_port;
@@ -267,7 +270,7 @@ int NBIoTSocketClose(struct AdapterAT *adapterAT, uint8_t socket_fd )
 
     printf("cmd : %s\n", at_cmd);
     ATOrderSend(adapterAT->agent, REPLY_TIME_OUT, reply, at_cmd);
-    MdelayKTask(300);
+    UserTaskDelay(300);
 
     memset(socketlist[socket_fd], 0, sizeof(struct Socket));
 
@@ -325,7 +328,7 @@ int NbiotSend(struct Adapter *padapter, const char* data, int len, bool block, i
 
     printf("cmd : %s\n", at_cmd);
     ATOrderSend(adapterAT->agent, REPLY_TIME_OUT, reply, at_cmd);
-    MdelayKTask(300);
+    UserTaskDelay(300);
 
 __exit:
     if (reply) {
