@@ -654,7 +654,7 @@ static char *const bus_type_str[] =
     "Unknown"
 };
 
-static DriverType showBusFindDriver(struct Bus *bus)
+static DriverType ShowBusFindDriver(struct Bus *bus)
 {
     struct Driver *driver = NONE;
 
@@ -670,9 +670,12 @@ static DriverType showBusFindDriver(struct Bus *bus)
 
 long ShowBus(void)
 {
-    ListGetNext_t find_arg;
-    DoubleLinklistType *obj_list[LIST_FIND_OBJ_NR];
-    DoubleLinklistType *next = (DoubleLinklistType*)NONE;
+    BusType bus;
+    DriverType driver;
+    HardwareDevType device;
+
+    DoubleLinklistType *bus_node = NONE;
+    DoubleLinklistType *bus_head = &bus_linklist;
 
     int i = 0; 
     int dev_cnt, maxlen;
@@ -681,8 +684,6 @@ long ShowBus(void)
     const char *item_name_1 = "drv_name";
     const char *item_name_2 = "dev_name";
     const char *item_cnt = "cnt";
-
-    ListFindManagelistInit(&find_arg, Cmpt_KindN_Bus, obj_list, sizeof(obj_list)/sizeof(obj_list[0]));
 
     KPrintf(" %-15s%-15s%-15s%-15s%-20s\n", item_type, item_name_0, item_name_1, item_name_2, item_cnt); 
     maxlen = 65;
@@ -695,63 +696,58 @@ long ShowBus(void)
         }
     }
 
+    bus_node = bus_head->node_next;
+
     do
     {
-        next = ListGetNext(next, &find_arg);
-        {
-            int i;
-            for (i = 0; i < find_arg.nr_out; i++) {
-                struct Bus *bus;
+        bus = SYS_DOUBLE_LINKLIST_ENTRY(bus_node, struct Bus, bus_link);
+        if (bus) {
+            KPrintf("%s", " ");
+            KPrintf("%-15s%-15s", 
+                bus_type_str[bus->bus_type], 
+                bus->bus_name);
+            
+            driver = ShowBusFindDriver(bus);
 
-                bus = SYS_DOUBLE_LINKLIST_ENTRY(obj_list[i], struct Bus, bus_link);
-                if (bus) {
-                    KPrintf("%s", " ");
-                    KPrintf("%-15s%-15s", 
-                        bus_type_str[bus->bus_type], 
-                        bus->bus_name);
-                    
-                    DriverType driver = showBusFindDriver(bus);
+            if (driver) {
+                KPrintf("%-15s", driver->drv_name);
+            }  else  {
+                KPrintf("%-15s", "nil");
+            }
 
-                    if (driver) {
-                        KPrintf("%-15s", driver->drv_name);
-                    }  else  {
-                        KPrintf("%-15s", "nil");
-                    }
+            if (bus->haldev_cnt) {
+                DoubleLinklistType *dev_node = NONE;
+                DoubleLinklistType *dev_head = &bus->bus_devlink;
 
-                    if (bus->haldev_cnt) {
-                        DoubleLinklistType *node = NONE;
-                        DoubleLinklistType *head = &bus->bus_devlink;
+                dev_node = dev_head->node_next;
+                dev_cnt = 1;
+                while (dev_node != dev_head) {
+                    device = SYS_DOUBLE_LINKLIST_ENTRY(dev_node, struct HardwareDev, dev_link);
 
-                        node = head->node_next;
-                        dev_cnt = 1;
-                        while (node != head)  {
-                            HardwareDevType device = SYS_DOUBLE_LINKLIST_ENTRY(node, struct HardwareDev, dev_link);
-
-                            if (1 == dev_cnt)  {
-                                if (device)  {
-                                    KPrintf("%-16s%-4d\n", device->dev_name, dev_cnt);
-                                } else {
-                                    KPrintf("%-16s%-4d\n", "nil", dev_cnt);
-                                }
-                            } else {
-                                KPrintf("%46s", " ");
-                                if (device)  {
-                                    KPrintf("%-16s%-4d\n", device->dev_name, dev_cnt);
-                                } else {
-                                    KPrintf("%-16s%-4d\n", "nil", dev_cnt);
-                                }
-                            }
-                            dev_cnt++;
-                            node = node->node_next;
+                    if (1 == dev_cnt) {
+                        if (device) {
+                            KPrintf("%-16s%-4d\n", device->dev_name, dev_cnt);
+                        } else {
+                            KPrintf("%-16s%-4d\n", "nil", dev_cnt);
                         }
                     } else {
-                        KPrintf("\n");
+                        KPrintf("%46s", " ");
+                        if (device) {
+                            KPrintf("%-16s%-4d\n", device->dev_name, dev_cnt);
+                        } else {
+                            KPrintf("%-16s%-4d\n", "nil", dev_cnt);
+                        }
                     }
+                    dev_cnt++;
+                    dev_node = dev_node->node_next;
                 }
+            } else {
+                KPrintf("\n");
             }
         }
+        bus_node = bus_node->node_next;
     }
-    while (next != (DoubleLinklistType*)NONE);
+    while (bus_node != bus_head);
 
     return 0;
 }
