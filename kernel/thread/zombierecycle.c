@@ -69,10 +69,8 @@ static void ZombieKTaskEntry(void *parameter)
             KTaskIdDelete(task->id.id);
 
             if(task->task_dync_sched_member.delay != NONE){
-                
-            }
                 KERNEL_FREE(task->task_dync_sched_member.delay);
-
+            }
             KERNEL_FREE(task);
         } else {
             SuspendKTask(zombie_recycle);

@@ -23,7 +23,7 @@
 
 extern long ShowMemPool(void);
 extern void ShowMemory(void);
-extern void ListBuddy(void);
+extern void ShowBuddy(void);
 /**************************single gatherblock test sample***********************************/
 static uint8 *ptr[30];
 static uint8 mempool[2048];
@@ -265,7 +265,7 @@ void GatherblockLimitTest(char *name, int count, int blocksize){
         KPrintf("no memory.\n");
         return;
     }
-    ListBuddy();
+    ShowBuddy();
     /* create task1, alloc memory blocks */
     l_tid1 = KTaskCreate("task1_l", LTask1AllocEntry, NONE,
                               TASK_STACK_SIZE,
@@ -304,7 +304,7 @@ void GatherblockLimitcountTest(char *name, int count, int blocksize, int poolcou
         }
         KPrintf("gatherblock allocation,count[%d],size[%d]\n", count, blocksize);
     }
-    ListBuddy();
+    ShowBuddy();
 
     index--;
     for(;index>=0;index--){

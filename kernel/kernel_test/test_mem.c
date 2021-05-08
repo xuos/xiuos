@@ -22,7 +22,7 @@
 #include <string.h>
 
 extern void ShowMemory(void);
-extern void ListBuddy(void);
+extern void ShowBuddy(void);
 
 /**************************test memory usage***********************************/
 
@@ -131,7 +131,7 @@ int FreeEnd(void)
 char *ptr[MEM_GRIN_COUNT]; 
 unsigned int arr_grin[MEM_GRIN_COUNT];
 
-extern void ListBuddy();
+extern void ShowBuddy();
 int FendGrin()
 {
     KPrintf("\033[32;1m***********test limitations*************\033[0m\n");
@@ -154,7 +154,7 @@ int FendGrin()
         }
     }
     KPrintf("------------- limitation until [%d] -----------\n",i);
-    ListBuddy();
+    ShowBuddy();
 
     DelayKTask(2000);
 
@@ -211,7 +211,7 @@ void TestCacheLimitation(int timers,int init)
         temp %= 64;
         temp = ((temp==0) ? (temp + 1) : temp);
     }
-    ListBuddy();
+    ShowBuddy();
 
     DelayKTask(1000);
 

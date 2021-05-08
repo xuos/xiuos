@@ -998,7 +998,7 @@ void MemoryInfo(uint32 *total_memory, uint32 *used_memory, uint32 *max_used_memo
 #ifdef TOOL_SHELL
 #include <shell.h>
 
-void ListBuddy(void);
+void ShowBuddy(void);
 void ShowMemory(void);
 /**
  * This function will list the statistic information about memory.
@@ -1009,14 +1009,14 @@ void ShowMemory(void)
 	KPrintf("used memory : %d\n", ByteManager.dynamic_buddy_manager.active_memory);
 	KPrintf("maximum allocated memory: %d\n", ByteManager.dynamic_buddy_manager.max_ever_usedmem);
 	KPrintf("total cache szie: %d, %d/%d[32B],%d/%d[64B]\n", ByteManager.dynamic_buddy_manager.static_memory,ByteManager.static_manager[0].block_free_count,SMALL_NUMBER_32B,ByteManager.static_manager[1].block_free_count,SMALL_NUMBER_64B);
-    ListBuddy();
+    ShowBuddy();
 }
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),
 											ShowMemory,ShowMemory,list memory usage information);
 /**
  * This function will list the freeNodeList information on dynamic buddy memory.
  */
-void ListBuddy(void)
+void ShowBuddy(void)
 {
 	int lock = 0;
 	struct DynamicFreeNode *debug = NONE;
@@ -1031,7 +1031,7 @@ void ListBuddy(void)
 	CriticalAreaUnLock(lock);
 }
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),
-ListBuddy,ListBuddy,list memory usage information);
+ShowBuddy,ShowBuddy,list memory usage information);
 #endif     
 #endif     
 

@@ -12,14 +12,9 @@
 
 #include <xiuos.h>
 #include "shell.h"
-
 #include <bus.h>
 #include <xs_ktask_stat.h>
 #include <string.h>
-
-
-
-#define LIST_FIND_OBJ_NR          8
 
 long Hello(void)
 {
@@ -40,19 +35,10 @@ long Version(void)
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
                                                 Version,Version, show xios Version information);
 
-static __inline void ObjectSplit(int len)
+static __inline void PrintSpace(int len)
 {
-    while (len--) KPrintf("-");
+    while (len--) KPrintf(" ");
 }
-
-typedef struct
-{
-    DoubleLinklistType *list;
-    DoubleLinklistType **array;
-    uint8 type;
-    int nr;
-    int nr_out;
-} ListGetNext_t;
 
 extern DoubleLinklistType xiaoshan_task_head;
 
@@ -82,559 +68,309 @@ extern DoubleLinklistType xiaoshan_memgather_head;
 
 extern DoubleLinklistType bus_linklist;
 
-static DoubleLinklistType * GetTypelistManagelist(uint8 type)
-{
-	DoubleLinklistType *list = NONE;
-	switch(type)
-	{
-		case Cmpt_KindN_Task:
-			list = &xiaoshan_task_head;
-			break;
-		case Cmpt_KindN_Semaphore:
-#ifdef KERNEL_SEMAPHORE
-			list = &k_sem_list;
-#endif
-			break;
-		case Cmpt_KindN_Mutex:
-#ifdef KERNEL_MUTEX
-			list = &k_mutex_list;
-#endif
-			break;
-		case Cmpt_KindN_Event:
-#ifdef KERNEL_EVENT
-			list = &k_event_list;
-#endif
-			break;
-
-		case Cmpt_KindN_MessageQueue:
-#ifdef KERNEL_MESSAGEQUEUE
-		    list = &k_mq_list;
-#endif
-			break;
-		case Cmpt_KindN_MemPool:
-#ifdef KERNEL_MEMBLOCK
-		    list = &xiaoshan_memgather_head;
-#endif
-			break;
-		case Cmpt_KindN_Timer:
-#ifdef KERNEL_SOFTTIMER
-		    list = &k_timer_list;
-#endif
-			break;
-        case Cmpt_KindN_Bus:
-		    list = &bus_linklist;
-			break;
-		default:
-			break;
-	}
-	return list;
-}
-
-static void ListFindManagelistInit(ListGetNext_t *p, uint8 type, DoubleLinklistType **array, int nr)
-{
-	DoubleLinklistType *list;
-
-	list = GetTypelistManagelist(type);
-	if (NONE == list) {
-		return;
-	}
-	p->list = list;
-	p->type = type;
-	p->array = array;
-	p->nr = nr;
-	p->nr_out = 0;
-}
-
-static DoubleLinklistType *ListGetNext(DoubleLinklistType *current, ListGetNext_t *arg)
-{
-    int first_flag = 0;
-    x_ubase level;
-    DoubleLinklistType *node, *list;
-    DoubleLinklistType **array;
-    int nr;
-
-    arg->nr_out = 0;
-
-    if (!arg->nr || !arg->type) {
-        return (DoubleLinklistType *)NONE;
-    }
-
-    list = arg->list;
-
-    if (!current) {
-        node = list;
-        first_flag = 1;
-    } else {
-        node = current;
-    }
-
-    level = CriticalAreaLock();
-
-    if (!first_flag) {
-        struct CommonMember *obj;
-        obj = SYS_DOUBLE_LINKLIST_ENTRY(node, struct CommonMember, list);
-        if ((obj->type & ~Cmpt_KindN_Static) != arg->type) {
-            CriticalAreaUnLock(level);
-            return (DoubleLinklistType *)NONE;
-        }
-    }
-
-    nr = 0;
-    array = arg->array;
-    while (1) {
-        node = node->node_next;
-
-        if (node == list) {
-            node = (DoubleLinklistType *)NONE;
-            break;
-        }
-        nr++;
-        *array++ = node;
-        if (nr == arg->nr) {
-            break;
-        }
-    }
-    
-    CriticalAreaUnLock(level);
-    arg->nr_out = nr;
-    return node;
-}
-
 long ShowTask(void)
 {
-    x_ubase level;
-    ListGetNext_t find_arg;
-    DoubleLinklistType *obj_list[LIST_FIND_OBJ_NR];
-    DoubleLinklistType *next = (DoubleLinklistType*)NONE;
-    const char *item_title = "task";
-    int maxlen;
+    int k = 0;
+    x_ubase lock = 0;
+    uint8 stat = 0;
+    uint8 *ptr = NONE;
+    const char *item_title = "TASK";
+    struct TaskDescriptor *task = NONE;
+    DoubleLinklistType *nodelink = NONE;
 
-    ListFindManagelistInit(&find_arg, Cmpt_KindN_Task, obj_list, sizeof(obj_list)/sizeof(obj_list[0]));
-
-    maxlen = NAME_NUM_MAX;
-#ifndef SCHED_POLICY_FIFO
+    KPrintf("*************************************************************************************************\n");
 #ifdef ARCH_SMP
-    KPrintf("%-*.s cpu pri  status      sp     stack size max used left tick  error\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " --- ---  ------- ---------- ----------  ------  ---------- ---\n");
-#else
-    KPrintf("%-*.s pri  status      sp     stack size max used left tick  error\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " ---  ------- ---------- ----------  ------  ---------- ---\n");
-#endif
-#else
-#ifdef ARCH_SMP
-    KPrintf("%-*.s cpu pri  status      sp     stack size max used  error\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " --- ---  ------- ---------- ----------  ------   ---\n");
-#else
-    KPrintf("%-*.s pri  status      sp     stack size max used  error\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " ---  ------- ---------- ----------  ------   ---\n");
-#endif
-#endif
-    do
-    {
-        next = ListGetNext(next, &find_arg);
-        {
-            int i;
-            for (i = 0; i < find_arg.nr_out; i++) {
-                struct TaskDescriptor *obj;
-                struct TaskDescriptor task_info, *task;
-
-                obj = SYS_DOUBLE_LINKLIST_ENTRY(obj_list[i], struct TaskDescriptor, link);
-                level = CriticalAreaLock();
-
-                memcpy(&task_info, obj, sizeof task_info);
-                CriticalAreaUnLock(level);
-
-                task = (struct TaskDescriptor*)obj;
-                {
-                    uint8 stat;
-                    uint8 *ptr;
-
-#ifdef ARCH_SMP
-                    KPrintf("%-*.*s %3d %3d ", maxlen, NAME_NUM_MAX, task->task_base_info.name, task->task_smp_info.runing_coreid, task->task_dync_sched_member.cur_prio);
-
-#else
-                    KPrintf("%-*.*s %3d ", maxlen, NAME_NUM_MAX, task->task_base_info.name, task->task_dync_sched_member.cur_prio);
-#endif
-                    stat = KTaskStatGet(task);
-                    if (stat == KTASK_READY)        KPrintf(" ready  ");
-                    else if (stat == KTASK_SUSPEND) KPrintf(" suspend");
-                    else if (stat == KTASK_INIT)    KPrintf(" init   ");
-                    else if (stat == KTASK_CLOSE)   KPrintf(" close  ");
-                    else if (stat == KTASK_RUNNING) KPrintf(" running");
-#ifndef SCHED_POLICY_FIFO
-
-                    ptr = (uint8 *)task->task_base_info.stack_start;
-                    while (*ptr == '#')ptr ++;
-
-                    KPrintf(" 0x%08x 0x%08x    %02d%%   0x%08x %03d\n",
-                            task->task_base_info.stack_depth + ((x_ubase)task->task_base_info.stack_start - (x_ubase)task->stack_point),
-                            task->task_base_info.stack_depth,
-                            (task->task_base_info.stack_depth - ((x_ubase) ptr - (x_ubase) task->task_base_info.stack_start)) * 100
-                            / task->task_base_info.stack_depth,
-                            task->task_dync_sched_member.rest_timeslice,
-                            task->exstatus);
-
-#else
-                    ptr = (uint8 *)task->task_base_info.stack_start;
-                    while (*ptr == '#')ptr ++;
-
-                    KPrintf(" 0x%08x 0x%08x    %02d%%    %03d\n",
-                            task->task_base_info.stack_depth + ((x_ubase)task->task_base_info.stack_start - (x_ubase)task->stack_point),
-                            task->task_base_info.stack_depth,
-                            (task->task_base_info.stack_depth - ((x_ubase) ptr - (x_ubase) task->task_base_info.stack_start)) * 100
-                            / task->task_base_info.stack_depth,
-                            task->exstatus);
-
-#endif
-                }
-            }
-        }
+    for(k = 0;k < CPU_NUMBERS; k++){
+        KPrintf(" CPU[%d] CURRENT RUNNING TASK[ %s ] PRI[ %d ] \n",k,Assign.smp_os_running_task[k]->task_base_info.name,Assign.smp_os_running_task[k]->task_dync_sched_member.cur_prio);
     }
-    while (next != (DoubleLinklistType*)NONE);
+#else
+    KPrintf(" CURRENT RUNNING TASK[ %s ] PRI[ %d ]\n",Assign.os_running_task->task_base_info.name,Assign.os_running_task->task_dync_sched_member.cur_prio);
+#endif
+
+#ifdef SCHED_POLICY_RR_REMAINSLICE
+    KPrintf(" SCHED POLICY [ RR_REMAINSLICE ]\n");
+#endif
+#ifdef SCHED_POLICY_RR
+    KPrintf(" SCHED POLICY [ RR ]\n");
+#endif
+#ifdef SCHED_POLICY_FIFO
+    KPrintf(" SCHED POLICY [ FIFO ]\n");
+#endif
+
+    KPrintf("*************************************************************************************************\n");
+#ifndef SCHED_POLICY_FIFO
+#ifdef ARCH_SMP
+    KPrintf(" STAT    ID  %-*.s   PRI CORE STACK_DEPTH USED  LEFT_TICKS  ERROR_STAT\n", NAME_NUM_MAX, item_title); 
+#else
+    KPrintf(" STAT    ID  %-*.s  PRI STACK_DEPTH  USED  LEFT_TICKS  ERROR_STAT\n", NAME_NUM_MAX, item_title);
+#endif
+#else
+#ifdef ARCH_SMP
+    KPrintf(" STAT    ID  %-*.s   PRI CORE STACK_DEPTH USED  ERROR_STAT\n", NAME_NUM_MAX, item_title); 
+#else
+    KPrintf(" STAT    ID  %-*.s  PRI STACK_DEPTH  USED  ERROR_STAT\n", NAME_NUM_MAX, item_title);
+#endif
+#endif
+    
+    lock = CriticalAreaLock();
+    DOUBLE_LINKLIST_FOR_EACH(nodelink, &xiaoshan_task_head) {
+        task = CONTAINER_OF(nodelink, struct TaskDescriptor, link);
+        if(NONE != task) {
+            stat = KTaskStatGet(task);
+            if (stat == KTASK_READY)        KPrintf(" READY  ");
+            else if (stat == KTASK_SUSPEND) KPrintf(" SUSPEND");
+            else if (stat == KTASK_INIT)    KPrintf(" INIT   ");
+            else if (stat == KTASK_CLOSE)   KPrintf(" CLOSE  ");
+            else if (stat == KTASK_RUNNING) KPrintf(" RUNNING");
+
+#ifdef ARCH_SMP
+            KPrintf("%3d  %-*.*s  %3d %3d ", task->id.id,NAME_NUM_MAX, NAME_NUM_MAX, task->task_base_info.name, task->task_dync_sched_member.cur_prio,task->task_smp_info.runing_coreid );
+
+#else
+            KPrintf("%3d  %-*.*s %3d ", task->id.id,NAME_NUM_MAX, NAME_NUM_MAX, task->task_base_info.name, task->task_dync_sched_member.cur_prio);
+#endif
+                    
+#ifndef SCHED_POLICY_FIFO
+            ptr = (uint8 *)task->task_base_info.stack_start;
+            while (*ptr == '#')ptr ++;
+
+            KPrintf("     %-10d%d%%     %-10d%04d\n",
+                    task->task_base_info.stack_depth,
+                    (task->task_base_info.stack_depth - ((x_ubase) ptr - (x_ubase) task->task_base_info.stack_start)) * 100 / task->task_base_info.stack_depth,
+                    task->task_dync_sched_member.rest_timeslice, task->exstatus);
+
+#else
+            ptr = (uint8 *)task->task_base_info.stack_start;
+            while (*ptr == '#')ptr ++;
+
+            KPrintf("     %-10d%d%%     %04d\n",
+                    task->task_base_info.stack_depth,
+                    (task->task_base_info.stack_depth - ((x_ubase) ptr - (x_ubase) task->task_base_info.stack_start)) * 100 / task->task_base_info.stack_depth, task->exstatus);
+
+#endif
+        }
+
+    }
+    CriticalAreaUnLock(lock);    
+
+    KPrintf("*************************************************************************************************\n");
 
     return 0;
 }
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowTask,ShowTask, list task information);
+                                                ShowTask,ShowTask, show task information);
 
-static void ShowWaitQueue(struct SysDoubleLinklistNode *list)
+static void GetSuspendedTask(struct SysDoubleLinklistNode *list)
 {
-    struct TaskDescriptor *task;
-    struct SysDoubleLinklistNode *node;
-
-    for (node = list->node_next; node != list; node = node->node_next) {
-        task = SYS_DOUBLE_LINKLIST_ENTRY(node, struct TaskDescriptor, task_dync_sched_member.sched_link);
-        KPrintf("%s", task->task_base_info.name);
-
-        if (node->node_next != list)
-            KPrintf("/");
+    struct TaskDescriptor *task = NONE;
+    DoubleLinklistType *nodelink = NONE;
+    DOUBLE_LINKLIST_FOR_EACH(nodelink, list){
+        task = CONTAINER_OF(nodelink, struct TaskDescriptor, task_dync_sched_member.sched_link);
+        if(NONE != task) {
+            KPrintf("%s | ", task->task_base_info.name);
+        }
     }
 }
 
 #ifdef KERNEL_SEMAPHORE
+
 long ShowSem(void)
 {
-    ListGetNext_t find_arg;
-    DoubleLinklistType *obj_list[LIST_FIND_OBJ_NR];
-    DoubleLinklistType *next = (DoubleLinklistType*)NONE;
+    x_base lock = 0;
+    struct Semaphore *sem = NONE;
+    DoubleLinklistType *nodelink = NONE;
 
-    int maxlen;
-    const char *item_title = "semaphore";
+    KPrintf("******************************************************************\n");
+    KPrintf(" SEM_ID  VALUE   SUSPEND_TASK\n");
 
-	ListFindManagelistInit(&find_arg, Cmpt_KindN_Semaphore, obj_list, sizeof(obj_list)/sizeof(obj_list[0]));
-
-    maxlen = NAME_NUM_MAX;
-
-    KPrintf("%-*.s v   suspend task\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " --- --------------\n");
-
-    do
-    {
-        next = ListGetNext(next, &find_arg);
-        {
-            int i;
-            for (i = 0; i < find_arg.nr_out; i++) {
-                struct Semaphore *obj;
-                struct Semaphore *sem;
-
-                obj = SYS_DOUBLE_LINKLIST_ENTRY(obj_list[i], struct Semaphore, link);
-                sem = obj;
-                if (!IsDoubleLinkListEmpty(&sem->pend_list)) {
-                    KPrintf("%-*.*d %03d %d:",
-                            maxlen, NAME_NUM_MAX,
-                            sem->id.id,
-                            sem->value,
-                            DoubleLinkListLenGet(&sem->pend_list));
-                    ShowWaitQueue(&(sem->pend_list));
-                    KPrintf("\n");
-                } else {
-                    KPrintf("%-*.*d %03d %d\n",
-                            maxlen, NAME_NUM_MAX,
-                            sem->id.id,
-                            sem->value,
-                            DoubleLinkListLenGet(&sem->pend_list));
-                }
+    lock = CriticalAreaLock();
+    DOUBLE_LINKLIST_FOR_EACH(nodelink, &k_sem_list) {
+        sem = CONTAINER_OF(nodelink, struct Semaphore, link);
+        if(NONE != sem) {
+            if (!IsDoubleLinkListEmpty(&sem->pend_list)) {
+                KPrintf("  %-8d%-8d :", sem->id.id, sem->value);
+                GetSuspendedTask(&(sem->pend_list));
+                KPrintf("\n");
+            } else {
+                KPrintf("  %-8d%-8d NONE\n", sem->id.id, sem->value);
             }
         }
     }
-    while (next != (DoubleLinklistType*)NONE);
+    CriticalAreaUnLock(lock);
+    KPrintf("******************************************************************\n");
+
     return 0;
 }
-
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowSem,ShowSem, show xios semaphore in system);
+                                                ShowSem,ShowSem, show semaphore in system);
 
 #endif
 
 #ifdef KERNEL_EVENT
+
 long ShowEvent(void)
 {
-    ListGetNext_t find_arg;
-    DoubleLinklistType *obj_list[LIST_FIND_OBJ_NR];
-    DoubleLinklistType *next = (DoubleLinklistType*)NONE;
+    x_base lock = 0;
+    struct Event *event = NONE;
+    DoubleLinklistType *nodelink = NONE;
 
-    int maxlen;
-    const char *item_title = "event";
+    KPrintf("******************************************************************\n");
+    KPrintf(" EVENT_ID  OPTIONS   EVENTS       SUSPEND_TASK\n");
 
-	ListFindManagelistInit(&find_arg, Cmpt_KindN_Event, obj_list, sizeof(obj_list)/sizeof(obj_list[0]));
-
-    maxlen = NAME_NUM_MAX;
-
-    KPrintf("%-*.s      set    suspend task\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     "  ---------- --------------\n");
-
-    do
-    {
-        next = ListGetNext(next, &find_arg);
-        {
-            int i;
-            for (i = 0; i < find_arg.nr_out; i++) {
-                struct Event *obj;
-                struct Event *e;
-
-                obj = SYS_DOUBLE_LINKLIST_ENTRY(obj_list[i], struct Event, link);
-                e = obj;
-                if (!IsDoubleLinkListEmpty(&e->pend_list)) {
-                    KPrintf("%-*.*d  0x%x %03d:",
-                            maxlen, NAME_NUM_MAX,
-                            e->id.id,
-                            e->events,
-                            DoubleLinkListLenGet(&e->pend_list));
-                    ShowWaitQueue(&(e->pend_list));
-                    KPrintf("\n");
-                } else {
-                    KPrintf("%-*.*d  0x%08x 0\n",
-                            maxlen, NAME_NUM_MAX, e->id.id, e->events);
-                }
+    lock = CriticalAreaLock();
+    DOUBLE_LINKLIST_FOR_EACH(nodelink, &k_event_list) {
+        event = CONTAINER_OF(nodelink, struct Event, link);
+        if(NONE != event) {
+            if (!IsDoubleLinkListEmpty(&event->pend_list)) {
+                KPrintf("   %-8d0x%-8x0x%-12x", event->id.id, event->options, event->events);
+                GetSuspendedTask(&(event->pend_list));
+                KPrintf("\n");
+            } else {
+                KPrintf("   %-8d0x%-8x0x%-12x NONE\n", event->id.id, event->options, event->events);
             }
         }
     }
-    while (next != (DoubleLinklistType*)NONE);
+    CriticalAreaUnLock(lock);
+    KPrintf("******************************************************************\n");
     return 0;
 }
-
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowEvent,ShowEvent, list  event in system);
+                                                ShowEvent,ShowEvent, show event in system);
 
 #endif
 #ifdef KERNEL_MUTEX
 long ShowMutex(void)
 {
-    ListGetNext_t find_arg;
-    DoubleLinklistType *obj_list[LIST_FIND_OBJ_NR];
-    DoubleLinklistType *next = NONE;
+    x_base lock = 0;
+    struct Mutex *mutex = NONE;
+    DoubleLinklistType *nodelink = NONE;
 
-    int maxlen;
-    const char *item_title = "mutex";
+    KPrintf("******************************************************************\n");
+    KPrintf("MUTEX_ID  HOLDER  RECRUSIVE_CNT  SUSPEND_TASK\n");
 
-	ListFindManagelistInit(&find_arg, Cmpt_KindN_Mutex, obj_list, sizeof(obj_list)/sizeof(obj_list[0]));
-
-    maxlen = NAME_NUM_MAX;
-
-    KPrintf("%-*.s   owner  hold suspend task cnt\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " -------- ---- --------------\n");
-
-    do
-    {
-        next = ListGetNext(next, &find_arg);
-        {
-            int i;
-            for (i = 0; i < find_arg.nr_out; i++) {
-                struct Mutex *obj;
-                struct Mutex *m;
-
-                obj = SYS_DOUBLE_LINKLIST_ENTRY(obj_list[i], struct Mutex, link);
-                m = obj;
-                KPrintf("%-*.*d %-8.*s %04d %d\n",
-                        maxlen, NAME_NUM_MAX,
-                        m->id.id,
-                        NAME_NUM_MAX,
-                        m->holder->task_base_info.name,
-                        m->recursive_cnt,
-                        DoubleLinkListLenGet(&m->pend_list));
-
+    lock = CriticalAreaLock();
+    DOUBLE_LINKLIST_FOR_EACH(nodelink, &k_mutex_list) {
+        mutex = CONTAINER_OF(nodelink, struct Mutex, link);
+        if(NONE != mutex) {
+            if (!IsDoubleLinkListEmpty(&mutex->pend_list)) {
+                KPrintf("  %-8d%-10s%-12d", mutex->id.id, (mutex->holder == NONE ?"NONE":(mutex->holder->task_base_info.name)), mutex->recursive_cnt);
+                GetSuspendedTask(&(mutex->pend_list));
+                KPrintf("\n");
+            } else {
+                KPrintf("  %-8d%-10s%-12d NONE\n", mutex->id.id, (mutex->holder == NONE ?"NONE":(mutex->holder->task_base_info.name)), mutex->recursive_cnt);
             }
         }
     }
-    while (next != NONE);
+    CriticalAreaUnLock(lock);
+    KPrintf("******************************************************************\n");
+
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,ShowMutex, ShowMutex,show xios semaphore in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,ShowMutex, ShowMutex,show mutex in system);
 #endif
 
 #ifdef KERNEL_MESSAGEQUEUE
 long ShowMsgQueue(void)
 {
-    ListGetNext_t find_arg;
-    DoubleLinklistType *obj_list[LIST_FIND_OBJ_NR];
-    DoubleLinklistType *next = (DoubleLinklistType*)NONE;
+    x_base lock = 0;
+    struct MsgQueue *msgq = NONE;
+    DoubleLinklistType *nodelink = NONE;
 
-    int maxlen;
-    const char *item_title = "msgqueue";
+    KPrintf("****************************************************************************************\n");
+    KPrintf(" MSG_ID NUM_MSGS EACH_LEN MAX_MSGS %-32s%s\n","SEND_SUSPEND_TASK","RECV_SUSPEND_TASK");
 
-    ListFindManagelistInit(&find_arg, Cmpt_KindN_MessageQueue, obj_list, sizeof(obj_list)/sizeof(obj_list[0]));
-
-    maxlen = NAME_NUM_MAX;
-
-    KPrintf("%-*.s entry suspend task\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " ----  --------------\n");
-    do
-    {
-        next = ListGetNext(next, &find_arg);
-        {
-            int i;
-            for (i = 0; i < find_arg.nr_out; i++) {
-                struct MsgQueue *obj;
-                struct MsgQueue *m;
-
-                obj = SYS_DOUBLE_LINKLIST_ENTRY(obj_list[i], struct MsgQueue, link);
-
-                m = obj;
-                if (!IsDoubleLinkListEmpty(&m->recv_pend_list))
-                {
-                    KPrintf("%-*.*d %04d  %d:",
-                            maxlen, NAME_NUM_MAX,
-                            m->id.id,
-                            m->num_msgs,
-                            DoubleLinkListLenGet(&m->recv_pend_list));
-                    ShowWaitQueue(&(m->recv_pend_list));
-                    KPrintf("\n");
-                } else {
-                    KPrintf("%-*.*d %04d  %d\n",
-                            maxlen, NAME_NUM_MAX,
-                            m->id.id,
-                            m->num_msgs,
-                            DoubleLinkListLenGet(&m->recv_pend_list));
-                }
+    lock = CriticalAreaLock();
+    DOUBLE_LINKLIST_FOR_EACH(nodelink, &k_mq_list) {
+        msgq = CONTAINER_OF(nodelink, struct MsgQueue, link);
+        if(NONE != msgq) {
+            KPrintf("   %-8d%-8d%-8d%-8d", msgq->id.id, msgq->num_msgs, msgq->each_len,msgq->max_msgs);
+            if (!IsDoubleLinkListEmpty(&msgq->send_pend_list)) {
+                GetSuspendedTask(&(msgq->send_pend_list));
+            } else {
+                PrintSpace(32);
             }
+            
+            if (!IsDoubleLinkListEmpty(&msgq->recv_pend_list)){
+                GetSuspendedTask(&(msgq->recv_pend_list));
+            } 
+
+            KPrintf("\n");
         }
     }
-    while (next != (DoubleLinklistType*)NONE);
+    CriticalAreaUnLock(lock);
+    KPrintf("****************************************************************************************\n");
 
     return 0;
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowMsgQueue,ShowMsgQueue, list  message queue in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowMsgQueue,ShowMsgQueue, show message queue in system);
 
 #endif
 
 #ifdef KERNEL_MEMBLOCK
-long ShowMemPool(void)
+long ShowGatherMem(void)
 {
-    x_ubase level;
-    ListGetNext_t find_arg;
-    DoubleLinklistType *obj_list[LIST_FIND_OBJ_NR];
-    DoubleLinklistType *next = (DoubleLinklistType*)NONE;
+    x_base lock = 0;
+    struct MemGather *mg = NONE;
+    DoubleLinklistType *nodelink = NONE;
 
-    int maxlen;
-    const char *item_title = "mempool";
+    KPrintf("****************************************************************************************\n");
+    KPrintf("GATHERMEM BLOCK TOTAL FREE SUSPEND_TASK\n");
 
-    ListFindManagelistInit(&find_arg, Cmpt_KindN_MemPool, obj_list, sizeof(obj_list)/sizeof(obj_list[0]));
-
-    maxlen = NAME_NUM_MAX;
-
-    KPrintf("%-*.s block total free suspend task\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " ----  ----  ---- --------------\n");
-    do
-    {
-        next = ListGetNext(next, &find_arg);
-        {
-            int i;
-            for (i = 0; i < find_arg.nr_out; i++) {
-                struct MemGather *mp;
-                int suspend_task_count;
-                DoubleLinklistType *node;
-
-                mp = SYS_DOUBLE_LINKLIST_ENTRY(obj_list[i], struct MemGather, m_link);
-
-                suspend_task_count = 0;
-                DOUBLE_LINKLIST_FOR_EACH(node, &mp->wait_task)
-                {
-                    suspend_task_count++;
-                }
-
-                if (suspend_task_count > 0) {
-                    KPrintf("%-*.*s %04d  %04d  %04d %d:",
-                            maxlen, NAME_NUM_MAX,
-                            mp->m_name,
-                            mp->one_block_size,
-                            mp->block_total_number,
-                            mp->block_free_number,
-                            suspend_task_count);
-                    ShowWaitQueue(&(mp->wait_task));
-                    KPrintf("\n");
-                } else {
-                    KPrintf("%-*.*s %04d  %04d  %04d %d\n",
-                            maxlen, NAME_NUM_MAX,
-                            mp->m_name,
-                            mp->one_block_size,
-                            mp->block_total_number,
-                            mp->block_free_number,
-                            suspend_task_count);
-                }
+    lock = CriticalAreaLock();
+    DOUBLE_LINKLIST_FOR_EACH(nodelink, &xiaoshan_memgather_head) {
+        mg = CONTAINER_OF(nodelink, struct MemGather, m_link);
+        if(NONE != mg) {
+            if (!IsDoubleLinkListEmpty(&mg->wait_task)) {
+                 KPrintf("   %-8s%-6d%-6d%-6d :",
+                            mg->m_name,
+                            mg->one_block_size,
+                            mg->block_total_number,
+                            mg->block_free_number);
+                GetSuspendedTask(&(mg->wait_task));
+                KPrintf("\n");
+            } else {
+                KPrintf("   %-8s%-6d%-6d%-6d NONE\n",
+                            mg->m_name,
+                            mg->one_block_size,
+                            mg->block_total_number,
+                            mg->block_free_number);
             }
         }
     }
-    while (next != (DoubleLinklistType*)NONE);
+    CriticalAreaUnLock(lock);
+    KPrintf("****************************************************************************************\n");
 
     return 0;
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowMemPool,ShowMemPool, list  memory pool in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowGatherMem,ShowGatherMem, show memory block in system);
 
 #endif
 #ifdef KERNEL_SOFTTIMER
 long ShowTimer(void)
 {
-    ListGetNext_t find_arg;
-    DoubleLinklistType *obj_list[LIST_FIND_OBJ_NR];
-    DoubleLinklistType *next = (DoubleLinklistType*)NONE;
+    x_base lock = 0;
+    struct Timer *timer = NONE;
+    DoubleLinklistType *nodelink = NONE;
 
-    int maxlen;
-    const char *item_title = "timer";
+    KPrintf("****************************************************************************************\n");
+    KPrintf(" TIMER_ID  NAME    STATUS  PERIODIC  DEADLINE\n");
 
-    ListFindManagelistInit(&find_arg, Cmpt_KindN_Timer, obj_list, sizeof(obj_list)/sizeof(obj_list[0]));
-
-    maxlen = NAME_NUM_MAX;
-
-    KPrintf("%-*.s  periodic   timeout       flag\n", maxlen, item_title); ObjectSplit(maxlen);
-    KPrintf(     " ---------- ---------- -----------\n");
-    do {
-        next = ListGetNext(next, &find_arg);
-        {
-            int i;
-            for (i = 0; i < find_arg.nr_out; i++) {
-                struct Timer *obj;
-                struct Timer *timer;
-
-                obj = SYS_DOUBLE_LINKLIST_ENTRY(obj_list[i], struct Timer, link);
-
-                timer = obj;
-                KPrintf("%-*.*s 0x%08x 0x%08x 0x%08x",
-                        maxlen, NAME_NUM_MAX,
-                        timer->name,
-                        timer->origin_timeslice,
-                        timer->deadline_timeslice,
-                        timer->id_node.id);
-                if (timer->active_status == TIMER_ACTIVE_TRUE)
-                    KPrintf("activated\n");
-                else
-                    KPrintf("deactivated\n");
-
-            }
+    lock = CriticalAreaLock();
+    DOUBLE_LINKLIST_FOR_EACH(nodelink, &k_timer_list) {
+        timer = CONTAINER_OF(nodelink, struct Timer, link);
+        if(NONE != timer) {
+            KPrintf("   %-8d%-8s%-10s%-10d%d\n", timer->id_node.id, timer->name, (timer->active_status == TIMER_ACTIVE_TRUE ? "active" : "unactive"),timer->origin_timeslice,timer->deadline_timeslice);
         }
     }
-    while (next != (DoubleLinklistType*)NONE);
-
-    KPrintf("current tick:0x%08x\n", CurrentTicksGain());
+    CriticalAreaUnLock(lock);
+    KPrintf("****************************************************************************************\n");
 
     return 0;
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowTimer,ShowTimer, list  timer in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowTimer,ShowTimer, show timer in system);
 #endif
 
 static char *const bus_type_str[] =
@@ -752,8 +488,7 @@ long ShowBus(void)
     return 0;
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(1)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowBus, ShowBus, show bus all device and driver in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(1)|SHELL_CMD_DISABLE_RETURN,ShowBus, ShowBus, show bus all device and driver in system);
 
 #ifdef RESOURCES_RTC
 #include "bus_rtc.h"
