@@ -47,10 +47,10 @@ static FILE* std_console = NULL;
 int LibcStdioSetConsole(const char* device_name, int mode)
 {
     FILE *fp;
-    char name[STDIO_DEVICE_NAME_MAX];
+    char name[STDIO_DEVICE_NAME_MAX] = {0};
     char *file_mode;
-
-    snprintf(name, sizeof(name) - 1, "/dev/%s", device_name);
+    
+    snprintf(name, strlen(device_name) + 6, "/dev/%s", device_name);
     name[STDIO_DEVICE_NAME_MAX - 1] = '\0';
 
     switch (mode)
