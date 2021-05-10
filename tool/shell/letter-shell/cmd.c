@@ -38,7 +38,7 @@ long Version(void)
     return 0;
 }
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                Version,Version, show xios Version information);
+                                                Version,Version, show XiUOS Version information);
 
 static __inline void ObjectSplit(int len)
 {
@@ -362,7 +362,7 @@ long ShowSem(void)
 }
 
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowSem,ShowSem, show xios semaphore in system);
+                                                ShowSem,ShowSem, show XiUOS semaphore in system);
 
 #endif
 
@@ -459,7 +459,7 @@ long ShowMutex(void)
     while (next != NONE);
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,ShowMutex, ShowMutex,show xios semaphore in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,ShowMutex, ShowMutex,show XiUOS semaphore in system);
 #endif
 
 #ifdef KERNEL_MESSAGEQUEUE
