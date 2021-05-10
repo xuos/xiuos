@@ -25,7 +25,12 @@
 #include <dev_serial.h>
 #include <string.h>
 
+#ifdef BOARD_K210_EVB
 #define SAMPLE_UART_NAME       "/dev/uart3_dev3"  
+#endif
+#ifdef BOARD_STM32F407_EVB
+#define SAMPLE_UART_NAME       "/dev/usart3_dev3"  
+#endif
 
 static int serial_fd;
 static int32_t bluetooth_receive;
