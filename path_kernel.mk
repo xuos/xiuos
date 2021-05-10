@@ -83,6 +83,19 @@ KERNELPATHS :=-I$(BSP_ROOT) \
 	-I$(KERNEL_ROOT)/include #
 endif
 
+ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/k210-emulator)
+KERNELPATHS :=-I$(BSP_ROOT) \
+	-I$(BSP_ROOT)/third_party_driver \
+	-I$(BSP_ROOT)/include \
+	-I$(BSP_ROOT)/third_party_driver/include \
+	-I$(BSP_ROOT)/third_party_driver/spi/third_party_spi_lora/inc \
+	-I$(BSP_ROOT)/third_party_driver/spi/third_party_spi_lora/src/radio \
+	-I$(BSP_ROOT)/third_party_driver/camera \
+	-I$(BSP_ROOT)/third_party_driver/drivers \
+	-I$(BSP_ROOT)/third_party_driver/lcd \
+	-I$(KERNEL_ROOT)/include #
+endif
+
 ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/aiit-riscv64-board)
 KERNELPATHS :=-I$(BSP_ROOT) \
 	-I$(BSP_ROOT)/third_party_driver \

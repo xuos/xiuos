@@ -49,7 +49,9 @@ _begin:
   li t0, MSTATUS_FS
   csrs mstatus, t0
 
+#ifndef BSP_USING_QEMU
   ZERO_F_REGISTERS
+#endif
 
 .option push
 .option norelax

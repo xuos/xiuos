@@ -42,7 +42,12 @@ int InitHwTick(void)
 
     CLEAR_CSR(mie, MIP_MTIP);
 
+#ifdef BSP_USING_QEMU
+    tick_cycles = (10000000 / TICK_PER_SECOND);
+#else
     tick_cycles = interval * SysctlClockGetFreq(SYSCTL_CLOCK_CPU) / CLINT_CLOCK_DIV / 1000ULL - 1;
+#endif
+  
     clint->mtimecmp[core_id] = clint->mtime + tick_cycles;
 
     SET_CSR(mie, MIP_MTIP);
