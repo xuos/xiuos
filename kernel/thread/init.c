@@ -92,7 +92,6 @@ struct InitSequenceDesc components_init[] =
 #ifdef FS_CH376
 	{ "ch376", Ch376fsInit },
 #endif
-	{ "libc_system", LibcSystemInit },
 #ifdef RTC_SYNC_USING_NTP
 	{ "rtc_ntp_sync",RtcNtpSyncInit},
 #endif
