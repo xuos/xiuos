@@ -344,12 +344,11 @@ static inline int SerialDevPollingRead(struct SerialHardwareDevice *serial_dev, 
     x_size_t read_length = read_param->size;
 
     uint8 get_char;
-    x_err_t ret = EOK;
 
     while (read_length)
     {
-        ret = hwdev_done->get_char(serial_dev);
-        if (-ERROR == ret) {
+        get_char = hwdev_done->get_char(serial_dev);
+        if (-ERROR == get_char) {
             break;
         }
 

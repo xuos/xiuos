@@ -22,18 +22,16 @@ long Hello(void)
 
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                Hello, Hello, say Hello world);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, Hello, Hello, show Hello World information);
 
 extern void ShowBanner(void);
-long Version(void)
+long ShowVersion(void)
 {
     ShowBanner();
 
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                Version,Version, show XiUOS Version information);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowVersion, ShowVersion, show XiUOS version information);
 
 static __inline void PrintSpace(int len)
 {
@@ -157,8 +155,7 @@ long ShowTask(void)
 
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowTask,ShowTask, show task information);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowTask, ShowTask, show task information in XiUOS);
 
 static void GetSuspendedTask(struct SysDoubleLinklistNode *list)
 {
@@ -201,8 +198,7 @@ long ShowSem(void)
 
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowSem,ShowSem, show semaphore in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowSem, ShowSem, show sem information in XiUOS);
 
 #endif
 
@@ -234,8 +230,7 @@ long ShowEvent(void)
     KPrintf("******************************************************************\n");
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                ShowEvent,ShowEvent, show event in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowEvent, ShowEvent, show event information in XiUOS);
 
 #endif
 #ifdef KERNEL_MUTEX
@@ -266,7 +261,7 @@ long ShowMutex(void)
 
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,ShowMutex, ShowMutex,show mutex in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowMutex, ShowMutex, show mutex information in XiUOS);
 #endif
 
 #ifdef KERNEL_MESSAGEQUEUE
@@ -303,7 +298,7 @@ long ShowMsgQueue(void)
     return 0;
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowMsgQueue,ShowMsgQueue, show message queue in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowMsgQueue, ShowMsgQueue, show msg queue information in XiUOS);
 
 #endif
 
@@ -344,7 +339,7 @@ long ShowGatherMem(void)
     return 0;
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowGatherMem,ShowGatherMem, show memory block in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowGatherMem, ShowGatherMem, show mem block information in XiUOS);
 
 #endif
 #ifdef KERNEL_SOFTTIMER
@@ -370,7 +365,7 @@ long ShowTimer(void)
     return 0;
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowTimer,ShowTimer, show timer in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN, ShowTimer, ShowTimer, show timer information in XiUOS);
 #endif
 
 static char *const bus_type_str[] =
@@ -488,7 +483,7 @@ long ShowBus(void)
     return 0;
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(1)|SHELL_CMD_DISABLE_RETURN,ShowBus, ShowBus, show bus all device and driver in system);
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(1)|SHELL_CMD_DISABLE_RETURN,ShowBus, ShowBus, show bus information in XiUOS);
 
 #ifdef RESOURCES_RTC
 #include "bus_rtc.h"
@@ -548,7 +543,6 @@ static void SetDateAndTime(char argc, char **argv)
         KPrintf("only support input [year month day hour min sec]\n");
     }
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_PARAM_NUM(9),
-                                                SetDateAndTime, SetDateAndTime,  set date and time[year month day hour min sec] );
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_PARAM_NUM(9), SetDateAndTime, SetDateAndTime,  set date and time using rtc function);
 
 #endif
