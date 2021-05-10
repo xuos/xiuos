@@ -33,7 +33,7 @@ long Version(void)
     return 0;
 }
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0)|SHELL_CMD_DISABLE_RETURN,
-                                                Version,Version, show xios Version information);
+                                                Version,Version, show XiUOS Version information);
 
 static __inline void PrintSpace(int len)
 {

@@ -18,7 +18,7 @@
  * @date 2021.04.23
  */
 
-#include "../user_api/switch_api/user_api.h"
+#include <user_api.h>
 #include <sensor.h>
 
 /**
