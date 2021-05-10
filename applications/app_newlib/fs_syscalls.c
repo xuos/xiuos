@@ -28,7 +28,7 @@ Modification: Use file system functions
 
 #include <sys/errno.h>
 #include <stdio.h>
-#include "../user_api/switch_api/user_api.h"
+#include <user_api.h>
 
 int _close_r(struct _reent *ptr, int fd)
 {
