@@ -26,6 +26,9 @@
 #ifdef CONNECTION_COMMUNICATION_ZIGBEE
 #include <xs_adapter_zigbee.h>
 #endif
+#ifdef CONNECTION_COMMUNICATION_BLUETOOTH
+#include <xs_adapter_bluetooth.h>
+#endif
 #ifdef CONNECTION_COMMUNICATION_LORA
 #include <xs_adapter_lora.h>
 #endif
@@ -62,6 +65,41 @@ void* ZigbeeAdapterFind(char* name)
     return padapter;
 }
 #endif
+
+
+// Bluetooth Adapter List
+#ifdef CONNECTION_COMMUNICATION_BLUETOOTH
+static DoubleLinklistType bluetooth_adapter_list;
+
+void BluetoothAdapterInit()
+{
+    InitDoubleLinkList(&bluetooth_adapter_list);
+}
+
+void BluetoothAdapterRegister(adapter_t padapter)
+{
+    DoubleLinkListInsertNodeAfter(&bluetooth_adapter_list, &(padapter->link));
+}
+
+void* BluetoothAdapterFind(char* name)
+{
+    DoubleLinklistType* pnode = NONE;
+    DoubleLinklistType* phead = &bluetooth_adapter_list;
+    struct AdapterBluetooth* padapter = NONE;
+    
+    for(pnode = phead->node_next; pnode != phead; pnode = pnode->node_next) {
+        padapter = (struct AdapterBluetooth*)SYS_DOUBLE_LINKLIST_ENTRY(pnode, struct Adapter, link);
+        // KPrintf("BluetoothReceiveDemo bbb\n"); 
+        if (0 == strcmp(padapter->name, name)){
+            return padapter;
+        }
+    }
+
+    return padapter;
+}
+#endif
+
+
 
 // Lora Adapter List
 #ifdef CONNECTION_COMMUNICATION_LORA

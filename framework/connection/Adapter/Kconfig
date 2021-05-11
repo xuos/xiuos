@@ -25,3 +25,7 @@ menuconfig CONNECTION_COMMUNICATION_NB_IOT
 menuconfig CONNECTION_COMMUNICATION_4G
     bool "Enable 4G"
     default n
+
+menuconfig CONNECTION_COMMUNICATION_BLUETOOTH
+    bool "Enable BlueTooth"
+    default n

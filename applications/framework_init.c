@@ -18,6 +18,7 @@ extern int RegisterAdapterEthernet(void);
 extern int RegisterAdapterWifi(void);
 extern int RegisterAdapterZigbee(void);
 extern int RegisterAdapterNBIoT(void);
+extern int RegisterAdapterBluetooth(void);
 extern int LoraSx12xxSpiDeviceInit();
 
 extern int D124VoiceInit(void);
@@ -104,6 +105,9 @@ static struct InitDesc connection_desc[] =
 
 #ifdef CONNECTION_COMMUNICATION_NB_IOT
 	{ "NB-IoT adpter", RegisterAdapterNBIoT},
+#endif
+#ifdef CONNECTION_COMMUNICATION_BLUETOOTH
+	{ "bluetooth adpter", RegisterAdapterBluetooth},
 #endif
 	{ "NULL", NULL },
 };

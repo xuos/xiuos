@@ -36,5 +36,8 @@ void ZigbeeAdapterInit();
 void ZigbeeAdapterRegister(adapter_t padapter);
 void* ZigbeeAdapterFind(char* name);
 
+void BluetoothAdapterInit();
+void BluetoothAdapterRegister(adapter_t padapter);
+void* BluetoothAdapterFind(char* name);
 
 #endif
