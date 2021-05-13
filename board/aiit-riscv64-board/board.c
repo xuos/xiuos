@@ -53,7 +53,6 @@ Modification:
 extern x_base cpu2_boot_flag;
 extern void entry(void);
 extern void SecondaryCpuCStart(void);
-extern void ShutdownCpu(void);
 extern int IoConfigInit(void);
 extern int HwCh438Init(void);
 extern int HwSpiInit(void);
@@ -98,7 +97,7 @@ void Kd233Start(uint32_t mhartid)
 	}
 }
 
-int freq(void)
+int Freq(void)
 {
     uint64 value = 0;
 
@@ -124,7 +123,7 @@ int freq(void)
 
     return 0;
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),freq, freq,  show freq info );
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),Freq, Freq, show frequency information );
 
 #ifdef ARCH_SMP
 extern int EnableHwclintIpi(void);
@@ -218,30 +217,6 @@ void HwCpuReset(void)
     while(RET_TRUE);
 }
 
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),
-                                                reboot, HwCpuReset,  reset machine );
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0), Reboot, HwCpuReset, reset machine );
 
-static void (*pre_shutdown_action)(void *);
-static void *pre_shutdown_action_arg;
-
-void SetPreShutdownAction(void (*func)(void *), void *arg)
-{
-    pre_shutdown_action = func;
-    pre_shutdown_action_arg = arg;
-}
-
-void cmd_shutdown()
-{
-#ifdef FS_VFS
-    SyncOpenedFiles();
-#endif
-
-    if (pre_shutdown_action != NULL)
-        pre_shutdown_action(pre_shutdown_action_arg);
-
-    ShutdownCpu();
-}
-
-
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),
-                                               shutdown,cmd_shutdown,shutdown machine); 
+ 

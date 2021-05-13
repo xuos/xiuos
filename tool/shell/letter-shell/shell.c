@@ -1545,7 +1545,7 @@ void shellHelp(int argc, char *argv[])
 }
 SHELL_EXPORT_CMD(
 SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-help, shellHelp, show command info\r\nhelp [cmd]);
+Help, shellHelp, show command info\r\nhelp [cmd]);
 
 /**
  * @brief shell Input processing 

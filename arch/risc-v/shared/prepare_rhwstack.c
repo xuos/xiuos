@@ -96,17 +96,6 @@ uint8 KTaskStackSetup(struct TaskDescriptor *task)
     return EOK;
 }
 
-
-void ShutdownCpu()
-{
-    uint32 level;
-    KPrintf("shutdown...\n");
-
-    level = DISABLE_INTERRUPT();
-    while (level)
-        CHECK(0);
-}
-
 #ifdef  TASK_ISOLATION
 void RestoreMstatus(uintptr_t *sp)
 {
