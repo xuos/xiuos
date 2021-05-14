@@ -1,3 +1,23 @@
 menu "Security"
 
+menuconfig CRYPTO
+    bool "using crypto"
+    default n
+if CRYPTO
+    menuconfig CRYPTO_SM3
+        bool "using sm3"
+        default n
+
+    menuconfig CRYPTO_SM4
+        bool "using sm4"
+        default n
+
+    menuconfig CRYPTO_SM9
+        select CRYPTO_SM3
+        select CRYPTO_SM4
+        bool "using sm9"
+
+        default n
+endif
+
 endmenu

@@ -130,6 +130,10 @@ ifeq ($(CONFIG_CONNECTION_ADAPTER), y)
 KERNELPATHS += -I$(KERNEL_ROOT)/framework/connection/Adapter/include #
 endif
 
+ifeq ($(CONFIG_CRYPTO), y)
+KERNELPATHS += -I$(KERNEL_ROOT)/framework/security/crypto/include #
+endif
+
 KERNELPATHS += -I$(KERNEL_ROOT)/resources/include #
 
 ifeq ($(CONFIG_RESOURCES_SPI), y)
