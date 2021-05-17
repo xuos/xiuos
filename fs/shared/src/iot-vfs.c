@@ -1164,7 +1164,7 @@ int VfsInit()
     return 0;
 }
 
-int showfd()
+int ShowFd()
 {
     for (int i = 0; i < FD_MAX - FD_OFFSET; i++) {
         struct FileDescriptor *fdp = fdtable[i];
@@ -1178,4 +1178,4 @@ int showfd()
         KPrintf("%s\n", fdp->path);
     }
 }
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),showfd, showfd,  list file descriptor );
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),ShowFd, ShowFd,  show file descriptor );
