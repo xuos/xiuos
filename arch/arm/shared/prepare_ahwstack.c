@@ -14,7 +14,6 @@
 #include <xs_ktask.h>
 #include <xs_assign.h>
 #include "svc_handle.h"
-#include "stm32f4xx.h"
 #include <board.h>
 #include <shell.h>
 
@@ -380,12 +379,6 @@ void MemFaultExceptionPrint(struct ExceptionInfo *ExceptionInfo)
     if ((ExceptionInfo->ExcReturn & 0x10) == 0)
         KPrintf("FPU active!\r\n");
 
-    KPrintf("CFSR: 0x%08x \n", (*((volatile unsigned long *)(SCB->CFSR))) );
-    KPrintf("HFSR: 0x%08x \n",  (*((volatile unsigned long *)(SCB->HFSR))) );
-    KPrintf("DFSR: 0x%08x \n",(*((volatile unsigned long *)(SCB->DFSR))) );
-    KPrintf("MMFAR: 0x%08x \n",(*((volatile unsigned long *)(SCB->MMFAR))));
-    KPrintf("BFAR: 0x%08x \n",(*((volatile unsigned long *)(SCB->BFAR))));
-    KPrintf("AFSR: 0x%08x \n",(*((volatile unsigned long *)(SCB->AFSR))));
 
 #ifdef TOOL_SHELL
     HardFaultTrack();
