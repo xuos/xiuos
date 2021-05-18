@@ -84,14 +84,17 @@ void Kd233Start(uint32_t mhartid)
 			/*kernel start entry*/
     		entry();
 			break;
-#ifdef ARCH_SMP
 		case CPU1:
 			while(0x2018050420191010 != cpu2_boot_flag) { ///< waiting for boot flag ,then start cpu1 core
-				
-			}
-			SecondaryCpuCStart();
-			break;
+#ifndef ARCH_SMP
+				asm volatile("wfi");
 #endif
+			}
+#ifdef ARCH_SMP
+			SecondaryCpuCStart();
+#endif
+			break;
+
 		default:
 			break;
 	}
