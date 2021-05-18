@@ -88,21 +88,25 @@ int TestMain(int argc, char*argv[])
 			break;
 		case MEM:
 #ifdef KERNEL_TEST_MEM
+		if (argc > 2)
 		    TestMem(argc-2,&argv[2]);
 #endif
 			break;
 	    case TIMER:
 #ifdef KERNEL_TEST_TIMER
+		if (argc > 2)
             TestTmr(argc-2,&argv[2]);
 #endif
             break;
 		case GATHERBLOCK:
 #ifdef KERNEL_TEST_MEM
+		if (argc > 2)
 	        TestGatherblock(&argv[2]);
 #endif
 	        break;
 		case SCHED:
 #ifdef KERNEL_TEST_SCHED
+		if (argc > 2)
 			TestTaskReadyAndSched(argc-2, &argv[2]);
 #endif
 			break;
@@ -112,6 +116,7 @@ int TestMain(int argc, char*argv[])
 #endif
 		case REALTIME:
 #ifdef KERNEL_TEST_REALTIME
+		if (argc > 2)
 			TestRealtime(argc-2, &argv[2]);
 #endif
 		default:

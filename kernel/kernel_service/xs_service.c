@@ -39,7 +39,7 @@ extern void ShowMemory(void);
 extern long ShowSem(void);
 extern long ShowEvent(void);
 extern long ShowMutex(void);
-//extern long ShowMemPool(void);
+//extern long ShowGatherMem(void);
 extern long ShowMsgQueue(void);
 //extern long showdevice(void);
 extern long ShowTimer(void);
@@ -75,7 +75,7 @@ uintptr_t KsPrintInfo(uint32_t knum,uintptr_t *param, uint8_t num )
 #endif
        break;
     case 6:
-       //ShowMemPool();
+       //ShowGatherMem();
        break;
     case 7:
 #ifdef KERNEL_MESSAGEQUEUE
