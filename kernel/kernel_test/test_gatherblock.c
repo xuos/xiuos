@@ -21,7 +21,7 @@
 #include <xiuos.h>
 #include <string.h>
 
-extern long ShowMemPool(void);
+extern long ShowGatherMem(void);
 extern void ShowMemory(void);
 extern void ShowBuddy(void);
 /**************************single gatherblock test sample***********************************/
@@ -93,7 +93,7 @@ int SingleGatherblockTest(char * parameter)
     if(0 == strncmp("static", parameter, strlen("static"))){
         KPrintf("test static create gatherblock.\n");
         InitMemGather(&gm, "mp_s", &mempool[0], sizeof(mempool), 80);
-        ShowMemPool();
+        ShowGatherMem();
     }
 
     if(0 == strncmp("dynamic", parameter, strlen("dynamic"))){
@@ -105,7 +105,7 @@ int SingleGatherblockTest(char * parameter)
             return -1;
         }
 
-        ShowMemPool();
+        ShowGatherMem();
     }
     /* create task1, alloc memory blocks */
     tid1 = KTaskCreate("task1", Task1GmAlloc, parameter,
@@ -204,7 +204,7 @@ int MultipleGatherblockTest(void)
         KPrintf("create m_gm_d2 failed.");
         CHECK(0);
     }
-    ShowMemPool();
+    ShowGatherMem();
 
     /* create task1, alloc memory blocks */
     m_tid1 = KTaskCreate("task1_m", Task1AllocEntry, NONE,
@@ -443,7 +443,7 @@ int RandomAllocFreeTest(void *parameter)
     if(0 == strncmp("static", parameter, strlen("static"))){
         KPrintf("test static create gatherblock-%s.\n",parameter);
         InitMemGather(&random_static_gm, "ran_mp_s", &dynamic_mempool[0], sizeof(dynamic_mempool), 80);
-        ShowMemPool();
+        ShowGatherMem();
     }else{
         KPrintf("test dynamic create gatherblock.\n");
         random_dynamic_gm = CreateMemGather("ran_mp_d",40,80);
@@ -451,7 +451,7 @@ int RandomAllocFreeTest(void *parameter)
             KPrintf("%s: allocate failure.\n",__func__);
             return -1;
         }
-        ShowMemPool();
+        ShowGatherMem();
     }
     /* create task1, alloc memory blocks */
     random_tid1 = KTaskCreate("r_task1", RandomTask1GmAlloc, parameter,
