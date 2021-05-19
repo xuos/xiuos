@@ -26,6 +26,7 @@ endif
 
 ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/stm32f407-st-discovery)
 KERNELPATHS :=-I$(BSP_ROOT) \
+	-I$(KERNEL_ROOT)/arch/arm/cortex-m4 \
 	-I$(BSP_ROOT)/third_party_driver \
 	-I$(BSP_ROOT)/third_party_driver/sdio \
 	-I$(BSP_ROOT)/include \
@@ -37,6 +38,7 @@ endif
 
 ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/aiit-arm32-board)
 KERNELPATHS :=-I$(BSP_ROOT) \
+	-I$(KERNEL_ROOT)/arch/arm/cortex-m4 \
 	-I$(BSP_ROOT)/third_party_driver \
 	-I$(BSP_ROOT)/third_party_driver \
 	-I$(BSP_ROOT)/include \
@@ -52,6 +54,7 @@ endif
 
 ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/stm32f407zgt6)
 KERNELPATHS :=-I$(BSP_ROOT) \
+	-I$(KERNEL_ROOT)/arch/arm/cortex-m4 \
 	-I$(BSP_ROOT)/third_party_driver \
 	-I$(BSP_ROOT)/third_party_driver/sdio\
 	-I$(BSP_ROOT)/include \
@@ -109,6 +112,17 @@ KERNELPATHS :=-I$(BSP_ROOT) \
 	-I$(KERNEL_ROOT)/include #
 endif
 
+ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/cortex-m3-emulator)
+KERNELPATHS :=-I$(BSP_ROOT) \
+	-I$(KERNEL_ROOT)/arch/arm/cortex-m3 \
+	-I$(BSP_ROOT)/third_party_driver \
+	-I$(BSP_ROOT)/third_party_driver/Libraries/driverlib \
+	-I$(BSP_ROOT)/third_party_driver/Libraries/ \
+	-I$(BSP_ROOT)/third_party_driver/Libraries/inc \
+	-I$(KERNEL_ROOT)/include \
+	-I$(BSP_ROOT)/include #
+endif
+
 KERNELPATHS += -I$(KERNEL_ROOT)/arch \
             -I$(KERNEL_ROOT)/arch/risc-v/shared/kernel_service #
 
@@ -130,6 +144,10 @@ ifeq ($(CONFIG_CONNECTION_ADAPTER), y)
 KERNELPATHS += -I$(KERNEL_ROOT)/framework/connection/Adapter/include #
 endif
 
+ifeq ($(CONFIG_CRYPTO), y)
+KERNELPATHS += -I$(KERNEL_ROOT)/framework/security/crypto/include #
+endif
+
 KERNELPATHS += -I$(KERNEL_ROOT)/resources/include #
 
 ifeq ($(CONFIG_RESOURCES_SPI), y)
@@ -145,7 +163,6 @@ ifeq ($(CONFIG_TOOL_SHELL), y)
 KERNELPATHS +=-I$(KERNEL_ROOT)/tool/shell/letter-shell \
 	-I$(KERNEL_ROOT)/tool/shell/letter-shell/file_ext #
 endif
-
 
 
 ifeq ($(CONFIG_LIB_NEWLIB),y)
@@ -166,7 +183,6 @@ endif
 
 ifeq ($(ARCH), arm)
 KERNELPATHS +=-I$(KERNEL_ROOT)/arch/arm/shared \
-	-I$(KERNEL_ROOT)/arch/arm/cortex-m4 \
 	-I$(KERNEL_ROOT)/lib/comlibc/common #
 endif
 

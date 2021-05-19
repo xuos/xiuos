@@ -70,13 +70,13 @@ _begin:
   j    Kd233Start
 
 
-#ifdef ARCH_SMP
+
 .data
 .globl cpu2_boot_flag
 .align 3
 cpu2_boot_flag:
     .8byte 0
-#endif
+
 
 .section      .text.entry
 .align 2
