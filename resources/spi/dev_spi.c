@@ -62,7 +62,7 @@ static uint32 SpiDeviceWrite(void *dev, struct BusBlockWriteParam *write_param)
     spi_msg.spi_cs_release = 0;
     spi_msg.next = NONE;
 
-    return spi_dev->spi_dev_done->write(spi_dev, &spi_msg);
+    return spi_dev->spi_dev_done->dev_write(spi_dev, &spi_msg);
 }
 
 static uint32 SpiDeviceRead(void *dev, struct BusBlockReadParam *read_param)
@@ -80,7 +80,7 @@ static uint32 SpiDeviceRead(void *dev, struct BusBlockReadParam *read_param)
     spi_msg.spi_cs_release = 0;
     spi_msg.next = NONE;
 
-    return spi_dev->spi_dev_done->read(spi_dev, &spi_msg);
+    return spi_dev->spi_dev_done->dev_read(spi_dev, &spi_msg);
 }
 
 static const struct HalDevDone dev_done =
@@ -190,5 +190,5 @@ int SpiDevConfigureCs(struct HardwareDev *dev, uint8 spi_chip_select, uint8 spi_
     msg.spi_chip_select = spi_chip_select;
     msg.spi_cs_release = spi_cs_release;
 
-    return spi_dev->spi_dev_done->write(spi_dev, &msg);
+    return spi_dev->spi_dev_done->dev_write(spi_dev, &msg);
 }

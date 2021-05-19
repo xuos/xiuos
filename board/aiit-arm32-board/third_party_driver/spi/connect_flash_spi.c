@@ -46,7 +46,7 @@ int FlashW25qxxSpiDeviceInit(void)
         return ERROR;
     }
 
-    if (NONE == SpiFlashInit(SPI_BUS_NAME_1, "spi1_dev0", SPI_1_DRV_NAME, "W25Q64")) {
+    if (NONE == SpiFlashInit(SPI_BUS_NAME_1, "spi1_dev0", SPI_1_DRV_NAME, "spi1_W25Q64")) {
         return ERROR;
     }
 

@@ -7,4 +7,12 @@ menuconfig USER_TEST
             bool "Config test lora adhoc"
             default n
 
+        config USER_TEST_SPI_LORA
+            bool "Config test spi lora"
+            default n
+
+        config USER_TEST_SPI_FLASH
+            bool "Config test spi flash"
+            default n
+
     endif

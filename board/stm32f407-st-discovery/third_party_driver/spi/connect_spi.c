@@ -1251,10 +1251,10 @@ static uint32 Stm32SpiDrvConfigure(void *drv, struct BusConfigureInfo *configure
 /*manage the spi device operations*/
 static const struct SpiDevDone spi_dev_done =
 {
-  .open = NONE,
-  .close = NONE,
-  .write = Stm32SpiWriteData,
-  .read = Stm32SpiReadData,
+  .dev_open = NONE,
+  .dev_close = NONE,
+  .dev_write = Stm32SpiWriteData,
+  .dev_read = Stm32SpiReadData,
 };
 
 #if defined(BSP_USING_SPI1)

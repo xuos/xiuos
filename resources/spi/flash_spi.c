@@ -18,6 +18,8 @@
 * @date 2021-04-24
 */
 
+#include <bus_spi.h>
+#include <dev_spi.h>
 #include <flash_spi.h>
 
 /**
@@ -43,19 +45,28 @@ static uint32  SpiFlashWrite(void *dev, struct BusBlockWriteParam *write_param)
     HardwareDevType haldev = (struct HardwareDev *)dev;
     struct SpiHardwareDevice *flash_dev;
 
+    struct BusBlockWriteParam *flash_write_param = (struct BusBlockWriteParam *)write_param->buffer;
+
     flash_dev = CONTAINER_OF(haldev, struct SpiHardwareDevice, haldev);
     spi_flash_dev = CONTAINER_OF(flash_dev, struct SpiFlashDevice, flash_dev);
     sfud_flash_dev = (sfud_flash *)spi_flash_dev->flash_param.flash_private_data;
 
-    pos = write_param->pos * spi_flash_dev->flash_param.flash_block_param.sector_bytes;
-    size = write_param->size * spi_flash_dev->flash_param.flash_block_param.sector_bytes;
-    write_buffer = (uint8 *)write_param->buffer;
+    pos = flash_write_param->pos;// * spi_flash_dev->flash_param.flash_block_param.sector_bytes;
+    size = flash_write_param->size;// * spi_flash_dev->flash_param.flash_block_param.sector_bytes;
+    write_buffer = (uint8 *)flash_write_param->buffer;
+
+    KPrintf("flash write pos %u sector_bytes %u size %u\n", 
+        flash_write_param->pos, 
+        spi_flash_dev->flash_param.flash_block_param.sector_bytes,
+        flash_write_param->size);
 
     ret = sfud_erase_write(sfud_flash_dev, pos, size, write_buffer);
     if (SFUD_SUCCESS != ret) {
         KPrintf("SpiFlashWrite error %d pos %d size %d buffer %p\n", ret, pos, size, write_buffer);
         return ERROR;
     }
+
+    haldev->owner_bus->owner_haldev = haldev;
 
     return ret;
 }
@@ -82,19 +93,28 @@ static uint32  SpiFlashRead(void *dev, struct BusBlockReadParam *read_param)
     HardwareDevType haldev = (struct HardwareDev *)dev;
     struct SpiHardwareDevice *flash_dev;
 
+    struct BusBlockReadParam *flash_read_param = (struct BusBlockReadParam *)read_param->buffer;
+
     flash_dev = CONTAINER_OF(haldev, struct SpiHardwareDevice, haldev);
     spi_flash_dev = CONTAINER_OF(flash_dev, struct SpiFlashDevice, flash_dev);
     sfud_flash_dev = (sfud_flash *)spi_flash_dev->flash_param.flash_private_data;
 
-    pos = read_param->pos * spi_flash_dev->flash_param.flash_block_param.sector_bytes;
-    size = read_param->size * spi_flash_dev->flash_param.flash_block_param.sector_bytes;
-    read_buffer = (uint8 *)read_param->buffer;
+    pos = flash_read_param->pos;// * spi_flash_dev->flash_param.flash_block_param.sector_bytes;
+    size = flash_read_param->size;// * spi_flash_dev->flash_param.flash_block_param.sector_bytes;
+    read_buffer = (uint8 *)flash_read_param->buffer;
 
     ret = sfud_read(sfud_flash_dev, pos, size, read_buffer);
     if (SFUD_SUCCESS != ret) {
         KPrintf("SpiFlashRead error %d pos %d size %d buffer %p\n", ret, pos, size, read_buffer);
         return ERROR;
     }
+
+    flash_read_param->read_length = flash_read_param->size;
+    read_param->read_length = flash_read_param->size;
+
+    haldev->owner_bus->owner_haldev = haldev;
+
+    KPrintf("SpiFlashRead read buffer done\n");
 
     return ret;
 }

@@ -50,10 +50,10 @@ struct I2cHardwareDevice;
 
 struct I2cDevDone
 {
-    uint32 (*open) (struct I2cHardwareDevice *i2c_device);
-    uint32 (*close) (struct I2cHardwareDevice *i2c_device);
-    uint32 (*write) (struct I2cHardwareDevice *i2c_device, struct I2cDataStandard *msg);
-    uint32 (*read) (struct I2cHardwareDevice *i2c_device, struct I2cDataStandard *msg);
+    uint32 (*dev_open) (struct I2cHardwareDevice *i2c_device);
+    uint32 (*dev_close) (struct I2cHardwareDevice *i2c_device);
+    uint32 (*dev_write) (struct I2cHardwareDevice *i2c_device, struct I2cDataStandard *msg);
+    uint32 (*dev_read) (struct I2cHardwareDevice *i2c_device, struct I2cDataStandard *msg);
 };
 
 struct I2cHardwareDevice
