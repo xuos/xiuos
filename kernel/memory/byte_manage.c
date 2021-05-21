@@ -66,7 +66,7 @@ struct DynamicAllocNode
  */
 struct DynamicFreeNode
 {
-	uint32 size;                /* the size of dynamicAllocNode */
+	x_size_t size;                /* the size of dynamicAllocNode */
 	uint32 prev_adj_size;       /* the size of the previous adjacent node, (dynamic alloc node or dynamic free node */
 	
 	struct DynamicFreeNode *next;
@@ -341,7 +341,7 @@ static void* BigMemMalloc(struct DynamicBuddyMemory *dynamic_buddy, x_size_t siz
 	};
 
 	/* get the best-fit freeNode */
-	if (node) {
+	if (node && (node->size > allocsize)) {
 		struct DynamicFreeNode *remainder;
 		struct DynamicFreeNode *next;
 		x_size_t remaining;
