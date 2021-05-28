@@ -164,6 +164,12 @@ void InitBoardHardware()
     
     KPrintf("board initialization......\n");
 #endif
+
+#ifdef BSP_USING_EXTMEM
+    extern int HwSramInit(void);
+    HwSramInit();
+#endif
+
     InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
 
 #ifdef SEPARATE_COMPILE

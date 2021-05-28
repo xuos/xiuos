@@ -1,4 +1,5 @@
-SRC_FILES := test_main.c   
+SRC_FILES := test_main.c  
+SRC_FILES += extsram_test.c
 
 ifeq ($(CONFIG_KERNEL_TEST_SEM),y)
 	SRC_FILES += test_sem.c
