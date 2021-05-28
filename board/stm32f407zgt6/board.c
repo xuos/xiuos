@@ -117,6 +117,7 @@ void InitBoardHardware()
     NVIC_Configuration();
 
     SysTickConfiguration();
+    InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
 #ifdef BSP_USING_UART
 	Stm32HwUsartInit();
 #endif
@@ -131,7 +132,7 @@ void InitBoardHardware()
     HwSramInit();
 #endif
 
-    InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
+    // InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
     
 #ifdef SEPARATE_COMPILE
 

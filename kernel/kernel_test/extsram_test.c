@@ -3,7 +3,7 @@
 
 /* parameters for sram peripheral */
 /* stm32f4 Bank3:0X68000000 */
-#define SRAM_BANK_ADDR       ((uint32_t)0X60000000)
+#define SRAM_BANK_ADDR       ((uint32_t)0X68000000)
 /* data width: 8, 16, 32 */
 #define SRAM_DATA_WIDTH      16
 /* sram size */

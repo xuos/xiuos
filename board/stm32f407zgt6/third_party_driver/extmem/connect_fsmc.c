@@ -18,6 +18,7 @@
 * @date 2021-05-28
 */
 
+#include <xs_base.h>
 #include "connect_fsmc.h"
 #include "hardware_fsmc.h"
 #include "hardware_gpio.h"
@@ -173,6 +174,11 @@ int HwSramInit(void)
 #endif
 	FSMC_NORSRAMInit(&hsram);
     FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM3, ENABLE);
+
+	extern void ExtSramInitBoardMemory(void *start_phy_address, void *end_phy_address, uint8 extsram_idx);
+	#define START_ADDRESS 0x68000000
+	ExtSramInitBoardMemory((void*)(START_ADDRESS), (void*)((START_ADDRESS + BANK1_NORSRAM3_SIZE)), 2);
+
 #endif
 
 #ifdef BSP_USING_FSMC_BANK1_NORSRAM4
