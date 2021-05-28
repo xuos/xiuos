@@ -15,3 +15,9 @@ if BSP_USING_UART
 source "$BSP_DIR/third_party_driver/uart/Kconfig"
 endif
 
+menuconfig BSP_USING_EXTMEM
+bool "Using extern memory"
+default n
+if BSP_USING_EXTMEM
+source "$BSP_DIR/third_party_driver/extmem/Kconfig"
+endif

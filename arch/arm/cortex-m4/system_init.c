@@ -91,10 +91,6 @@ void SystemInit(void)
     RCC->CR &= (uint32_t)0xFFFBFFFF;
     RCC->CIR = 0x00000000;
 
-#if defined (DATA_IN_ExtSRAM) || defined (DATA_IN_ExtSDRAM)
-    SystemInitExtMemCtl(); 
-#endif
-
 #ifdef VECT_TAB_SRAM
     SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET;
 #else
