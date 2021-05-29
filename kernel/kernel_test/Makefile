@@ -1,5 +1,4 @@
 SRC_FILES := test_main.c  
-SRC_FILES += extsram_test.c
 
 ifeq ($(CONFIG_KERNEL_TEST_SEM),y)
 	SRC_FILES += test_sem.c
@@ -32,6 +31,9 @@ endif
 ifeq ($(CONFIG_KERNEL_TEST_MEM),y)
 	SRC_FILES += test_mem.c
 	SRC_FILES += test_gatherblock.c
+ifeq ($(CONFIG_MEM_EXTERN_SRAM),y)
+	SRC_FILES += extsram_test.c
+endif
 endif
 
 ifeq ($(CONFIG_KERNEL_TEST_TIMER),y)

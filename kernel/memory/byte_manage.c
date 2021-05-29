@@ -668,8 +668,9 @@ void *x_malloc(x_size_t size)
         ret = ByteManager.dynamic_buddy_manager.done->malloc(&ByteManager.dynamic_buddy_manager, size, DYNAMIC_BLOCK_NO_EXTMEM_MASK);
 		if(ret != NONE)
         	CHECK(ByteManager.dynamic_buddy_manager.done->JudgeLegal(&ByteManager.dynamic_buddy_manager, ret - SIZEOF_DYNAMICALLOCNODE_MEM));
-try_extmem:
+
 #ifdef MEM_EXTERN_SRAM
+try_extmem:
 		if(NONE == ret) {
 			for(i = 0; i < EXTSRAM_MAX_NUM; i++) {
 				if(NONE != ExtByteManager[i].done) {
@@ -956,8 +957,9 @@ void *x_umalloc(x_size_t size)
     if(ret != NONE)
         CHECK(UserByteManager.dynamic_buddy_manager.done->JudgeLegal(&UserByteManager.dynamic_buddy_manager, ret - SIZEOF_DYNAMICALLOCNODE_MEM));
 
-try_extmem:
+
 #ifdef MEM_EXTERN_SRAM
+try_extmem:
 	if(NONE == ret) {
 		for(i = 0; i < EXTSRAM_MAX_NUM; i++) {
 			if(NONE != ExtByteManager[i].done) {
