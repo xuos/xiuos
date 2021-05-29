@@ -23,6 +23,8 @@
 #include "hardware_fsmc.h"
 #include "hardware_gpio.h"
 #include "hardware_rcc.h"
+#include "cmsis_gcc.h"
+#include <string.h>
 
 static FSMC_NORSRAMInitTypeDef hsram;
 static FSMC_NORSRAMTimingInitTypeDef hsram_read;
@@ -121,17 +123,17 @@ int HwSramInit(void)
     hsram.FSMC_ExtendedMode = FSMC_ExtendedMode_Disable;
     hsram.FSMC_WriteBurst = FSMC_WriteBurst_Disable;
 
-    hsram_read.FSMC_AddressSetupTime = 1;
+    hsram_read.FSMC_AddressSetupTime = 0;
     hsram_read.FSMC_AddressHoldTime = 0;
-    hsram_read.FSMC_DataSetupTime = 2;
+    hsram_read.FSMC_DataSetupTime = 8;
     hsram_read.FSMC_BusTurnAroundDuration = 0;
     hsram_read.FSMC_CLKDivision = 0;
     hsram_read.FSMC_DataLatency = 0;
     hsram_read.FSMC_AccessMode = FSMC_AccessMode_A;
 
-    hsram_write.FSMC_AddressSetupTime = 1;
+    hsram_write.FSMC_AddressSetupTime = 0;
     hsram_write.FSMC_AddressHoldTime = 0;
-    hsram_write.FSMC_DataSetupTime = 2;
+    hsram_write.FSMC_DataSetupTime = 8;
     hsram_write.FSMC_BusTurnAroundDuration = 0;
     hsram_write.FSMC_CLKDivision = 0;
     hsram_write.FSMC_DataLatency = 0;
@@ -175,8 +177,16 @@ int HwSramInit(void)
 	FSMC_NORSRAMInit(&hsram);
     FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM3, ENABLE);
 
+	
+
 	extern void ExtSramInitBoardMemory(void *start_phy_address, void *end_phy_address, uint8 extsram_idx);
 	#define START_ADDRESS 0x68000000
+
+	memset((void*)START_ADDRESS,0,BANK1_NORSRAM3_SIZE);
+	__DSB();
+//     __ISB();
+	__DMB();
+
 	ExtSramInitBoardMemory((void*)(START_ADDRESS), (void*)((START_ADDRESS + BANK1_NORSRAM3_SIZE)), 2);
 
 #endif

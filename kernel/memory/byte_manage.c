@@ -202,7 +202,6 @@ static int SmallMemTypeAlloc(struct DynamicAllocNode *address)
 {
 	NULL_PARAM_CHECK(address);
 
-    // if(address->prev_adj_size & STATIC_BLOCK_MASK) {
 	if(address->flag & STATIC_BLOCK_MASK) {
         return RET_TRUE;
     }
@@ -221,7 +220,6 @@ static int MmAllocNode(struct DynamicAllocNode *memory_ptr)
 {
 	NULL_PARAM_CHECK(memory_ptr);
 
-    // if(memory_ptr->prev_adj_size & ALLOC_BLOCK_MASK) {
 	if(memory_ptr->flag & ALLOC_BLOCK_MASK) {
         return RET_TRUE;
     }
@@ -250,7 +248,6 @@ static int CaculateBuddyIndex(x_size_t size)
 	} else {
 		ndx = MEM_LINKNRS - 1;
 	}
-	KPrintf("hehehe ndx = %d, size = %d\n",ndx, size);
 	return ndx;
 }
 
@@ -311,23 +308,18 @@ static void InitBuddy(struct DynamicBuddyMemory *dynamic_buddy, x_ubase dynamic_
 
     /* the initialized free node */
 	node =(struct DynamicFreeNode *) ((x_ubase)dynamic_buddy_start + SIZEOF_DYNAMICALLOCNODE_MEM);
-	KPrintf("kaishi : 0x%x, node : 0x%x, size : 0x%x\n", (x_ubase)dynamic_buddy_start, node, dynamic_buddy_size);
 	node->size=(dynamic_buddy_size - 2* SIZEOF_DYNAMICALLOCNODE_MEM);
-	KPrintf("hahaha size = %d\n", node->size);
 	node->prev_adj_size= SIZEOF_DYNAMICALLOCNODE_MEM;
-	node->flag= DYNAMIC_BLOCK_MASK;
+	node->flag= 0;
 
     /* record the end boundary of dynamic buddy memory */
     dynamic_buddy->mm_dynamic_end[0] = PTR2ALLOCNODE((x_ubase)dynamic_buddy_start + (x_ubase)dynamic_buddy_size - SIZEOF_DYNAMICALLOCNODE_MEM);
     dynamic_buddy->mm_dynamic_end[0]->size = SIZEOF_DYNAMICALLOCNODE_MEM;
     dynamic_buddy->mm_dynamic_end[0]->prev_adj_size = node->size;
-    // dynamic_buddy->mm_dynamic_end[0]->prev_adj_size |= DYNAMIC_BLOCK_MASK;
 	dynamic_buddy->mm_dynamic_end[0]->flag = DYNAMIC_BLOCK_MASK;
 
     /* insert node into dynamic buddy memory */
 	AddNewNodeIntoBuddy(dynamic_buddy,node);
-	KPrintf("14 : %d\n", dynamic_buddy->mm_freenode_list[14].size);
-	KPrintf("dynamic_buddy_start = 0x%x,dynamic_buddy_size = 0x%x\n",dynamic_buddy_start,dynamic_buddy_size);
 }
 
 /**
@@ -342,7 +334,6 @@ static void InitBuddy(struct DynamicBuddyMemory *dynamic_buddy, x_ubase dynamic_
 static void* BigMemMalloc(struct DynamicBuddyMemory *dynamic_buddy, x_size_t size, uint32 extsram_mask)
 {
 	int ndx = 0;
-  	// x_size_t allocsize = 0;
 	uint32 allocsize = 0;
   	void *result = NONE;
 	struct DynamicFreeNode *node = NONE;
@@ -351,7 +342,6 @@ static void* BigMemMalloc(struct DynamicBuddyMemory *dynamic_buddy, x_size_t siz
 
   	/* calculate the real size */
 	allocsize = size + SIZEOF_DYNAMICALLOCNODE_MEM;
-KPrintf("allocsize = %d\n", allocsize);
     /* if the size exceeds the upper limit, return MEM_LINKNRS - 1 */
 	if (allocsize >= MEM_HIGH_RANGE) {
 		ndx = MEM_LINKNRS - 1; 
@@ -365,12 +355,10 @@ KPrintf("allocsize = %d\n", allocsize);
 			 node && (node->size < allocsize);
 			 node = node->next) {
 	};
-	KPrintf("node 0x%x mm_freenode_list[%d] = 0x%x dynamic_buddy_start = 0x%x allocsize = %d\n",node,ndx,&dynamic_buddy->mm_freenode_list[ndx],dynamic_buddy->dynamic_buddy_start,allocsize);
 	/* get the best-fit freeNode */
 	if (node && (node->size > allocsize)) {
 		struct DynamicFreeNode *remainder;
 		struct DynamicFreeNode *next;
-		// x_size_t remaining;
 		uint32 remaining;
 
 		node->prev->next = node->next;
@@ -379,34 +367,27 @@ KPrintf("allocsize = %d\n", allocsize);
 		}
 
 		remaining = node->size - allocsize;
-		KPrintf("node = 0x%x node size = %d alloc size = %d remaining size = %d \n",node,node->size,allocsize,remaining);
 		if (remaining >= MEM_LOW_RANGE){
 			next = PTR2FREENODE(((char *)node) + node->size);
 
 			/* create the remainder node */
 			remainder = PTR2FREENODE(((char *)node) + allocsize);
 			remainder->size		= remaining;
-			// KPrintf("remainder 0x%x node 0x%x next 0x%x,a s %d r %d remainder s %d fg 0x%x\n",remainder,node,next,allocsize,remaining,remainder->size,remainder->flag);
 
 			remainder->prev_adj_size = allocsize;
-			// KPrintf("0 remainder 0x%x node 0x%x next 0x%x,a s %d r %d remainder s %d, p s = %d fg 0x%x\n",remainder,node,next,allocsize,remaining,remainder->size,remainder->prev_adj_size,remainder->flag);
+			remainder->flag = 0;
 
 			/* adjust the size of the node */
 			node->size = allocsize;
-			// next->prev_adj_size = (remaining|(next->prev_adj_size & ALLOC_BLOCK_MASK));
 			next->prev_adj_size = remaining;
 
 			/* insert the remainder freeNode back into the dynamic buddy memory */
-			KPrintf("1 remainder 0x%x node 0x%x next 0x%x,a s %d r %d remainder s %d, p s = %d fg 0x%x\n",remainder,node,next,node->size,remaining,remainder->size,remainder->prev_adj_size,remainder->flag);
 			AddNewNodeIntoBuddy(dynamic_buddy, remainder);
 		}
 
 		/* handle the case of an exact size match */
-		// node->prev_adj_size &= DYNAMIC_REMAINING_MASK;
-		// node->prev_adj_size |= DYNAMIC_BLOCK_MASK;
 
 		node->flag = extsram_mask;
-		// KPrintf("node flag = 0x%x prev_adj_size = 0x%x\n",node->flag,node->prev_adj_size);
         result = (void *)((char *)node + SIZEOF_DYNAMICALLOCNODE_MEM);
 	}
 
@@ -451,7 +432,6 @@ static void BigMemFree( struct ByteMemory *byte_memory, void *pointer)
 	/* get the next sibling freeNode */
 	next = PTR2FREENODE((char*)node+node->size);
 
-	// if(((next->prev_adj_size & DYNAMIC_BLOCK_MASK) == 0)) {
 	if(((next->flag & DYNAMIC_BLOCK_MASK) == 0)) {
 		struct DynamicAllocNode *andbeyond;
 
@@ -462,25 +442,22 @@ static void BigMemFree( struct ByteMemory *byte_memory, void *pointer)
 		}
 
 		node->size += next->size;
-		// andbeyond->prev_adj_size = (node->size | (andbeyond->prev_adj_size & ALLOC_BLOCK_MASK));
 		andbeyond->prev_adj_size = node->size;
 		next = (struct DynamicFreeNode*)andbeyond;
 	}
     /* get the prev sibling freeNode */
-	// prev = (struct DynamicFreeNode*)((char*)node - (node->prev_adj_size & DYNAMIC_REMAINING_MASK));
 	prev = (struct DynamicFreeNode*)((char*)node - node->prev_adj_size );
-	// if((prev->prev_adj_size & DYNAMIC_BLOCK_MASK)==0) {
 	if((prev->flag & DYNAMIC_BLOCK_MASK)==0) {
+
 		prev->prev->next=prev->next;
 		if(prev->next){
 			prev->next->prev = prev->prev;
 		}
 		prev->size += node->size;
-		// next->prev_adj_size = (prev->size | (next->prev_adj_size & ALLOC_BLOCK_MASK));
 		next->prev_adj_size = prev->size;
 		node = prev;
 	}
-	// node->prev_adj_size &= DYNAMIC_REMAINING_MASK;
+	node->flag = 0;
 
 	/* insert freeNode into dynamic buddy memory */
 	AddNewNodeIntoBuddy(&byte_memory->dynamic_buddy_manager,node);
@@ -658,17 +635,19 @@ void *x_malloc(x_size_t size)
 	void *ret = NONE;
 	register x_base lock = 0;
 
-	// /* parameter detection */
-	// if((size == 0) || (size >  ByteManager.dynamic_buddy_manager.dynamic_buddy_end - ByteManager.dynamic_buddy_manager.dynamic_buddy_start - ByteManager.dynamic_buddy_manager.active_memory))
-	//     return NONE;
+	 /* parameter detection */
+
 #ifdef DATA_IN_ExtSRAM
 		/* parameter detection */
 	if(size == 0 ){
 		 return NONE;
 	}
-	// if((size >  ByteManager.dynamic_buddy_manager.dynamic_buddy_end - ByteManager.dynamic_buddy_manager.dynamic_buddy_start - ByteManager.dynamic_buddy_manager.active_memory)){
-	// 	goto try_extmem;
-	// }
+	if((size >  ByteManager.dynamic_buddy_manager.dynamic_buddy_end - ByteManager.dynamic_buddy_manager.dynamic_buddy_start - ByteManager.dynamic_buddy_manager.active_memory)){
+		lock = CriticalAreaLock();
+		/* alignment */
+		size = ALIGN_MEN_UP(size, MEM_ALIGN_SIZE);
+		goto try_extmem;
+	}
 	   
 #else
 		/* parameter detection */
@@ -691,25 +670,22 @@ void *x_malloc(x_size_t size)
         ret = ByteManager.dynamic_buddy_manager.done->malloc(&ByteManager.dynamic_buddy_manager, size, DYNAMIC_BLOCK_NO_EXTMEM_MASK);
 		if(ret != NONE)
         	CHECK(ByteManager.dynamic_buddy_manager.done->JudgeLegal(&ByteManager.dynamic_buddy_manager, ret - SIZEOF_DYNAMICALLOCNODE_MEM));
-// try_extmem:
+try_extmem:
 #ifdef DATA_IN_ExtSRAM
 		if(NONE == ret) {
-			KPrintf("wwg debug ...\n");
 			for(i = 0; i < EXTSRAM_MAX_NUM; i++) {
 				if(NONE != ExtByteManager[i].done) {
-					KPrintf(" ExtByteManager[%d].done = 0x%x \n",i,ExtByteManager[i].done);
 					ret = ExtByteManager[i].dynamic_buddy_manager.done->malloc(&ExtByteManager[i].dynamic_buddy_manager, size, DYNAMIC_BLOCK_EXTMEMn_MASK(i + 1));
 					if (ret){
 						CHECK(ExtByteManager[i].dynamic_buddy_manager.done->JudgeLegal(&ExtByteManager[i].dynamic_buddy_manager, ret - SIZEOF_DYNAMICALLOCNODE_MEM));
 						break;
 					}
-					KPrintf("ret = 0x%x \n",ret);	
+					
 				}
 			}
 		}
 #endif
 	}
-	KPrintf("malloc i = %d size %d ret = 0x%x\n",i,size,ret);
 	/* release lock */
 	CriticalAreaUnLock(lock);
   	return ret;
@@ -830,7 +806,6 @@ void x_free(void *pointer)
 
 	/* judge the pointer is malloced from extern memory*/
 	if(0 != (node->flag & 0xFF0000)) {
-		KPrintf("wwg debug node->flag = 0x%x\n",node->flag);
 		ExtByteManager[((node->flag & 0xFF0000) >> 16) - 1].dynamic_buddy_manager.done->release(&ExtByteManager[((node->flag & 0xFF0000) >> 16) - 1],pointer);
 	}
 #else
@@ -886,8 +861,6 @@ void ExtSramInitBoardMemory(void *start_phy_address, void *end_phy_address, uint
 
     /* dynamic buddy memory initialization */
 	ExtByteManager[extsram_idx].dynamic_buddy_manager.done->init(&ExtByteManager[extsram_idx].dynamic_buddy_manager, ExtByteManager[extsram_idx].dynamic_buddy_manager.dynamic_buddy_start, ExtByteManager[extsram_idx].dynamic_buddy_manager.dynamic_buddy_end - ExtByteManager[extsram_idx].dynamic_buddy_manager.dynamic_buddy_start);
-	KPrintf("[0x%x - 0x%x]ExtByteManager[%d].dynamic_buddy_manager.done = 0x%x\n",start_phy_address,end_phy_address,extsram_idx,ExtByteManager[extsram_idx].dynamic_buddy_manager.done);
-
 }
 #endif
 
