@@ -925,12 +925,28 @@ void InitBoardMemory(void *start_phy_address, void *end_phy_address)
  */
 void *x_umalloc(x_size_t size)
 {
+	uint8 i = 0;
 	void *ret = NONE;
 	register x_base lock = 0;
 
+
+#ifdef MEM_EXTERN_SRAM
+	/* parameter detection */
+	if(size == 0 ){
+		 return NONE;
+	}
+	if((size >  ByteManager.dynamic_buddy_manager.dynamic_buddy_end - ByteManager.dynamic_buddy_manager.dynamic_buddy_start - ByteManager.dynamic_buddy_manager.active_memory)){
+		lock = CriticalAreaLock();
+		/* alignment */
+		size = ALIGN_MEN_UP(size, MEM_ALIGN_SIZE);
+		goto try_extmem;
+	}
+	   
+#else
 	/* parameter detection */
 	if((size == 0) || (size >  UserByteManager.dynamic_buddy_manager.dynamic_buddy_end - UserByteManager.dynamic_buddy_manager.dynamic_buddy_start - UserByteManager.dynamic_buddy_manager.active_memory))
 	    return NONE;
+#endif
 
 	/* hold lock before allocation */
 	lock = CriticalAreaLock();
@@ -939,6 +955,21 @@ void *x_umalloc(x_size_t size)
     ret = UserByteManager.dynamic_buddy_manager.done->malloc(&UserByteManager.dynamic_buddy_manager,size);
     if(ret != NONE)
         CHECK(UserByteManager.dynamic_buddy_manager.done->JudgeLegal(&UserByteManager.dynamic_buddy_manager, ret - SIZEOF_DYNAMICALLOCNODE_MEM));
+
+try_extmem:
+#ifdef MEM_EXTERN_SRAM
+	if(NONE == ret) {
+		for(i = 0; i < EXTSRAM_MAX_NUM; i++) {
+			if(NONE != ExtByteManager[i].done) {
+				ret = ExtByteManager[i].dynamic_buddy_manager.done->malloc(&ExtByteManager[i].dynamic_buddy_manager, size, DYNAMIC_BLOCK_EXTMEMn_MASK(i + 1));
+				if (ret) {
+					CHECK(ExtByteManager[i].dynamic_buddy_manager.done->JudgeLegal(&ExtByteManager[i].dynamic_buddy_manager, ret - SIZEOF_DYNAMICALLOCNODE_MEM));
+					break;
+				}
+			}
+		}
+	}
+#endif
 	/* release lock */
 	CriticalAreaUnLock(lock);
   	return ret;
@@ -1042,8 +1073,21 @@ void x_ufree(void *pointer)
 	lock = CriticalAreaLock();
 	node = PTR2ALLOCNODE((char*)pointer-SIZEOF_DYNAMICALLOCNODE_MEM);
     CHECK(UserByteManager.done->JudgeAllocated(node));
-	UserByteManager.dynamic_buddy_manager.done->release(&UserByteManager,pointer);
 
+#ifdef MEM_EXTERN_SRAM
+	/* judge the pointer is not malloced from extern memory*/
+	if(0 == (node->flag & 0xFF0000)) {
+		UserByteManager.dynamic_buddy_manager.done->release(&ByteManager,pointer);
+	}
+
+	/* judge the pointer is malloced from extern memory*/
+	if(0 != (node->flag & 0xFF0000)) {
+		ExtByteManager[((node->flag & 0xFF0000) >> 16) - 1].dynamic_buddy_manager.done->release(&ExtByteManager[((node->flag & 0xFF0000) >> 16) - 1],pointer);
+	}
+
+#else
+	UserByteManager.dynamic_buddy_manager.done->release(&UserByteManager,pointer);
+#endif
 	/* release the lock */
 	CriticalAreaUnLock(lock);
 }
