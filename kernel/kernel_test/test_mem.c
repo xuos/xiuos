@@ -140,10 +140,10 @@ int FendGrin()
     int tempvalue = 1;
 
     while( i< MEM_GRIN_COUNT) {
-        KPrintf("\033[32;1malloc memory [%d]\033[0m\n",tempvalue);
         ptr[i] = x_malloc(tempvalue);
 
         if (ptr[i]) {
+            KPrintf("\033[32;1malloc memory [%d] ptr[%d] = 0x%x\033[0m\n",tempvalue,i,ptr[i]);
             arr_grin[i] = tempvalue;
             i++;
             tempvalue++;

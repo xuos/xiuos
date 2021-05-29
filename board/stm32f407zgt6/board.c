@@ -35,6 +35,7 @@ Modification:
 #include "board.h"
 #include "connect_usart.h"
 #include "connect_gpio.h"
+#include "connect_fsmc.h"
 #include "misc.h"
 
 extern void entry(void);
@@ -105,6 +106,9 @@ struct InitSequenceDesc _board_init[] =
 #ifdef BSP_USING_GPIO	
     { "hw pin", Stm32HwGpioInit },
 #endif
+#ifdef BSP_USING_EXTMEM
+    { "hw extern sram", HwSramInit },
+#endif
 	{ " NONE ",NONE },
 };
 
@@ -117,6 +121,7 @@ void InitBoardHardware()
     NVIC_Configuration();
 
     SysTickConfiguration();
+    InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
 #ifdef BSP_USING_UART
 	Stm32HwUsartInit();
 #endif
@@ -125,7 +130,6 @@ void InitBoardHardware()
     KPrintf("\nconsole init completed.\n");
     KPrintf("board initialization......\n");
 #endif
-    InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
     
 #ifdef SEPARATE_COMPILE
 

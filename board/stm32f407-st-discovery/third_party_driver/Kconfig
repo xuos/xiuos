@@ -13,13 +13,6 @@ if BSP_USING_DMA
 source "$BSP_DIR/third_party_driver/common/Kconfig"
 endif
 
-menuconfig BSP_USING_EXTMEM
-bool "Using EXTMEM device"
-default n
-if BSP_USING_EXTMEM
-source "$BSP_DIR/third_party_driver/extmem/Kconfig"
-endif
-
 menuconfig BSP_USING_GPIO
 bool "Using GPIO device "
 default y

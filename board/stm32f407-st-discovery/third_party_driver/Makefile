@@ -5,11 +5,6 @@ ifeq ($(CONFIG_BSP_USING_CAN),y)
   SRC_DIR += can
 endif
 
-
-ifeq ($(CONFIG_BSP_USING_EXTMEM),y)
-  SRC_DIR += extmem
-endif
-
 ifeq ($(CONFIG_BSP_USING_GPIO),y)
   SRC_DIR += gpio
 endif

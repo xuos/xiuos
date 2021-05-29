@@ -47,6 +47,7 @@ extern int Stm32HwRtcInit();
 extern int Stm32HwTouchBusInit(void);
 extern int Stm32HwCanBusInit(void);
 extern int HwSdioInit();
+extern int HwSramInit(void);
 
 static void ClockConfiguration()
 {
@@ -143,6 +144,9 @@ struct InitSequenceDesc _board_init[] =
 #ifdef BSP_USING_SDIO
     {"hw sdcard init",HwSdioInit},
 #endif
+#ifdef BSP_USING_EXTMEM
+    { "hw extern sram", HwSramInit },
+#endif
 	{ " NONE ",NONE },
 };
 
@@ -155,16 +159,18 @@ void InitBoardHardware()
     NVIC_Configuration();
 
     SysTickConfiguration();
+    InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
+
 #ifdef BSP_USING_UART
 	Stm32HwUsartInit();
 #endif
+
 #ifdef KERNEL_CONSOLE
     InstallConsole(KERNEL_CONSOLE_BUS_NAME, KERNEL_CONSOLE_DRV_NAME, KERNEL_CONSOLE_DEVICE_NAME);
     KPrintf("\nconsole init completed.\n");
     
     KPrintf("board initialization......\n");
 #endif
-    InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
 
 #ifdef SEPARATE_COMPILE
 

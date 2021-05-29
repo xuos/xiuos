@@ -1,6 +1,6 @@
 /*
 * Copyright (c) 2020 AIIT XUOS Lab
-* xiuOS is licensed under Mulan PSL v2.
+* XiUOS is licensed under Mulan PSL v2.
 * You can use this software according to the terms and conditions of the Mulan PSL v2.
 * You may obtain a copy of Mulan PSL v2 at:
 *        http://license.coscl.org.cn/MulanPSL2
@@ -9,20 +9,28 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 * See the Mulan PSL v2 for more details.
 */
-
+ 
 /**
-* @file extmem.h
-* @brief support extmem function
+* @file connect_fsmc.h
+* @brief declare stm32f407zgt6-board fsmc function
 * @version 1.0 
 * @author AIIT XUOS Lab
-* @date 2021-04-25
+* @date 2021-05-28
 */
 
-#ifndef EXTMEM_H
-#define EXTMEM_H
+#ifndef CONNECT_FSMC_H
+#define CONNECT_FSMC_H
 
-#if defined (DATA_IN_ExtSRAM) || defined (DATA_IN_ExtSDRAM)
-  void SystemInitExtMemCtl(void); 
+#include <xsconfig.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int HwSramInit(void);
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif
