@@ -141,6 +141,12 @@ if BSP_USING_USB
     endif
 endif
 
+if BSP_USING_LWIP
+    config RESOURCES_LWIP
+        bool "Using LwIP bus drivers"
+        default n
+endif
+
 if BSP_USING_WDT
     config RESOURCES_WDT
         bool "Using Watch Dog bus drivers"

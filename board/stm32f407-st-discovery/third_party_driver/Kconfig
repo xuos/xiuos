@@ -98,6 +98,11 @@ if BSP_USING_USB
 source "$BSP_DIR/third_party_driver/usb/Kconfig"
 endif
 
+menuconfig BSP_USING_LWIP
+bool "Using LwIP device"
+default n
+select RESOURCES_LWIP
+
 menuconfig BSP_USING_WDT
 bool "Using WATCHDOG device"
 default y

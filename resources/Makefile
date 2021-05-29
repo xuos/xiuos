@@ -49,6 +49,10 @@ ifeq ($(CONFIG_RESOURCES_USB),y)
 	SRC_DIR += usb
 endif
 
+ifeq ($(CONFIG_RESOURCES_LWIP),y)
+	SRC_DIR += ethernet
+endif
+
 ifeq ($(CONFIG_RESOURCES_WDT),y)
 	SRC_DIR += watchdog
 endif
