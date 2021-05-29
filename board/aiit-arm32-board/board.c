@@ -144,11 +144,9 @@ struct InitSequenceDesc _board_init[] =
 #ifdef BSP_USING_SDIO
     {"hw sdcard init",HwSdioInit},
 #endif
-// #ifdef BSP_USING_EXTMEM
-// #ifdef DATA_IN_ExtSRAM
-//     {"hw ext sram",HwSramInit},
-// #endif
-// #endif
+#ifdef BSP_USING_EXTMEM
+    { "hw extern sram", HwSramInit },
+#endif
 	{ " NONE ",NONE },
 };
 
@@ -161,7 +159,7 @@ void InitBoardHardware()
     NVIC_Configuration();
 
     SysTickConfiguration();
-            InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
+    InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
 
 #ifdef BSP_USING_UART
 	Stm32HwUsartInit();
@@ -173,13 +171,6 @@ void InitBoardHardware()
     
     KPrintf("board initialization......\n");
 #endif
-
-#ifdef BSP_USING_EXTMEM
-    extern int HwSramInit(void);
-    HwSramInit();
-#endif
-
-    InitBoardMemory((void*)MEMORY_START_ADDRESS, (void*)MEMORY_END_ADDRESS);
 
 #ifdef SEPARATE_COMPILE
 

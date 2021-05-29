@@ -85,7 +85,7 @@ void FreeBlockMemGather(void *data_block);
 #endif
 
 void InitBoardMemory(void *begin_addr, void *end_addr);
-#ifdef DATA_IN_ExtSRAM
+#ifdef MEM_EXTERN_SRAM
 void ExtSramInitBoardMemory(void *start_phy_address, void *end_phy_address, uint8 extsram_idx);
 #endif
 void *x_malloc(x_size_t nbytes);

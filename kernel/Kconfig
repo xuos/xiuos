@@ -37,6 +37,10 @@ menu "Kernel feature"
             help
                 Alignment size for CPU architecture data access
 
+        config MEM_EXTERN_SRAM
+            bool "Using extern memory"
+            default n
+
         config MM_PAGE_SIZE
             int "Config memory page size"
             default 4096

@@ -22,8 +22,6 @@
 #include <xiuos.h>
 #include <string.h>
 
-#define DATA_IN_ExtSRAM
-
 #define MEM_STATS
 
 /* Covert pointer to other structure */
@@ -167,7 +165,7 @@ static struct ByteMemory ByteManager;
 static struct ByteMemory UserByteManager;
 #endif
 
-#ifdef DATA_IN_ExtSRAM
+#ifdef MEM_EXTERN_SRAM
 static struct ByteMemory ExtByteManager[EXTSRAM_MAX_NUM] = {0};
 #endif
 /**
@@ -393,7 +391,7 @@ static void* BigMemMalloc(struct DynamicBuddyMemory *dynamic_buddy, x_size_t siz
 
 	/* failure allocation */
 	if(result == NONE) {
-#ifndef DATA_IN_ExtSRAM
+#ifndef MEM_EXTERN_SRAM
 	    KPrintf("%s: allocation failed, size %d.\n", __func__,allocsize);
 #endif
         return result;
@@ -600,7 +598,7 @@ static void *SmallMemMalloc(struct ByteMemory *byte_memory, x_size_t size)
 
 	/* the static memory block is exhausted, now turn to dynamic buddy memory for allocation. */
     result = byte_memory->dynamic_buddy_manager.done->malloc(&byte_memory->dynamic_buddy_manager, size, DYNAMIC_BLOCK_NO_EXTMEM_MASK);
-#ifdef DATA_IN_ExtSRAM
+#ifdef MEM_EXTERN_SRAM
 	if(NONE == result) {
 		for(i = 0; i < EXTSRAM_MAX_NUM; i++) {
 			if(NONE != ExtByteManager[i].done) {
@@ -637,7 +635,7 @@ void *x_malloc(x_size_t size)
 
 	 /* parameter detection */
 
-#ifdef DATA_IN_ExtSRAM
+#ifdef MEM_EXTERN_SRAM
 		/* parameter detection */
 	if(size == 0 ){
 		 return NONE;
@@ -671,7 +669,7 @@ void *x_malloc(x_size_t size)
 		if(ret != NONE)
         	CHECK(ByteManager.dynamic_buddy_manager.done->JudgeLegal(&ByteManager.dynamic_buddy_manager, ret - SIZEOF_DYNAMICALLOCNODE_MEM));
 try_extmem:
-#ifdef DATA_IN_ExtSRAM
+#ifdef MEM_EXTERN_SRAM
 		if(NONE == ret) {
 			for(i = 0; i < EXTSRAM_MAX_NUM; i++) {
 				if(NONE != ExtByteManager[i].done) {
@@ -798,7 +796,7 @@ void x_free(void *pointer)
 	} else
 #endif
 	{
-#ifdef DATA_IN_ExtSRAM
+#ifdef MEM_EXTERN_SRAM
 	/* judge the pointer is not malloced from extern memory*/
 	if(0 == (node->flag & 0xFF0000)) {
 		ByteManager.dynamic_buddy_manager.done->release(&ByteManager,pointer);
@@ -816,7 +814,7 @@ void x_free(void *pointer)
 	CriticalAreaUnLock(lock);
 }
 
-#ifdef DATA_IN_ExtSRAM
+#ifdef MEM_EXTERN_SRAM
 /**
  * This function initializes the dynamic buddy memory of extern sram.
  *

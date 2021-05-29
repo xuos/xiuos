@@ -15,6 +15,7 @@ endif
 menuconfig BSP_USING_EXTMEM
 bool "Using EXTMEM device"
 default n
+select MEM_EXTERN_SRAM
 if BSP_USING_EXTMEM
 source "$BSP_DIR/third_party_driver/extmem/Kconfig"
 endif

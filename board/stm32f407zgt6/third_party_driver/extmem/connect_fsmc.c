@@ -18,17 +18,20 @@
 * @date 2021-05-28
 */
 
-#include <xs_base.h>
 #include "connect_fsmc.h"
 #include "hardware_fsmc.h"
 #include "hardware_gpio.h"
 #include "hardware_rcc.h"
-#include "cmsis_gcc.h"
 #include <string.h>
+#include <xs_base.h>
 
-static FSMC_NORSRAMInitTypeDef hsram;
-static FSMC_NORSRAMTimingInitTypeDef hsram_read;
-static FSMC_NORSRAMTimingInitTypeDef hsram_write;
+#define FSMC_BANK1_NORSRAM3_START_ADDRESS 0x68000000
+
+static FSMC_NORSRAMInitTypeDef hsram3;
+static FSMC_NORSRAMTimingInitTypeDef hsram_read3;
+static FSMC_NORSRAMTimingInitTypeDef hsram_write3;
+
+extern void ExtSramInitBoardMemory(void *start_phy_address, void *end_phy_address, uint8 extsram_idx);
 
 int HwSramInit(void)
 {
@@ -108,100 +111,51 @@ int HwSramInit(void)
 	GPIO_PinAFConfig(GPIOG,GPIO_PinSource10,GPIO_AF_FSMC);
 	GPIO_PinAFConfig(GPIOG,GPIO_PinSource12,GPIO_AF_FSMC);
 
-	hsram.FSMC_ReadWriteTimingStruct = &hsram_read;
-	hsram.FSMC_WriteTimingStruct = &hsram_write;
+	hsram3.FSMC_ReadWriteTimingStruct = &hsram_read3;
+	hsram3.FSMC_WriteTimingStruct = &hsram_write3;
 
-    /* hsram.Init */
-    hsram.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable;
-    hsram.FSMC_MemoryType = FSMC_MemoryType_SRAM;
-    hsram.FSMC_BurstAccessMode = FSMC_BurstAccessMode_Disable;
-    hsram.FSMC_WaitSignalPolarity = FSMC_WaitSignalPolarity_Low;
-    hsram.FSMC_WrapMode = FSMC_WrapMode_Disable;
-    hsram.FSMC_WaitSignalActive = FSMC_WaitSignalActive_BeforeWaitState;
-    hsram.FSMC_WriteOperation = FSMC_WriteOperation_Enable;
-    hsram.FSMC_WaitSignal = FSMC_WaitSignal_Disable;
-    hsram.FSMC_ExtendedMode = FSMC_ExtendedMode_Disable;
-    hsram.FSMC_WriteBurst = FSMC_WriteBurst_Disable;
+    /* hsram3.Init */
+    hsram3.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable;
+    hsram3.FSMC_MemoryType = FSMC_MemoryType_SRAM;
+    hsram3.FSMC_BurstAccessMode = FSMC_BurstAccessMode_Disable;
+    hsram3.FSMC_WaitSignalPolarity = FSMC_WaitSignalPolarity_Low;
+    hsram3.FSMC_WrapMode = FSMC_WrapMode_Disable;
+    hsram3.FSMC_WaitSignalActive = FSMC_WaitSignalActive_BeforeWaitState;
+    hsram3.FSMC_WriteOperation = FSMC_WriteOperation_Enable;
+    hsram3.FSMC_WaitSignal = FSMC_WaitSignal_Disable;
+    hsram3.FSMC_ExtendedMode = FSMC_ExtendedMode_Disable;
+    hsram3.FSMC_WriteBurst = FSMC_WriteBurst_Disable;
 
-    hsram_read.FSMC_AddressSetupTime = 0;
-    hsram_read.FSMC_AddressHoldTime = 0;
-    hsram_read.FSMC_DataSetupTime = 8;
-    hsram_read.FSMC_BusTurnAroundDuration = 0;
-    hsram_read.FSMC_CLKDivision = 0;
-    hsram_read.FSMC_DataLatency = 0;
-    hsram_read.FSMC_AccessMode = FSMC_AccessMode_A;
+    hsram_read3.FSMC_AddressSetupTime = 0;
+    hsram_read3.FSMC_AddressHoldTime = 0;
+    hsram_read3.FSMC_DataSetupTime = 8;
+    hsram_read3.FSMC_BusTurnAroundDuration = 0;
+    hsram_read3.FSMC_CLKDivision = 0;
+    hsram_read3.FSMC_DataLatency = 0;
+    hsram_read3.FSMC_AccessMode = FSMC_AccessMode_A;
 
-    hsram_write.FSMC_AddressSetupTime = 0;
-    hsram_write.FSMC_AddressHoldTime = 0;
-    hsram_write.FSMC_DataSetupTime = 8;
-    hsram_write.FSMC_BusTurnAroundDuration = 0;
-    hsram_write.FSMC_CLKDivision = 0;
-    hsram_write.FSMC_DataLatency = 0;
-    hsram_write.FSMC_AccessMode = FSMC_AccessMode_A;
-
-#ifdef BSP_USING_FSMC_BANK1_NORSRAM1
-    hsram.FSMC_Bank = FSMC_Bank1_NORSRAM1;
-#if BANK1_NORSRAM1_DATA_WIDTH == 8
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_8b;
-#elif BANK1_NORSRAM1_DATA_WIDTH == 16
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
-#else
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_32b;
-#endif
-	FSMC_NORSRAMInit(&hsram);
-    FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM1, ENABLE);
-#endif
-
-#ifdef BSP_USING_FSMC_BANK1_NORSRAM2
-    hsram.FSMC_Bank = FSMC_Bank1_NORSRAM2;
-#if BANK1_NORSRAM2_DATA_WIDTH == 8
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_8b;
-#elif BANK1_NORSRAM2_DATA_WIDTH == 16
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
-#else
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_32b;
-#endif
-	FSMC_NORSRAMInit(&hsram);
-    FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM2, ENABLE);
-#endif
+    hsram_write3.FSMC_AddressSetupTime = 0;
+    hsram_write3.FSMC_AddressHoldTime = 0;
+    hsram_write3.FSMC_DataSetupTime = 8;
+    hsram_write3.FSMC_BusTurnAroundDuration = 0;
+    hsram_write3.FSMC_CLKDivision = 0;
+    hsram_write3.FSMC_DataLatency = 0;
+    hsram_write3.FSMC_AccessMode = FSMC_AccessMode_A;
 
 #ifdef BSP_USING_FSMC_BANK1_NORSRAM3
-    hsram.FSMC_Bank = FSMC_Bank1_NORSRAM3;
+    hsram3.FSMC_Bank = FSMC_Bank1_NORSRAM3;
 #if BANK1_NORSRAM3_DATA_WIDTH == 8
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_8b;
+    hsram3.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_8b;
 #elif BANK1_NORSRAM3_DATA_WIDTH == 16
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
+    hsram3.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
 #else
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_32b;
+    hsram3.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_32b;
 #endif
-	FSMC_NORSRAMInit(&hsram);
+	FSMC_NORSRAMInit(&hsram3);
     FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM3, ENABLE);
-
 	
+	ExtSramInitBoardMemory((void*)(FSMC_BANK1_NORSRAM3_START_ADDRESS), (void*)((FSMC_BANK1_NORSRAM3_START_ADDRESS + BANK1_NORSRAM3_SIZE)), 2);
 
-	extern void ExtSramInitBoardMemory(void *start_phy_address, void *end_phy_address, uint8 extsram_idx);
-	#define START_ADDRESS 0x68000000
-
-	memset((void*)START_ADDRESS,0,BANK1_NORSRAM3_SIZE);
-	__DSB();
-//     __ISB();
-	__DMB();
-
-	ExtSramInitBoardMemory((void*)(START_ADDRESS), (void*)((START_ADDRESS + BANK1_NORSRAM3_SIZE)), 2);
-
-#endif
-
-#ifdef BSP_USING_FSMC_BANK1_NORSRAM4
-    hsram.FSMC_Bank = FSMC_Bank1_NORSRAM4;
-#if BANK1_NORSRAM4_DATA_WIDTH == 8
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_8b;
-#elif BANK1_NORSRAM4_DATA_WIDTH == 16
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
-#else
-    hsram.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_32b;
-#endif
-	FSMC_NORSRAMInit(&hsram);
-    FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM4, ENABLE);
 #endif
 
     return 0;
