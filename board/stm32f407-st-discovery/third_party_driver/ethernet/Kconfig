@@ -1,0 +1,12 @@
+
+config CAN_BUS_NAME_1
+    string "can bus name"
+    default "can1"
+
+config CAN_DRIVER_NAME
+    string "can driver name"
+    default "can1_drv"
+
+config CAN_1_DEVICE_NAME_1
+    string "can bus 1 device 1 name"
+    default "can1_dev1"

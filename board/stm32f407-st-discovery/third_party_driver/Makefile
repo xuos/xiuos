@@ -50,4 +50,8 @@ ifeq ($(CONFIG_BSP_USING_WDT),y)
   SRC_DIR += watchdog
 endif
 
+ifeq ($(CONFIG_BSP_USING_LWIP),y)
+  SRC_DIR += ethernet
+endif
+
 include $(KERNEL_ROOT)/compiler.mk

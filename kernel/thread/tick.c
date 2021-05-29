@@ -23,6 +23,8 @@
 #include <xs_spinlock.h>
 #include <xs_delay.h>
 
+extern void Time_Update_LwIP(void);
+
 #ifdef ARCH_SMP
 static x_ticks_t heartbeat_ticks[CPU_NUMBERS] = {0};
 #else
@@ -78,6 +80,10 @@ void TickAndTaskTimesliceUpdate(void)
 #ifdef KERNEL_SOFTTIMER
     CheckTimerList();
 #endif
+#ifdef BSP_USING_LWIP
+    Time_Update_LwIP();
+#endif
+
 }
 
 /**

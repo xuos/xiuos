@@ -236,12 +236,12 @@ x_err_t _MdelayKTask(KTaskDescriptorType task, uint32 ms)
  */
 x_err_t _KTaskPrioSet(KTaskDescriptorType task, uint8 prio)
 {
+     extern long ShowTask(void);
     x_base lock = 0;
     int ret = EOK;
     uint8 task_stat = 0;
 
     NULL_PARAM_CHECK(task);
-
     lock = CriticalAreaLock();
    
     if (0 == strncmp("ktaskidle",task->task_base_info.name, strlen("ktaskidle"))) 
@@ -269,11 +269,11 @@ x_err_t _KTaskPrioSet(KTaskDescriptorType task, uint8 prio)
         case KTASK_INIT:
         case KTASK_SUSPEND:
         case KTASK_RUNNING:
-             task->task_dync_sched_member.cur_prio = prio;
-            __BitmapSiteMask(task);
-            break;
+             task->task_dync_sched_member.cur_prio = prio; KTaskDescriptorType tid;
         case KTASK_CLOSE:
+            ShowTask();
             KPrintf("the close stat task is forbidden to change priority.\n");
+
             ret = -ERROR;
             break;
         default:
