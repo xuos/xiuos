@@ -1,0 +1,29 @@
+config BSP_USING_LPUART1
+bool "Enable LPUART1"
+default y
+if BSP_USING_LPUART1
+    config SERIAL_BUS_NAME_1
+        string "serial bus 1 name"
+        default "uart1"
+    config SERIAL_DRV_NAME_1
+        string "serial bus 1 driver name"
+        default "uart1_drv"
+    config SERIAL_1_DEVICE_NAME_0
+            string "serial bus 1 device name"
+            default "uart1_dev1"   
+endif
+
+config BSP_USING_LPUART2
+bool "Enable LPUART2"
+default y
+if BSP_USING_LPUART2
+    config SERIAL_BUS_NAME_2
+        string "serial bus 2 name"
+        default "uart2"
+    config SERIAL_DRV_NAME_2
+        string "serial bus 2 driver name"
+        default "uart2_drv"
+    config SERIAL_2_DEVICE_NAME_0
+            string "serial bus 2 device name"
+            default "uart2_dev2"   
+endif

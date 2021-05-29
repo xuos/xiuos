@@ -5,7 +5,7 @@ MAKEFLAGS += --no-print-directory
 .PHONY:COMPILE_APP COMPILE_KERNEL
 
 
-support :=kd233 stm32f407-st-discovery maix-go stm32f407zgt6 aiit-riscv64-board aiit-arm32-board hifive1-rev-B hifive1-emulator k210-emulator cortex-m3-emulator
+support :=kd233 stm32f407-st-discovery maix-go stm32f407zgt6 aiit-riscv64-board aiit-arm32-board hifive1-rev-B hifive1-emulator k210-emulator cortex-m3-emulator ok1052-c
 SRC_DIR:=
 
 export BOARD ?=kd233

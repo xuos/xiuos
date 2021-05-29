@@ -123,6 +123,18 @@ KERNELPATHS :=-I$(BSP_ROOT) \
 	-I$(BSP_ROOT)/include #
 endif
 
+ifeq ($(BSP_ROOT),$(KERNEL_ROOT)/board/ok1052-c)
+KERNELPATHS :=-I$(BSP_ROOT) \
+	-I$(KERNEL_ROOT)/arch/arm/cortex-m7 \
+	-I$(BSP_ROOT)/third_party_driver \
+	-I$(BSP_ROOT)/third_party_driver/include \
+	-I$(BSP_ROOT)/third_party_driver/MIMXRT1052 \
+	-I$(BSP_ROOT)/third_party_driver/MIMXRT1052/drivers \
+	-I$(BSP_ROOT)/third_party_driver/CMSIS/Include \
+	-I$(KERNEL_ROOT)/include \
+	-I$(BSP_ROOT)/include #
+endif
+
 KERNELPATHS += -I$(KERNEL_ROOT)/arch \
             -I$(KERNEL_ROOT)/arch/risc-v/shared/kernel_service #
 
