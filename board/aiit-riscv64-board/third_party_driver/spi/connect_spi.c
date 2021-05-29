@@ -291,10 +291,10 @@ static uint32 SpiReadData(struct SpiHardwareDevice *spi_dev, struct SpiDataStand
 /*manage the spi device operations*/
 static const struct SpiDevDone spi_dev_done =
 {
-    .open = NONE,
-    .close = NONE,
-    .write = SpiWriteData,
-    .read = SpiReadData,
+    .dev_open = NONE,
+    .dev_close = NONE,
+    .dev_write = SpiWriteData,
+    .dev_read = SpiReadData,
 };
 
 static int BoardSpiBusInit(struct SpiBus *spi_bus, struct SpiDriver *spi_driver)

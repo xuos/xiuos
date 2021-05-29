@@ -515,10 +515,10 @@ out:
 /*manage the i2c device operations*/
 static const struct I2cDevDone i2c_dev_done =
 {
-    .open = NONE,
-    .close = NONE,
-    .write = I2cWriteData,
-    .read = I2cReadData,
+    .dev_open = NONE,
+    .dev_close = NONE,
+    .dev_write = I2cWriteData,
+    .dev_read = I2cReadData,
 };
 
 /*Init i2c bus*/

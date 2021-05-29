@@ -102,10 +102,10 @@ struct SpiHardwareDevice;
 
 struct SpiDevDone
 {
-    uint32 (*open) (struct SpiHardwareDevice *dev);
-    uint32 (*close) (struct SpiHardwareDevice *dev);
-    uint32 (*write) (struct SpiHardwareDevice *dev, struct SpiDataStandard *msg);
-    uint32 (*read) (struct SpiHardwareDevice *dev, struct SpiDataStandard *msg);
+    uint32 (*dev_open) (struct SpiHardwareDevice *dev);
+    uint32 (*dev_close) (struct SpiHardwareDevice *dev);
+    uint32 (*dev_write) (struct SpiHardwareDevice *dev, struct SpiDataStandard *msg);
+    uint32 (*dev_read) (struct SpiHardwareDevice *dev, struct SpiDataStandard *msg);
 };
 
 struct SpiHardwareDevice

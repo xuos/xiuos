@@ -44,7 +44,7 @@ static uint32 I2cDeviceWrite(void *dev, struct BusBlockWriteParam *write_param)
     i2c_msg.retries = 1;
     i2c_msg.next = NONE;
 
-    return i2c_dev->i2c_dev_done->write(i2c_dev, &i2c_msg);
+    return i2c_dev->i2c_dev_done->dev_write(i2c_dev, &i2c_msg);
 }
 
 static uint32 I2cDeviceRead(void *dev, struct BusBlockReadParam *read_param)
@@ -62,7 +62,7 @@ static uint32 I2cDeviceRead(void *dev, struct BusBlockReadParam *read_param)
     i2c_msg.retries = 1;
     i2c_msg.next = NONE;
 
-    return i2c_dev->i2c_dev_done->read(i2c_dev, &i2c_msg);
+    return i2c_dev->i2c_dev_done->dev_read(i2c_dev, &i2c_msg);
 }
 
 static const struct HalDevDone dev_done =
