@@ -1127,11 +1127,22 @@ void ShowMemory(void);
  */
 void ShowMemory(void)
 {
+	int i = 0;
 	KPrintf("total memory: %d\n", ByteManager.dynamic_buddy_manager.dynamic_buddy_end - ByteManager.dynamic_buddy_manager.dynamic_buddy_start);
 	KPrintf("used memory : %d\n", ByteManager.dynamic_buddy_manager.active_memory);
 	KPrintf("maximum allocated memory: %d\n", ByteManager.dynamic_buddy_manager.max_ever_usedmem);
 	KPrintf("total cache szie: %d, %d/%d[32B],%d/%d[64B]\n", ByteManager.dynamic_buddy_manager.static_memory,ByteManager.static_manager[0].block_free_count,SMALL_NUMBER_32B,ByteManager.static_manager[1].block_free_count,SMALL_NUMBER_64B);
-    ShowBuddy();
+#ifdef MEM_EXTERN_SRAM
+	for(i = 0; i < EXTSRAM_MAX_NUM; i++) {
+		if(NONE != ExtByteManager[i].done){
+			KPrintf("\nlist extern sram[%d] memory information\n\n",i);
+			KPrintf("extern sram total memory: %d\n", ExtByteManager[i].dynamic_buddy_manager.dynamic_buddy_end - ExtByteManager[i].dynamic_buddy_manager.dynamic_buddy_start);
+			KPrintf("extern sram used memory : %d\n", ExtByteManager[i].dynamic_buddy_manager.active_memory);
+			KPrintf("extern sram maximum allocated memory: %d\n", ExtByteManager[i].dynamic_buddy_manager.max_ever_usedmem);
+		}
+	}
+#endif
+	ShowBuddy();
 }
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),
 											ShowMemory,ShowMemory,list memory usage information);
@@ -1140,6 +1151,7 @@ SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHE
  */
 void ShowBuddy(void)
 {
+	int i = 0;
 	int lock = 0;
 	struct DynamicFreeNode *debug = NONE;
 
@@ -1147,9 +1159,21 @@ void ShowBuddy(void)
 	KPrintf("\n\033[41;1mlist memory information\033[0m\n", __func__);
     for (debug = ByteManager.dynamic_buddy_manager.mm_freenode_list[0].next;
          debug;debug = debug->next){
-        KPrintf("%s,current is %x,next is %x, size %u, flag %x\n",__func__, debug, debug->next,debug->size,debug->flag & ALLOC_BLOCK_MASK);
+        KPrintf("%s,current is %x,next is %x, size %u, flag %x\n",__func__, debug, debug->next,debug->size,debug->flag);
     };
     KPrintf("\nlist memory information\n\n");
+#ifdef MEM_EXTERN_SRAM
+	for(i = 0; i < EXTSRAM_MAX_NUM; i++) {
+		if(NONE != ExtByteManager[i].done){
+			KPrintf("\nlist extern sram[%d] memory information\n\n",i);
+			for (debug = ExtByteManager[i].dynamic_buddy_manager.mm_freenode_list[0].next;
+				debug;debug = debug->next){
+				KPrintf("%s,current is %x,next is %x, size %u, flag %x\n",__func__, debug, debug->next,debug->size,debug->flag);
+			};
+		}
+	}
+	
+#endif
 	CriticalAreaUnLock(lock);
 }
 SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_PARAM_NUM(0),
