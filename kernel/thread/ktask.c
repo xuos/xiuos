@@ -269,12 +269,13 @@ x_err_t _KTaskPrioSet(KTaskDescriptorType task, uint8 prio)
         case KTASK_INIT:
         case KTASK_SUSPEND:
         case KTASK_RUNNING:
-             task->task_dync_sched_member.cur_prio = prio; KTaskDescriptorType tid;
+             task->task_dync_sched_member.cur_prio = prio; 
+             __BitmapSiteMask(task);
+             break;
         case KTASK_CLOSE:
-            ShowTask();
             KPrintf("the close stat task is forbidden to change priority.\n");
 
-            ret = -ERROR;
+            ret = EOK;
             break;
         default:
             KPrintf("invalid stat task is forbidden to change priority.\n");
