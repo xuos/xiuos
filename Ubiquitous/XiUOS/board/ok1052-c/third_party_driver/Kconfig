@@ -1,0 +1,7 @@
+menuconfig BSP_USING_LPUART
+bool "Using UART device"
+default y
+select RESOURCES_SERIAL
+if BSP_USING_LPUART
+source "$BSP_DIR/third_party_driver/uart/Kconfig"
+endif

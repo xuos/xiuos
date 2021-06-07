@@ -1,0 +1,126 @@
+menuconfig BSP_USING_CH438
+bool "Using CH438 device"
+default y
+if BSP_USING_CH438
+source "$BSP_DIR/third_party_driver/ch438/Kconfig"
+endif
+
+menuconfig BSP_USING_DMA
+bool "Using DMA device"
+default y
+if BSP_USING_DMA
+source "$BSP_DIR/third_party_driver/common/Kconfig"
+endif
+
+menuconfig BSP_USING_EXTMEM
+bool "Using EXTMEM device"
+default n
+select MEM_EXTERN_SRAM
+if BSP_USING_EXTMEM
+source "$BSP_DIR/third_party_driver/extmem/Kconfig"
+endif
+
+menuconfig BSP_USING_GPIO
+bool "Using GPIO device "
+default y
+select RESOURCES_PIN
+if BSP_USING_GPIO
+source "$BSP_DIR/third_party_driver/gpio/Kconfig"
+endif
+
+menuconfig BSP_USING_I2C
+bool "Using I2C device"
+default n
+select RESOURCES_I2C
+if BSP_USING_I2C
+source "$BSP_DIR/third_party_driver/i2c/Kconfig"
+endif
+
+menuconfig BSP_USING_LCD
+bool "Using LCD device"
+default n
+select RESOURCES_LCD
+select BSP_USING_SPI1
+if BSP_USING_LCD
+source "$BSP_DIR/third_party_driver/lcd/Kconfig"
+endif
+
+menuconfig BSP_USING_RTC
+bool "Using RTC device"
+default n
+select RESOURCES_RTC
+if BSP_USING_RTC
+source "$BSP_DIR/third_party_driver/rtc/Kconfig"
+endif
+
+menuconfig BSP_USING_SDIO
+bool "Using SDIO device"
+default n
+select RESOURCES_SDIO
+if BSP_USING_SDIO
+source "$BSP_DIR/third_party_driver/sdio/Kconfig"
+endif
+
+menuconfig BSP_USING_SPI
+bool "Using SPI device"
+default n
+select RESOURCES_SPI
+select BSP_USING_DMA
+if BSP_USING_SPI
+source "$BSP_DIR/third_party_driver/spi/Kconfig"
+endif
+
+menuconfig BSP_USING_HWTIMER
+bool "Using HWTIMER device"
+default n
+select RESOURCES_HWTIMER
+if BSP_USING_HWTIMER
+source "$BSP_DIR/third_party_driver/timer/Kconfig"
+endif
+
+menuconfig BSP_USING_TOUCH
+bool "Using TOUCH device"
+default n
+select RESOURCES_TOUCH
+if BSP_USING_TOUCH
+source "$BSP_DIR/third_party_driver/touch/Kconfig"
+endif
+
+menuconfig BSP_USING_UART
+bool "Using UART device"
+default y
+select RESOURCES_SERIAL
+if BSP_USING_UART
+source "$BSP_DIR/third_party_driver/uart/Kconfig"
+endif
+
+
+
+
+menuconfig BSP_USING_CAN
+bool "Using CAN device"
+default n
+select RESOURCES_CAN
+if BSP_USING_CAN
+source "$BSP_DIR/third_party_driver/can/Kconfig"
+endif
+
+menuconfig BSP_USING_USB
+bool "Using USB device"
+default n
+select BSP_USING_USBH
+select RESOURCES_USB
+select RESOURCES_USB_HOST
+select USBH_MSTORAGE
+select RESOURCES_USB_DEVICE
+if BSP_USING_USB
+source "$BSP_DIR/third_party_driver/usb/Kconfig"
+endif
+
+menuconfig BSP_USING_WDT
+bool "Using WATCHDOG device"
+default y
+select RESOURCES_WDT
+if BSP_USING_WDT
+source "$BSP_DIR/third_party_driver/watchdog/Kconfig"
+endif
