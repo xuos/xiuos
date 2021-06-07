@@ -56,7 +56,7 @@
 #include <xs_base.h>
 
 /* USER CODE BEGIN 0 */
-#define SET_AS_SERVER 1 /* define this terminal is udp server or not*/
+// #define SET_AS_SERVER 1 /* define this terminal is udp server or not*/
 
 #define LOCAL_PORT_SERVER                 5001
 #define TARGET_PORT_CLIENT                LOCAL_PORT_SERVER

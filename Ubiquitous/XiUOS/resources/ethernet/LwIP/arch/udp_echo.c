@@ -107,6 +107,7 @@ static void UdpEchoThreadServer(void *arg)
 
     while(1)
     {
+      memset(recv_data, 0, RECV_DATA);
       recv_data_len=recvfrom(sock,recv_data,
                              RECV_DATA,0,
                              (struct sockaddr*)&seraddr,
@@ -131,7 +132,7 @@ __exit:
 static void UdpEchoThreadClient(void *arg)
 {
   KPrintf("UdpEchoThreadClient start.\n");
-  MdelayKTask(5000);
+
   int sock_udp_send_once = -1;
   sock_udp_send_once = socket(AF_INET, SOCK_DGRAM, 0);
   if (sock_udp_send_once < 0)
@@ -155,17 +156,20 @@ static void UdpEchoThreadClient(void *arg)
   KPrintf("UDP connect sucess, start to send.\n");
   KPrintf("\n\nTarget Port:%d\n\n", udp_sock.sin_port);
 
-  sendto(sock_udp_send_once,send_msg,
-     strlen(send_msg),0,
-     (struct sockaddr*)&udp_sock,
-     sizeof(struct sockaddr));
 
-  KPrintf("Send UDP msg: %s ", send_msg);
 
   while (1)
   {
     KPrintf("Lwip client is running.\n");
-    MdelayKTask(3000);
+
+    sendto(sock_udp_send_once,send_msg,
+     strlen(send_msg),0,
+     (struct sockaddr*)&udp_sock,
+     sizeof(struct sockaddr));
+
+    KPrintf("Send UDP msg: %s ", send_msg);
+
+    MdelayKTask(1000);
   }
 
 __exit:
