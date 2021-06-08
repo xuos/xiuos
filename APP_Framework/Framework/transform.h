@@ -20,6 +20,10 @@
 
 #include <xiuos.h>
 #include <iot-vfs.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdint.h>
+#include <time.h>
 
 //for test
 #define XIUOS_OS
@@ -103,5 +107,21 @@ int PrivRead(int fd, void *buf, size_t len);
 int PrivWrite(int fd, const void *buf, size_t len);
 
 int PrivIoctl(int fd, int cmd, void *args);
+
+int PrivMutexCreate(pthread_mutex_t *p_mutex, const pthread_mutexattr_t *attr);
+int PrivMutexDelete(pthread_mutex_t *p_mutex);
+int PrivMutexObtain(pthread_mutex_t *p_mutex);
+int PrivMutexAbandon(pthread_mutex_t *p_mutex);
+int PrivSemaphoreCreate(sem_t *sem, int pshared, unsigned int value);
+int PrivSemaphoreDelete(sem_t *sem);
+int PrivSemaphoreObtainWait(sem_t *sem, const struct timespec *abstime);
+int PrivSemaphoreObtainNoWait(sem_t *sem);
+int PrivSemaphoreAbandon(sem_t *sem);
+int PrivTaskCreate(pthread_t *thread, const pthread_attr_t *attr,
+                   void *(*start_routine)(void *), void *arg);
+int PrivTaskStartup(pthread_t *thread);
+int PrivTaskDelete(pthread_t thread, int sig);
+void PrivTaskQuit(void *value_ptr);
+int PrivTaskDelay(const struct timespec *rqtp, struct timespec *rmtp);
 
 #endif

@@ -18,6 +18,11 @@
  * @date 2021.06.07
  */
 
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdint.h>
+#include <time.h>
+
 #include "transform.h"
 
 //for test
@@ -69,5 +74,76 @@ int PrivIoctl(int fd, int cmd, void *args)
     }
 }
 
-#endif
+/* private mutex API */
+int PrivMutexCreate(pthread_mutex_t *p_mutex, const pthread_mutexattr_t *attr)
+{
+    return pthread_mutex_init(p_mutex, attr);
+}
 
+int PrivMutexDelete(pthread_mutex_t *p_mutex)
+{
+    return pthread_mutex_destroy(p_mutex);
+}
+
+int PrivMutexObtain(pthread_mutex_t *p_mutex)
+{
+    return pthread_mutex_lock(p_mutex);
+}
+
+int PrivMutexAbandon(pthread_mutex_t *p_mutex)
+{
+    return pthread_mutex_lock(p_mutex);
+}
+
+/* private sem API */
+int PrivSemaphoreCreate(sem_t *sem, int pshared, unsigned int value)
+{
+    return sem_init(sem, pshared, value);
+}
+int PrivSemaphoreDelete(sem_t *sem)
+{
+    return sem_destroy(sem);
+}
+
+int PrivSemaphoreObtainWait(sem_t *sem, const struct timespec *abstime)
+{
+    return sem_timedwait(sem, abstime);
+}
+
+int PrivSemaphoreObtainNoWait(sem_t *sem)
+{
+    return sem_trywait(sem);
+}
+int PrivSemaphoreAbandon(sem_t *sem)
+{
+    return sem_post(sem);
+}
+
+/* private task API */
+
+int PrivTaskCreate(pthread_t *thread, const pthread_attr_t *attr,
+                   void *(*start_routine)(void *), void *arg)
+{
+    return pthread_create(thread, attr, start_routine, arg);
+}
+
+int PrivTaskStartup(pthread_t *thread)
+{
+    return 0;
+}
+
+int PrivTaskDelete(pthread_t thread, int sig)
+{
+    return pthread_kill(thread, sig);
+}
+
+void PrivTaskQuit(void *value_ptr)
+{
+    pthread_exit(value_ptr);
+}
+
+int PrivTaskDelay(const struct timespec *rqtp, struct timespec *rmtp)
+{
+    nanosleep(rqtp,rmtp);
+}
+#endif
