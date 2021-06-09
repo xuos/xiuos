@@ -31,7 +31,7 @@ export HOSTTOOLS_DIR ?= $(KERNEL_ROOT)/tool/hosttools
 export CONFIG2H_EXE ?= $(HOSTTOOLS_DIR)/xsconfig.sh
 
 export CPPPATHS
-export SRC_APP_DIR := applications framework
+export SRC_APP_DIR := ../../APP_Framework
 export SRC_KERNEL_DIR := arch board lib fs kernel resources tool
 export SRC_DIR:= $(SRC_APP_DIR) $(SRC_KERNEL_DIR)
 

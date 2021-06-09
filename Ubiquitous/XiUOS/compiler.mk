@@ -11,6 +11,7 @@ CFLAGS += $(DEFINES)
 AFLAGS += $(DEFINES)
 CXXFLAGS += $(DEFINES)
 BUILD_DIR := $(KERNEL_ROOT)/build
+APP_DIR := Ubiquitous/XiUOS
 
  
 .PHONY:COMPILER
@@ -26,7 +27,7 @@ COMPILER:
 ################################################
 define add_c_file
 $(eval COBJ := $(1:%.c=%.o)) \
-$(eval COBJ := $(COBJ:$(KERNEL_ROOT)/%=%)) \
+$(eval COBJ := $(subst $(subst $(APP_DIR),,$(KERNEL_ROOT)),,$(COBJ))) \
 $(eval LOCALC := $(addprefix $(BUILD_DIR)/,$(COBJ))) \
 $(eval OBJS += $(LOCALC)) \
 $(if $(strip $(LOCALC)),$(eval $(LOCALC): $(1)
@@ -39,7 +40,7 @@ endef
 
 define add_cpp_file
 $(eval COBJ := $(1:%.cpp=%.o)) \
-$(eval COBJ := $(COBJ:$(KERNEL_ROOT)/%=%)) \
+$(eval COBJ := $(subst $(subst $(APP_DIR),,$(KERNEL_ROOT)),,$(COBJ))) \
 $(eval LOCALCPP := $(addprefix $(BUILD_DIR)/,$(COBJ))) \
 $(eval OBJS += $(LOCALCPP)) \
 $(if $(strip $(LOCALCPP)),$(eval $(LOCALCPP): $(1)
@@ -52,7 +53,7 @@ endef
 
 define add_cc_file
 $(eval COBJ := $(1:%.cc=%.o)) \
-$(eval COBJ := $(COBJ:$(KERNEL_ROOT)/%=%)) \
+$(eval COBJ := $(subst $(subst $(APP_DIR),,$(KERNEL_ROOT)),,$(COBJ))) \
 $(eval LOCALCPP := $(addprefix $(BUILD_DIR)/,$(COBJ))) \
 $(eval OBJS += $(LOCALCPP)) \
 $(if $(strip $(LOCALCPP)),$(eval $(LOCALCPP): $(1)
@@ -65,7 +66,7 @@ endef
 
 define add_S_file
 $(eval SOBJ := $(1:%.S=%.o)) \
-$(eval SOBJ := $(SOBJ:$(KERNEL_ROOT)/%=%)) \
+$(eval SOBJ := $(subst $(subst $(APP_DIR),,$(KERNEL_ROOT)),,$(SOBJ))) \
 $(eval LOCALS := $(addprefix $(BUILD_DIR)/,$(SOBJ))) \
 $(eval OBJS += $(LOCALS)) \
 $(if $(strip $(LOCALS)),$(eval $(LOCALS): $(1)
