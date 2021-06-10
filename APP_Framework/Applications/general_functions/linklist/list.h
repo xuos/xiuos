@@ -22,7 +22,7 @@
 #ifndef __XS_KLIST_H__
 #define __XS_KLIST_H__
 
-#include <libc.h>
+#include <errno.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
