@@ -217,6 +217,6 @@ COMPILE_KERNEL:
                $(MAKE) -C $$dir;          \
        done
 	@cp link.mk build/Makefile
-	@$(MAKE) -C build COMPILE_TYPE="_kernel" TARGET=XiaoShanOS_$(BOARD)_kernel.elf LINK_FLAGS=LFLAGS
+	@$(MAKE) -C build COMPILE_TYPE="_kernel" TARGET=XiUOS_$(BOARD)_kernel.elf LINK_FLAGS=LFLAGS
 	@rm build/Makefile build/make.obj
 
