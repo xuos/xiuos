@@ -1,0 +1,16 @@
+import rtconfig
+from building import *
+
+cwd     = GetCurrentDir()
+CPPPATH = [cwd]
+src     = Split("""
+main.c
+""")
+if GetDepend(['PKG_USING_RW007']):
+    src+=['rw007_test.c']
+if GetDepend(['DRV_USING_OV2640']):
+    src+=['ov2640_test.c']
+    
+group = DefineGroup('Applications', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')
