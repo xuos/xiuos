@@ -1,0 +1,3 @@
+[submodule "Ubiquitous/RT_Thread/rt-thread"]
+	path = Ubiquitous/RT_Thread/rt-thread
+	url = https://git.trustie.net/chunyexixiaoyu/rt-thread.git
