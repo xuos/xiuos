@@ -1,0 +1,64 @@
+import os
+import sys
+import rtconfig
+
+if os.getenv('RTT_ROOT'):
+    RTT_ROOT = os.getenv('RTT_ROOT')
+else:
+    RTT_ROOT = os.path.normpath(os.getcwd() + '/../../rt-thread')
+
+sys.path = sys.path + [os.path.join(RTT_ROOT, 'tools')]
+from building import *
+
+TARGET = 'rtthread.' + rtconfig.TARGET_EXT
+
+DefaultEnvironment(tools=[])
+env = Environment(tools = ['mingw'],
+    AS = rtconfig.AS, ASFLAGS = rtconfig.AFLAGS,
+    CC = rtconfig.CC, CCFLAGS = rtconfig.CFLAGS,
+    CXX = rtconfig.CXX, CXXFLAGS = rtconfig.CXXFLAGS,
+    AR = rtconfig.AR, ARFLAGS = '-rc',
+    LINK = rtconfig.LINK, LINKFLAGS = rtconfig.LFLAGS)
+env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
+# use ASPPCOM to replace ASCOM, ASPPCOM will use CFLAGS/CPPFLAGS with AS
+env['ASCOM'] = env['ASPPCOM']
+
+AddOption('--compiledb',
+    dest = 'compiledb',
+    action = 'store_true',
+    default = False,
+    help = 'generate compile_commands.json')
+
+if GetOption('compiledb'):
+    if int(SCons.__version__.split('.')[0]) >= 4:
+        env['COMPILATIONDB_USE_ABSPATH'] = True
+        env.Tool('compilation_db')
+        env.CompilationDatabase('compile_commands.json')
+    else:
+        print('Warning: --compiledb only support on SCons 4.0+')
+
+Export('RTT_ROOT')
+Export('rtconfig')
+
+# prepare building environment
+objs = PrepareBuilding(env, RTT_ROOT, has_libcpu = False)
+
+stack_size = 4096
+
+stack_lds = open('link_stacksize.lds', 'w')
+if GetDepend('__STACKSIZE__'): stack_size = GetDepend('__STACKSIZE__')
+stack_lds.write('__STACKSIZE__ = %d;' % stack_size)
+stack_lds.close()
+
+# include more drivers
+objs.extend(SConscript(os.getcwd() + '/../../drivers/SConscript'))
+
+# include APP_Framework/Framework
+objs.extend(SConscript(os.getcwd() + '/../../../../APP_Framework/Framework/SConscript'))
+
+# include APP_Framework/Applications
+objs.extend(SConscript(os.getcwd() + '/../../../../APP_Framework/Applications/SConscript'))
+
+
+# make a building
+DoBuilding(TARGET, objs)

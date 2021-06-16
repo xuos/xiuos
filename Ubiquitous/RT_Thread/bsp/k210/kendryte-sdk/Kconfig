@@ -1,0 +1,7 @@
+menu "Kendryte SDK Config"
+
+config PKG_KENDRYTE_SDK_VERNUM
+    hex "Kendryte SDK Version"
+    default 0x0055
+
+endmenu

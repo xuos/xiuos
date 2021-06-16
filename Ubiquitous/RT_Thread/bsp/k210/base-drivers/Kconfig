@@ -1,0 +1,188 @@
+menu "Board Drivers Config"
+
+config BSP_USING_UART_HS
+    bool "Enable High Speed UART"
+    default y
+
+
+menuconfig BSP_USING_UART1
+    bool "Enable UART1"
+    default n
+    if BSP_USING_UART1
+        config BSP_UART1_TXD_PIN
+            int "uart1 TXD pin number"
+            default 20
+        config BSP_UART1_RXD_PIN
+            int "uart1 RXD pin number"
+            default 21
+    endif
+
+menuconfig BSP_USING_UART2
+    bool "Enable UART2"
+    default n
+    if BSP_USING_UART2
+        config BSP_UART2_TXD_PIN
+            int "uart2 TXD pin number"
+            default 28
+        config BSP_UART2_RXD_PIN
+            int "uart2 RXD pin number"
+            default 27
+    endif
+
+menuconfig BSP_USING_UART3
+    bool "Enable UART3"
+    default n
+    if BSP_USING_UART3
+        config BSP_UART3_TXD_PIN
+            int "uart3 TXD pin number"
+            default 22
+        config BSP_UART3_RXD_PIN
+            int "uart3 RXD pin number"
+            default 23
+    endif
+
+config BSP_USING_I2C1
+    bool "Enable I2C1 (GPIO0/1)"
+    select RT_USING_I2C
+    default n
+
+menuconfig BSP_USING_SPI1
+    bool "Enable SPI1"
+    select RT_USING_SPI
+    default n
+if BSP_USING_SPI1
+    config BSP_USING_SPI1_AS_QSPI
+        bool
+        default n
+    config BSP_SPI1_CLK_PIN
+        int "spi1 clk pin number"
+        default 27
+    config BSP_SPI1_D0_PIN
+        int "spi1 d0 pin number"
+        default 28
+    config BSP_SPI1_D1_PIN
+        int "spi1 d1 pin number"
+        default 26
+    if BSP_USING_SPI1_AS_QSPI
+        config BSP_SPI1_D2_PIN
+            int "spi1 d2 pin number"
+            default 32
+        config BSP_SPI1_D3_PIN
+            int "spi1 d3 pin number"
+            default 33
+    endif
+    menuconfig BSP_SPI1_USING_SS0
+        bool "SPI1 Enable SS0(spi10 dev)"
+        default n
+    if BSP_SPI1_USING_SS0
+        config BSP_SPI1_SS0_PIN
+            int "spi1 ss0 pin number"
+            default 29
+    endif
+    menuconfig BSP_SPI1_USING_SS1
+        bool "SPI1 Enable SS1(spi11 dev)"
+        default n
+    if BSP_SPI1_USING_SS1
+        config BSP_SPI1_SS1_PIN
+            int "spi1 ss1 pin number"
+            default 8
+    endif
+    menuconfig BSP_SPI1_USING_SS2
+        bool "SPI1 Enable SS2(spi12 dev)"
+        default n
+    if BSP_SPI1_USING_SS2
+        config BSP_SPI1_SS2_PIN
+            int "spi1 ss2 pin number"
+            default 26
+    endif
+    menuconfig BSP_SPI1_USING_SS3
+        bool "SPI1 Enable SS3(spi13 dev)"
+        default n
+    if BSP_SPI1_USING_SS3
+        config BSP_SPI1_SS3_PIN
+            int "spi1 ss3 pin number"
+            default 27
+    endif
+endif
+
+menuconfig BSP_USING_LCD
+    bool "Enable LCD on SPI0"
+    default n
+
+if BSP_USING_LCD
+    config BSP_LCD_CS_PIN
+        int "CS pin number of 8080 interface"
+        default 36
+    config BSP_LCD_WR_PIN
+        int "WR pin number of 8080 interface"
+        default 39
+    config BSP_LCD_DC_PIN
+        int "DC pin number of 8080 interface"
+        default 38
+	config BSP_LCD_RST_PIN
+        int "RST pin number of 8080 interface"
+        default 37
+    config BSP_LCD_X_MAX
+        int "LCD Height"
+        default 240
+    config BSP_LCD_Y_MAX
+        int "LCD Width"
+        default 320
+endif
+
+menuconfig BSP_USING_SDCARD
+	bool "Enable SDCARD (spi1(ss0))"
+	select BSP_USING_SPI1
+	select BSP_SPI1_USING_SS0
+	select RT_USING_DFS
+    select RT_USING_DFS_ELMFAT
+	select RT_USING_SPI_MSD
+	default n
+
+
+menuconfig BSP_USING_DVP
+    bool "Enable DVP(camera)"
+    default n
+
+if BSP_USING_DVP
+	comment "The default pin assignment is based on the Maix Duino K210 development board"
+    config BSP_DVP_SCCB_SDA_PIN
+        int "SCCB SDA pin number for camera"
+        default 40
+    config BSP_DVP_SCCB_SCLK_PIN
+        int "SCCB SCLK pin number for camera"
+        default 41
+    config BSP_DVP_CMOS_RST_PIN
+        int "CMOS RST pin number for camera"
+        default 42
+    config BSP_DVP_CMOS_VSYNC_PIN
+        int "CMOS VSYNC pin number for camera"
+        default 43
+    config BSP_DVP_CMOS_PWDN_PIN
+        int "CMOS PWDN pin number for camera"
+        default 44
+    config BSP_DVP_CMOS_XCLK_PIN
+        int "CMOS XCLK pin number for camera"
+        default 46
+    config BSP_DVP_CMOS_PCLK_PIN
+        int "CMOS PCLK pin number for camera"
+        default 47
+    config BSP_DVP_CMOS_HREF_PIN
+        int "CMOS HREF pin number for camera"
+        default 45
+endif
+
+if PKG_USING_RW007
+    config RW007_SPIDEV_NAME
+        string "the SPIDEV rw007 driver on"
+        default "spi11"
+	config RW007_INT_BUSY_PIN
+        int "rw007 int pin for rw007"
+        default 7
+	config RW007_RST_PIN
+        int "rw007 rst pin for rw007"
+        default 6
+endif	
+
+
+endmenu

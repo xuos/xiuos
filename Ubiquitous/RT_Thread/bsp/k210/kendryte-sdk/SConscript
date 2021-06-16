@@ -1,0 +1,37 @@
+from building import *
+
+cwd     = GetCurrentDir()
+src     = Split('''
+kendryte-sdk-source/lib/bsp/entry.c
+kendryte-sdk-source/lib/bsp/entry_user.c
+kendryte-sdk-source/lib/drivers/aes.c
+kendryte-sdk-source/lib/drivers/clint.c
+kendryte-sdk-source/lib/drivers/dmac.c
+kendryte-sdk-source/lib/drivers/dvp.c
+kendryte-sdk-source/lib/drivers/fft.c
+kendryte-sdk-source/lib/drivers/fpioa.c
+kendryte-sdk-source/lib/drivers/gpio.c
+kendryte-sdk-source/lib/drivers/gpiohs.c
+kendryte-sdk-source/lib/drivers/i2c.c
+kendryte-sdk-source/lib/drivers/i2s.c
+kendryte-sdk-source/lib/drivers/kpu.c
+kendryte-sdk-source/lib/drivers/plic.c
+kendryte-sdk-source/lib/drivers/pwm.c
+kendryte-sdk-source/lib/drivers/rtc.c
+kendryte-sdk-source/lib/drivers/sha256.c
+kendryte-sdk-source/lib/drivers/spi.c
+kendryte-sdk-source/lib/drivers/sysctl.c
+kendryte-sdk-source/lib/drivers/timer.c
+kendryte-sdk-source/lib/drivers/uart.c
+kendryte-sdk-source/lib/drivers/uarths.c
+kendryte-sdk-source/lib/drivers/utils.c
+kendryte-sdk-source/lib/drivers/wdt.c
+''')
+CPPPATH = [cwd + '/kendryte-sdk-source/lib/drivers/include',
+cwd + '/kendryte-sdk-source/lib/bsp/include',
+cwd + '/kendryte-sdk-source/lib/utils/include']
+CPPDEFINES = ['CONFIG_LOG_COLORS', 'CONFIG_LOG_ENABLE', 'CONFIG_LOG_LEVEL=LOG_VERBOSE', 'FPGA_PLL', 'LOG_KERNEL', '__riscv64']
+
+group = DefineGroup('SDK', src, depend = [''], CPPPATH = CPPPATH, LOCAL_CPPDEFINES = CPPDEFINES)
+
+Return('group')
