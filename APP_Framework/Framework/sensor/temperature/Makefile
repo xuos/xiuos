@@ -1,4 +1,4 @@
-ifeq ($(CONFIG_PERCEPTION_HS300X),y)
+ifeq ($(CONFIG_SENSOR_HS300X),y)
 	SRC_DIR += hs300x_temp
 endif
 

@@ -26,50 +26,6 @@
 #define XIUOS_OS
 
 #ifdef XIUOS_OS
-/************************Kernel Posix Transform***********************/
-
-
-/************************Driver Posix Transform***********************/
-int PrivOpen(const char *path, int flags, ...)
-{
-    return open(path, flags, ...);
-}
-
-int PrivClose(int fd)
-{
-    return close(fd);
-}
-
-int PrivRead(int fd, void *buf, size_t len)
-{    
-    return read(fd, buf, len);
-}
-
-int PrivWrite(int fd, const void *buf, size_t len)
-{   
-    return write(fd, buf, len);
-}
-
-static int PrivSerialIoctl(int fd, void *args)
-{
-    struct SerialDataCfg *serial_cfg = (struct SerialDataCfg *)args;
-
-    return ioctl(fd, OPE_INT, &serial_cfg);
-}
-
-int PrivIoctl(int fd, int cmd, void *args)
-{
-    struct PrivIoctlCfg *ioctl_cfg = (struct PrivIoctlCfg *)args;
-    
-    switch (ioctl_cfg->ioctl_driver_type)
-    {
-    case SERIAL_TYPE:
-        PrivSerialIoctl(fd, ioctl_cfg->args);
-        break;
-    default:
-        break;
-    }
-}
 
 /* private mutex API */
 int PrivMutexCreate(pthread_mutex_t *p_mutex, const pthread_mutexattr_t *attr)
@@ -168,11 +124,11 @@ int PrivWrite(int fd, const void *buf, size_t len)
     return write(fd, buf, len);
 }
 
-static int PrivSerialIoctl(int fd, void *args)
+static int PrivSerialIoctl(int fd, int cmd, void *args)
 {
     struct SerialDataCfg *serial_cfg = (struct SerialDataCfg *)args;
 
-    return ioctl(fd, OPE_INT, &serial_cfg);
+    return ioctl(fd, cmd, &serial_cfg);
 }
 
 int PrivIoctl(int fd, int cmd, void *args)
@@ -182,7 +138,7 @@ int PrivIoctl(int fd, int cmd, void *args)
     switch (ioctl_cfg->ioctl_driver_type)
     {
     case SERIAL_TYPE:
-        PrivSerialIoctl(fd, ioctl_cfg->args);
+        PrivSerialIoctl(fd, cmd, ioctl_cfg->args);
         break;
     default:
         break;
@@ -207,3 +163,5 @@ void PrivFree(void *pointer)
 {
     UserFree(pointer);
 }
+
+#endif

@@ -1,4 +1,4 @@
-ifeq ($(CONFIG_PERCEPTION_D124),y)
+ifeq ($(CONFIG_SENSOR_D124),y)
 	SRC_DIR += d124
 endif
 

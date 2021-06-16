@@ -32,41 +32,41 @@ static struct SensorProductInfo info =
 /**
  * @description: Open HS300x sensor device
  * @param sdev - sensor device pointer
- * @return EOK
+ * @return 1
  */
 static int SensorDeviceOpen(struct SensorDevice *sdev)
 {
-    sdev->fd = open(SENSOR_DEVICE_HS300X_DEV, O_RDWR);
+    sdev->fd = PrivOpen(SENSOR_DEVICE_HS300X_DEV, O_RDWR);
 
-    return EOK;
+    return 1;
 }
 
 /**
  * @description: Read sensor device
  * @param sdev - sensor device pointer
  * @param len - the length of the read data
- * @return success: EOK , failure: -ERROR
+ * @return success: 1 , failure: -1
  */
-static x_size_t SensorDeviceRead(struct SensorDevice *sdev, size_t len)
+static int SensorDeviceRead(struct SensorDevice *sdev, size_t len)
 {
-    if (write(sdev->fd, NONE, 0) != 1)
-        return -ERROR;
+    if (PrivWrite(sdev->fd, NULL, 0) != 1)
+        return -1;
     
     UserTaskDelay(50);
 
-    if (read(sdev->fd, sdev->buffer, len) != 1)
-        return -ERROR;
+    if (PrivRead(sdev->fd, sdev->buffer, len) != 1)
+        return -1;
 
-    return EOK;
+    return 1;
 }
 
 static struct SensorDone done =
 {
     SensorDeviceOpen,
-    NONE,
+    NULL,
     SensorDeviceRead,
-    NONE,
-    NONE,
+    NULL,
+    NULL,
 };
 
 /**
@@ -92,19 +92,19 @@ static struct SensorQuantity hs300x_temperature;
  * @param quant - sensor quantity pointer
  * @return quantity value
  */
-static int32 ReadTemperature(struct SensorQuantity *quant)
+static int32_t ReadTemperature(struct SensorQuantity *quant)
 {
     if (!quant)
-        return -ERROR;
+        return -1;
 
     float result;
-    if (quant->sdev->done->read != NONE) {
+    if (quant->sdev->done->read != NULL) {
         if (quant->sdev->status == SENSOR_DEVICE_PASSIVE) {
             quant->sdev->done->read(quant->sdev, 4);
             quant->sdev->done->read(quant->sdev, 4);    /* It takes two reads to get the data right */
             result = ((quant->sdev->buffer[2]  << 8 | quant->sdev->buffer[3]) >> 2) * 165.0 /( (1 << 14) - 1) -  40.0;
 
-            return (int32)(result * 10);
+            return (int32_t)(result * 10);
         }
         if (quant->sdev->status == SENSOR_DEVICE_ACTIVE) {
             printf("Please set passive mode.\n");
@@ -113,7 +113,7 @@ static int32 ReadTemperature(struct SensorQuantity *quant)
         printf("%s don't have read done.\n", quant->name);
     }
     
-    return -ERROR;
+    return -1;
 }
 
 /**

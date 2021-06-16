@@ -1,4 +1,4 @@
-ifeq ($(CONFIG_PERCEPTION_PS5308),y)
+ifeq ($(CONFIG_SENSOR_PS5308),y)
 	SRC_DIR += ps5308
 endif
 

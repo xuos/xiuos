@@ -48,15 +48,15 @@ static void ReadTask(struct SensorDevice *sdev)
 /**
  * @description: Open D124 voice device
  * @param sdev - sensor device pointer
- * @return success: EOK , failure: other
+ * @return success: 1 , failure: other
  */
 static int SensorDeviceOpen(struct SensorDevice *sdev)
 {
-    int result = EOK;
+    int result = 1;
 
     buff_lock = UserMutexCreate();
 
-    sdev->fd = open(SENSOR_DEVICE_D124_DEV, O_RDWR);
+    sdev->fd = PrivOpen(SENSOR_DEVICE_D124_DEV, O_RDWR);
     
     struct SerialDataCfg cfg;
     cfg.serial_baud_rate    = BAUD_RATE_9600;
@@ -69,7 +69,10 @@ static int SensorDeviceOpen(struct SensorDevice *sdev)
     cfg.ext_uart_no         = SENSOR_DEVICE_D124_DEV_EXT_PORT;
     cfg.port_configure      = PORT_CFG_INIT;
 
-    result = ioctl(sdev->fd, OPE_INT, &cfg);
+    struct PrivIoctlCfg ioctl_cfg;
+    ioctl_cfg.ioctl_driver_type = SERIAL_TYPE;
+    ioctl_cfg.args = &cfg;
+    result = PrivIoctl(sdev->fd, OPE_INT, &ioctl_cfg);
 
     UtaskType active_task;
     const char name[NAME_NUM_MAX] = "d124_task";
@@ -89,13 +92,13 @@ static int SensorDeviceOpen(struct SensorDevice *sdev)
 /**
  * @description: Close D124 sensor device
  * @param sdev - sensor device pointer
- * @return EOK
+ * @return 1
  */
 static int SensorDeviceClose(struct SensorDevice *sdev)
 {
     UserTaskDelete(active_task_id);
     UserMutexDelete(buff_lock);
-    return EOK;
+    return 1;
 }
 
 /**
@@ -104,12 +107,12 @@ static int SensorDeviceClose(struct SensorDevice *sdev)
  * @param len - the length of the read data
  * @return get data length
  */
-static x_size_t SensorDeviceRead(struct SensorDevice *sdev, size_t len)
+static int SensorDeviceRead(struct SensorDevice *sdev, size_t len)
 {
-    uint8 tmp = 0;
+    uint8_t tmp = 0;
     int timeout = 0;
     while (1) {
-        read(sdev->fd, &tmp, 1);
+        PrivRead(sdev->fd, &tmp, 1);
         if ((tmp == 0xAA) || (timeout >= 1000))
             break;
         UserTaskDelay(10);
@@ -117,13 +120,13 @@ static x_size_t SensorDeviceRead(struct SensorDevice *sdev, size_t len)
     }
     
     if(tmp != 0xAA)
-        return -ERROR;
+        return -1;
 
-    uint8 idx = 0;
+    uint8_t idx = 0;
     sdev->buffer[idx++] = tmp;
 
     while ((idx < len) && (timeout < 1000)) {
-        if (read(sdev->fd, &tmp, 1) == 1) {
+        if (PrivRead(sdev->fd, &tmp, 1) == 1) {
             timeout = 0;
             sdev->buffer[idx++] = tmp;
         }
@@ -138,8 +141,8 @@ static struct SensorDone done =
     SensorDeviceOpen,
     SensorDeviceClose,
     SensorDeviceRead,
-    NONE,
-    NONE,
+    NULL,
+    NULL,
 };
 
 /**
@@ -164,17 +167,17 @@ static struct SensorQuantity d124_voice;
  * @param quant - sensor quantity pointer
  * @return quantity value
  */
-static int32 ReadVoice(struct SensorQuantity *quant)
+static int32_t ReadVoice(struct SensorQuantity *quant)
 {
     if (!quant)
-        return -ERROR;
+        return -1;
 
-    uint32 result;
-    if (quant->sdev->done->read != NONE) {
+    uint32_t result;
+    if (quant->sdev->done->read != NULL) {
         UserMutexObtain(buff_lock, WAITING_FOREVER);      
         
         if (quant->sdev->buffer[3] == quant->sdev->buffer[1] + quant->sdev->buffer[2]) {
-            result = ((uint16)quant->sdev->buffer[1] << 8) + (uint16)quant->sdev->buffer[2];
+            result = ((uint16_t)quant->sdev->buffer[1] << 8) + (uint16_t)quant->sdev->buffer[2];
             if (result > quant->value.max_value)
                 quant->value.max_value = result;
             else if (result < quant->value.min_value)
@@ -191,7 +194,7 @@ static int32 ReadVoice(struct SensorQuantity *quant)
         printf("%s don't have read done.\n", quant->name);
     }
     
-    return -ERROR;
+    return -1;
 }
 
 /**

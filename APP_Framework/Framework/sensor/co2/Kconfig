@@ -1,9 +1,9 @@
 
-config PERCEPTION_ZG09
+config SENSOR_ZG09
         bool "Using zg09"
         default n
 
-        if PERCEPTION_ZG09
+        if SENSOR_ZG09
                 config SENSOR_DEVICE_ZG09
                         string "zg09 sensor name"
                         default "zg09_1"

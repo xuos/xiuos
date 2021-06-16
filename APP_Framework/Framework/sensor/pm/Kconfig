@@ -1,9 +1,9 @@
 
-config PERCEPTION_PS5308
+config SENSOR_PS5308
         bool "Using PS5308"
         default n
 
-        if PERCEPTION_PS5308
+        if SENSOR_PS5308
                 config SENSOR_DEVICE_PS5308
                         string "PS5308 sensor name"
                         default "ps5308_1"

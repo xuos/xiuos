@@ -1,9 +1,9 @@
 
-config PERCEPTION_HS300X
+config SENSOR_HS300X
         bool "Using HS300x"
         default n
 
-        if PERCEPTION_HS300X
+        if SENSOR_HS300X
                 config SENSOR_DEVICE_HS300X
                         string "HS300x sensor name"
                         default "hs300x_1"

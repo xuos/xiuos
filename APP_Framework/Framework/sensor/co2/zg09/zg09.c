@@ -20,9 +20,9 @@
 
 #include <sensor.h>
 
-static uint8 zg09_set_passive[8]={0xFE, 0x06, 0x00, 0x05, 0x00, 0x00, 0x8D, 0xC4};
-static uint8 zg09_set_active[8]={0xFE, 0x06, 0x00, 0x05, 0x00, 0x01, 0x4C, 0x04};
-static uint8 zg09_read_instruction[8]={0xFE, 0x03, 0x00, 0x0B, 0x00, 0x01, 0xE1, 0xC7};
+static uint8_t zg09_set_passive[8]={0xFE, 0x06, 0x00, 0x05, 0x00, 0x00, 0x8D, 0xC4};
+static uint8_t zg09_set_active[8]={0xFE, 0x06, 0x00, 0x05, 0x00, 0x01, 0x4C, 0x04};
+static uint8_t zg09_read_instruction[8]={0xFE, 0x03, 0x00, 0x0B, 0x00, 0x01, 0xE1, 0xC7};
 
 static struct SensorDevice zg09;
 
@@ -36,13 +36,13 @@ static struct SensorProductInfo info =
 /**
  * @description: Open ZG09 sensor device
  * @param sdev - sensor device pointer
- * @return success: EOK , failure: other
+ * @return success: 1 , failure: other
  */
 static int SensorDeviceOpen(struct SensorDevice *sdev)
 {
-    int result = EOK;
+    int result = 1;
 
-    sdev->fd = open(SENSOR_DEVICE_ZG09_DEV, O_RDWR);
+    sdev->fd = PrivOpen(SENSOR_DEVICE_ZG09_DEV, O_RDWR);
     
     struct SerialDataCfg cfg;
     cfg.serial_baud_rate    = BAUD_RATE_9600;
@@ -55,7 +55,10 @@ static int SensorDeviceOpen(struct SensorDevice *sdev)
     cfg.ext_uart_no         = SENSOR_DEVICE_ZG09_DEV_EXT_PORT;
     cfg.port_configure      = PORT_CFG_INIT;
 
-    ioctl(sdev->fd, OPE_INT, &cfg);
+    struct PrivIoctlCfg ioctl_cfg;
+    ioctl_cfg.ioctl_driver_type = SERIAL_TYPE;
+    ioctl_cfg.args = &cfg;
+    result = PrivIoctl(sdev->fd, OPE_INT, &ioctl_cfg);
 
     sdev->done->ioctl(sdev, SENSOR_DEVICE_PASSIVE);
 
@@ -68,12 +71,12 @@ static int SensorDeviceOpen(struct SensorDevice *sdev)
  * @param len - the length of the read data
  * @return get data length
  */
-static x_size_t SensorDeviceRead(struct SensorDevice *sdev, size_t len)
+static int SensorDeviceRead(struct SensorDevice *sdev, size_t len)
 {
-    uint8 tmp = 0;
+    uint8_t tmp = 0;
     int timeout = 0;
     while (1) {
-        read(sdev->fd, &tmp, 1);
+        PrivRead(sdev->fd, &tmp, 1);
         if ((tmp == 0xFE) || (timeout >= 1000))
             break;
         UserTaskDelay(10);
@@ -81,13 +84,13 @@ static x_size_t SensorDeviceRead(struct SensorDevice *sdev, size_t len)
     }
     
     if(tmp != 0xFE)
-        return -ERROR;
+        return -1;
 
-    uint8 idx = 0;
+    uint8_t idx = 0;
     sdev->buffer[idx++] = tmp;
 
     while ((idx < len) && (timeout < 1000)) {
-        if (read(sdev->fd, &tmp, 1) == 1) {
+        if (PrivRead(sdev->fd, &tmp, 1) == 1) {
             timeout = 0;
             sdev->buffer[idx++] = tmp;
         }
@@ -101,27 +104,27 @@ static x_size_t SensorDeviceRead(struct SensorDevice *sdev, size_t len)
  * @description: set sensor work mode
  * @param sdev - sensor device pointer
  * @param cmd - mode command
- * @return success: EOK , failure: -ERROR
+ * @return success: 1 , failure: -1
  */
 static int SensorDeviceIoctl(struct SensorDevice *sdev, int cmd)
 {
     switch (cmd)
     {
     case SENSOR_DEVICE_PASSIVE:
-        write(sdev->fd, zg09_set_passive, 8);
+        PrivWrite(sdev->fd, zg09_set_passive, 8);
         sdev->done->read(sdev, 8);
         if (memcmp(sdev->buffer, zg09_set_passive, 8) == 0) {
             sdev->status = SENSOR_DEVICE_PASSIVE;
-            return EOK;
+            return 1;
         }
         break;
 
     case SENSOR_DEVICE_ACTIVE:
-        write(sdev->fd, zg09_set_active, 8);
+        PrivWrite(sdev->fd, zg09_set_active, 8);
         sdev->done->read(sdev, 8);
         if (memcmp(sdev->buffer, zg09_set_active, 8) == 0) {
             sdev->status = SENSOR_DEVICE_ACTIVE;
-            return EOK;
+            return 1;
         }
         break;
     
@@ -130,15 +133,15 @@ static int SensorDeviceIoctl(struct SensorDevice *sdev, int cmd)
         break;
     }
 
-    return -ERROR;
+    return -1;
 }
 
 static struct SensorDone done =
 {
     SensorDeviceOpen,
-    NONE,
+    NULL,
     SensorDeviceRead,
-    NONE,
+    NULL,
     SensorDeviceIoctl,
 };
 
@@ -164,18 +167,18 @@ static struct SensorQuantity zg09_co2;
  * @param quant - sensor quantity pointer
  * @return quantity value
  */
-static int32 QuantityRead(struct SensorQuantity *quant)
+static int32_t QuantityRead(struct SensorQuantity *quant)
 {
     if (!quant)
-        return -ERROR;
+        return -1;
 
-    uint32 result;
-    if (quant->sdev->done->read != NONE) {
+    uint32_t result;
+    if (quant->sdev->done->read != NULL) {
         if(quant->sdev->status == SENSOR_DEVICE_PASSIVE) {
-            write(quant->sdev->fd, zg09_read_instruction, 8);
+            PrivWrite(quant->sdev->fd, zg09_read_instruction, 8);
             quant->sdev->done->read(quant->sdev, 7);
-            if(Crc16(quant->sdev->buffer, 5) == ((uint32)quant->sdev->buffer[6] << 8) + ((uint32)quant->sdev->buffer[5])) {
-                result = (uint32)quant->sdev->buffer[3] * 256 + (uint32)quant->sdev->buffer[4];
+            if(Crc16(quant->sdev->buffer, 5) == ((uint32_t)quant->sdev->buffer[6] << 8) + ((uint32_t)quant->sdev->buffer[5])) {
+                result = (uint32_t)quant->sdev->buffer[3] * 256 + (uint32_t)quant->sdev->buffer[4];
                 if (result > quant->value.max_value)
                     quant->value.max_value = result;
                 else if (result < quant->value.min_value)
@@ -196,7 +199,7 @@ static int32 QuantityRead(struct SensorQuantity *quant)
         printf("%s don't have read done.\n", quant->name);
     }
     
-    return -ERROR;
+    return -1;
 }
 
 /**

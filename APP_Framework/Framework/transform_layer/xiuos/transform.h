@@ -75,6 +75,14 @@ extern "C" {
 #define SERIAL_RB_BUFSZ         128
 #endif
 
+enum ExtSerialPortConfigure
+{
+    PORT_CFG_INIT = 0,
+    PORT_CFG_PARITY_CHECK,
+    PORT_CFG_DISABLE,
+    PORT_CFG_DIV,
+};
+
 struct SerialDataCfg
 {
     uint32_t serial_baud_rate;
@@ -84,6 +92,9 @@ struct SerialDataCfg
     uint8_t serial_bit_order;
     uint8_t serial_invert_mode;
     uint16_t serial_buffer_size;
+
+    uint8 ext_uart_no;
+    enum ExtSerialPortConfigure port_configure;
 };
 
 enum IoctlDriverType

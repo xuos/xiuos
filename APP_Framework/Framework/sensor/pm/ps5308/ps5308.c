@@ -48,11 +48,11 @@ static void ReadTask(struct SensorDevice *sdev)
 /**
  * @description: Open PS5308 sensor device
  * @param sdev - sensor device pointer
- * @return success: EOK , failure: other
+ * @return success: 1 , failure: other
  */
 static int SensorDeviceOpen(struct SensorDevice *sdev)
 {
-    int result = EOK;
+    int result = 1;
 
     buff_lock = UserMutexCreate();
 
@@ -89,13 +89,13 @@ static int SensorDeviceOpen(struct SensorDevice *sdev)
 /**
  * @description: Close PS5308 sensor device
  * @param sdev - sensor device pointer
- * @return EOK
+ * @return 1
  */
 static int SensorDeviceClose(struct SensorDevice *sdev)
 {
     UserTaskDelete(active_task_id);
     UserMutexDelete(buff_lock);
-    return EOK;
+    return 1;
 }
 
 /**
@@ -104,9 +104,9 @@ static int SensorDeviceClose(struct SensorDevice *sdev)
  * @param len - the length of the read data
  * @return get data length
  */
-static x_size_t SensorDeviceRead(struct SensorDevice *sdev, size_t len)
+static int SensorDeviceRead(struct SensorDevice *sdev, size_t len)
 {
-    uint8 tmp = 0;
+    uint8_t tmp = 0;
     int timeout = 0;
     while (1) {
         read(sdev->fd, &tmp, 1);
@@ -117,9 +117,9 @@ static x_size_t SensorDeviceRead(struct SensorDevice *sdev, size_t len)
     }
     
     if (tmp != 0x44)
-        return -ERROR;
+        return -1;
 
-    uint8 idx = 0;
+    uint8_t idx = 0;
     sdev->buffer[idx++] = tmp;
 
     while ((idx < len) && (timeout < 1000)) {
@@ -138,8 +138,8 @@ static struct SensorDone SensorDeviceDone =
     SensorDeviceOpen,
     SensorDeviceClose,
     SensorDeviceRead,
-    NONE,
-    NONE,
+    NULL,
+    NULL,
 };
 
 /**
@@ -165,21 +165,21 @@ static struct SensorQuantity ps5308_pm1_0;
  * @param quant - sensor quantity pointer
  * @return quantity value
  */
-static int32 ReadPm1_0(struct SensorQuantity *quant)
+static int32_t ReadPm1_0(struct SensorQuantity *quant)
 {
     if (!quant)
-        return -ERROR;
+        return -1;
 
-    uint32 result;
-    if (quant->sdev->done->read != NONE) {
-        uint16 checksum = 0;
+    uint32_t result;
+    if (quant->sdev->done->read != NULL) {
+        uint16_t checksum = 0;
         UserMutexObtain(buff_lock, WAITING_FOREVER);
 
-        for (uint8 i = 0; i < 30; i++)
+        for (uint8_t i = 0; i < 30; i++)
             checksum += quant->sdev->buffer[i];          
         
-        if (checksum == (((uint16)quant->sdev->buffer[30] << 8) + ((uint16)quant->sdev->buffer[31]))) {
-            result = ((uint16)quant->sdev->buffer[4] << 8) + (uint16)quant->sdev->buffer[5];
+        if (checksum == (((uint16_t)quant->sdev->buffer[30] << 8) + ((uint16_t)quant->sdev->buffer[31]))) {
+            result = ((uint16_t)quant->sdev->buffer[4] << 8) + (uint16_t)quant->sdev->buffer[5];
             if (result > quant->value.max_value)
                 quant->value.max_value = result;
             else if (result < quant->value.min_value)
@@ -196,7 +196,7 @@ static int32 ReadPm1_0(struct SensorQuantity *quant)
         printf("%s don't have read done.\n", quant->name);
     }
     
-    return -ERROR;
+    return -1;
 }
 
 /**
@@ -232,21 +232,21 @@ static struct SensorQuantity ps5308_pm2_5;
  * @param quant - sensor quantity pointer
  * @return quantity value
  */
-static int32 ReadPm2_5(struct SensorQuantity *quant)
+static int32_t ReadPm2_5(struct SensorQuantity *quant)
 {
     if (!quant)
-        return -ERROR;
+        return -1;
 
-    uint32 result;
-    if (quant->sdev->done->read != NONE) {
-        uint16 checksum = 0;
+    uint32_t result;
+    if (quant->sdev->done->read != NULL) {
+        uint16_t checksum = 0;
         UserMutexObtain(buff_lock, WAITING_FOREVER);
 
         for (uint i = 0; i < 30; i++)
             checksum += quant->sdev->buffer[i];
         
-        if (checksum == (((uint16)quant->sdev->buffer[30] << 8) + ((uint16)quant->sdev->buffer[31]))) {
-            result = ((uint16)quant->sdev->buffer[6] << 8) + (uint16)quant->sdev->buffer[7];
+        if (checksum == (((uint16_t)quant->sdev->buffer[30] << 8) + ((uint16_t)quant->sdev->buffer[31]))) {
+            result = ((uint16_t)quant->sdev->buffer[6] << 8) + (uint16_t)quant->sdev->buffer[7];
             if (result > quant->value.max_value)
                 quant->value.max_value = result;
             else if (result < quant->value.min_value)
@@ -263,7 +263,7 @@ static int32 ReadPm2_5(struct SensorQuantity *quant)
         printf("%s don't have read done.\n", quant->name);
     }
     
-    return -ERROR;
+    return -1;
 }
 
 /**
@@ -299,21 +299,21 @@ static struct SensorQuantity ps5308_pm10;
  * @param quant - sensor quantity pointer
  * @return quantity value
  */
-static int32 ReadPm10(struct SensorQuantity *quant)
+static int32_t ReadPm10(struct SensorQuantity *quant)
 {
     if (!quant)
-        return -ERROR;
+        return -1;
 
-    uint32 result;
-    if (quant->sdev->done->read != NONE) {
-        uint16 checksum = 0;
+    uint32_t result;
+    if (quant->sdev->done->read != NULL) {
+        uint16_t checksum = 0;
         UserMutexObtain(buff_lock, WAITING_FOREVER);
 
         for (uint i = 0; i < 30; i++)
             checksum += quant->sdev->buffer[i];
         
-        if (checksum == (((uint16)quant->sdev->buffer[30] << 8) + ((uint16)quant->sdev->buffer[31]))) {
-            result = ((uint16)quant->sdev->buffer[8] << 8) + (uint16)quant->sdev->buffer[9];
+        if (checksum == (((uint16_t)quant->sdev->buffer[30] << 8) + ((uint16_t)quant->sdev->buffer[31]))) {
+            result = ((uint16_t)quant->sdev->buffer[8] << 8) + (uint16_t)quant->sdev->buffer[9];
             if (result > quant->value.max_value)
                 quant->value.max_value = result;
             else if (result < quant->value.min_value)
@@ -330,7 +330,7 @@ static int32 ReadPm10(struct SensorQuantity *quant)
         printf("%s don't have read done.\n", quant->name);
     }
     
-    return -ERROR;
+    return -1;
 }
 
 /**

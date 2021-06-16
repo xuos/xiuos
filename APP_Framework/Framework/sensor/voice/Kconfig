@@ -1,9 +1,9 @@
 
-config PERCEPTION_D124
+config SENSOR_D124
         bool "Using D124"
         default n
 
-        if PERCEPTION_D124
+        if SENSOR_D124
                 config SENSOR_DEVICE_D124
                         string "D124 sensor name"
                         default "d124_1"

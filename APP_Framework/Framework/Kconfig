@@ -1,6 +1,9 @@
-config SUPPORT_SENSOR_FRAMEWORK
+menuconfig SUPPORT_SENSOR_FRAMEWORK
     bool "select sensor framework"
     default y
+    if SUPPORT_SENSOR_FRAMEWORK
+    source "$APP_DIR/Framework/sensor/Kconfig"
+    endif
 
 config TRANSFORM_LAYER_ATTRIUBUTE
     bool "select transform layer"
