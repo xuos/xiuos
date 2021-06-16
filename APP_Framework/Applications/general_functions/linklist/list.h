@@ -11,16 +11,16 @@
 */
 
 /**
-* @file:    xs_klist.h
+* @file:    list.h
 * @brief:   function declaration and structure defintion of linklist
 * @version: 1.0
 * @author:  AIIT XUOS Lab
-* @date:    2020/3/2
+* @date:    2020/6/8
 *
 */
 
-#ifndef __XS_KLIST_H__
-#define __XS_KLIST_H__
+#ifndef __LIST_H__
+#define __LIST_H__
 
 #include <errno.h>
 #include <stdint.h>

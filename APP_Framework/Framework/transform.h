@@ -100,7 +100,7 @@ struct PrivIoctlCfg
 
 int PrivOpen(const char *path, int flags, ...);
 
-int PrivClose(int fd, void *buf, size_t len);
+int PrivClose(int fd);
 
 int PrivRead(int fd, void *buf, size_t len);
 

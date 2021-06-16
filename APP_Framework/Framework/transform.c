@@ -38,7 +38,7 @@ int PrivOpen(const char *path, int flags, ...)
     return open(path, flags, ...);
 }
 
-int PrivClose(int fd, void *buf, size_t len)
+int PrivClose(int fd)
 {
     return close(fd);
 }
