@@ -22,16 +22,11 @@
 #ifndef XS_USER_API_H
 #define XS_USER_API_H
 
-
-// #include <xiuos.h>
-
 #include <xsconfig.h>
-#include "../../../kernel/include/xs_service.h"
-#include "../../../kernel/include/xs_base.h"
 #include <stddef.h>
 #include <stdint.h>
-#include "../../../arch/kswitch.h"
 #include <libc.h>
+#include "../../../../../../Ubiquitous/XiUOS/arch/kswitch.h"
 
 
 #ifdef  SEPARATE_COMPILE

@@ -21,10 +21,10 @@
 #include <sensor.h>
 
 /* Sensor quantity list table */
-static DoubleLinklistType quant_table[SENSOR_QUANTITY_END];
+static DoublelistType quant_table[SENSOR_QUANTITY_END];
 
 /* Sensor device list */
-static DoubleLinklistType sensor_device_list;
+static DoublelistType sensor_device_list;
 
 /* Sensor quantity list lock */
 static int quant_table_lock;
@@ -38,12 +38,19 @@ static int sensor_device_list_lock;
  */
 int SensorFrameworkInit(void)
 {
+    int ret = 0;
     for (int i = 0; i < SENSOR_QUANTITY_END; i++)
-        InitDoubleLinkList(&quant_table[i]);
-    InitDoubleLinkList(&sensor_device_list);
+        AppInitDoubleList(&quant_table[i]);
+    AppInitDoubleList(&sensor_device_list);
 
-    quant_table_lock = PrivMutexCreate();
-    sensor_device_list_lock = PrivMutexCreate();
+    ret = PrivMutexCreate(&quant_table_lock, 0);
+    if(ret < 0) {
+        printf("quant_table_lock mutex create failed.\n");
+    }
+    ret = PrivMutexCreate(&sensor_device_list_lock, 0);
+    if(ret < 0) {
+        printf("sensor_device_list_lock mutex create failed.\n");
+    }
 
     return 0;
 }
@@ -58,13 +65,13 @@ int SensorFrameworkInit(void)
 static struct SensorDevice *SensorDeviceFindByName(const char *name)
 {
     struct SensorDevice *ret = NULL;
-    struct SysDoubleLinklistNode *node;
+    struct DoublelistNode *node;
 
     if (name == NULL)
         return NULL;
 
-    PrivMutexObtain(sensor_device_list_lock, -1);
-    DOUBLE_LINKLIST_FOR_EACH(node, &sensor_device_list) {
+    PrivMutexObtain(&sensor_device_list_lock);
+    DOUBLE_LIST_FOR_EACH(node, &sensor_device_list) {
         struct SensorDevice *sdev =CONTAINER_OF(node,
                 struct SensorDevice, link);
         if (strncmp(sdev->name, name, NAME_NUM_MAX) == 0) {
@@ -72,7 +79,7 @@ static struct SensorDevice *SensorDeviceFindByName(const char *name)
             break;
         }
     }
-    PrivMutexAbandon(sensor_device_list_lock);
+    PrivMutexAbandon(&sensor_device_list_lock);
 
     return ret;
 }
@@ -104,11 +111,11 @@ int SensorDeviceRegister(struct SensorDevice *sdev)
     }
 
     sdev->ref_cnt = 0;
-    InitDoubleLinkList(&sdev->quant_list);
+    AppInitDoubleList(&sdev->quant_list);
 
-    PrivMutexObtain(sensor_device_list_lock, -1);
-    DoubleLinkListInsertNodeAfter(&sensor_device_list, &sdev->link);
-    PrivMutexAbandon(sensor_device_list_lock);
+    PrivMutexObtain(&sensor_device_list_lock);
+    AppDoubleListInsertNodeAfter(&sensor_device_list, &sdev->link);
+    PrivMutexAbandon(&sensor_device_list_lock);
 
     return 0;
 }
@@ -122,9 +129,9 @@ int SensorDeviceUnregister(struct SensorDevice *sdev)
 {
     if (!sdev)
         return -1;
-    PrivMutexObtain(sensor_device_list_lock, -1);
-    DoubleLinkListRmNode(&sdev->link);
-    PrivMutexAbandon(sensor_device_list_lock);
+    PrivMutexObtain(&sensor_device_list_lock);
+    AppDoubleListRmNode(&sdev->link);
+    PrivMutexAbandon(&sensor_device_list_lock);
 
     return 0;
 }
@@ -192,13 +199,13 @@ struct SensorQuantity *SensorQuantityFind(const char *name,
         enum SensorQuantityType type)
 {
     struct SensorQuantity *ret = NULL;
-    struct SysDoubleLinklistNode *node;
+    struct DoublelistNode *node;
 
     if (name == NULL || type < 0 || type >= SENSOR_QUANTITY_END)
         return NULL;
 
-    PrivMutexObtain(quant_table_lock, -1);
-    DOUBLE_LINKLIST_FOR_EACH(node, &quant_table[type]) {
+    PrivMutexObtain(&quant_table_lock);
+    DOUBLE_LIST_FOR_EACH(node, &quant_table[type]) {
         struct SensorQuantity *quant =CONTAINER_OF(node,
                 struct SensorQuantity, link);
         if (strncmp(quant->name, name, NAME_NUM_MAX) == 0) {
@@ -206,7 +213,7 @@ struct SensorQuantity *SensorQuantityFind(const char *name,
             break;
         }
     }
-    PrivMutexAbandon(quant_table_lock);
+    PrivMutexAbandon(&quant_table_lock);
 
     return ret;
 }
@@ -226,10 +233,10 @@ int SensorQuantityRegister(struct SensorQuantity *quant)
             return -1;
     }
 
-    PrivMutexObtain(quant_table_lock, -1);
-    DoubleLinkListInsertNodeAfter(&quant->sdev->quant_list, &quant->quant_link);
-    DoubleLinkListInsertNodeAfter(&quant_table[quant->type], &quant->link);
-    PrivMutexAbandon(quant_table_lock);
+    PrivMutexObtain(&quant_table_lock);
+    AppDoubleListInsertNodeAfter(&quant->sdev->quant_list, &quant->quant_link);
+    AppDoubleListInsertNodeAfter(&quant_table[quant->type], &quant->link);
+    PrivMutexAbandon(&quant_table_lock);
 
     return 0;
 }
@@ -243,10 +250,10 @@ int SensorQuantityUnregister(struct SensorQuantity *quant)
 {
     if (!quant)
         return -1;
-    PrivMutexObtain(quant_table_lock, -1);
-    DoubleLinkListRmNode(&quant->quant_link);
-    DoubleLinkListRmNode(&quant->link);
-    PrivMutexAbandon(quant_table_lock);
+    PrivMutexObtain(&quant_table_lock);
+    AppDoubleListRmNode(&quant->quant_link);
+    AppDoubleListRmNode(&quant->link);
+    PrivMutexAbandon(&quant_table_lock);
 
     return 0;
 }

@@ -21,12 +21,19 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
+#include <pthread.h>
+#include <semaphore.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <time.h>
+#include <user_api.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define OPE_INT                  0x0000
+#define OPE_CFG                 0x0001
 
 #define NAME_NUM_MAX            32
 
@@ -79,50 +86,55 @@ struct SerialDataCfg
     uint16_t serial_buffer_size;
 };
 
-enum IoctlCmd
+enum IoctlDriverType
 {
-    SERIAL_CFG_SETS = 0,
-    SERIAL_CFG_GETS,
+    SERIAL_TYPE = 0,
+    SPI_TYPE,
+    I2C_TYPE,
+    DEFAULT_TYPE,
+};
+
+struct PrivIoctlCfg
+{
+    enum IoctlDriverType ioctl_driver_type;
+    void *args;
 };
 
 /**********************mutex**************************/
 
-int32_t PrivMutexCreate(void);
-void PrivMutexDelete(int32_t mutex);
-int32_t PrivMutexObtain(int32_t mutex, int32_t wait_time);
-int32_t PrivMutexAbandon(int32_t mutex);
+int PrivMutexCreate(pthread_mutex_t *p_mutex, const pthread_mutexattr_t *attr);
+int PrivMutexDelete(pthread_mutex_t *p_mutex);
+int PrivMutexObtain(pthread_mutex_t *p_mutex);
+int PrivMutexAbandon(pthread_mutex_t *p_mutex);
 
 /*********************semaphore**********************/
 
-int32_t PrivSemaphoreCreate(uint16_t val);
-int32_t PrivSemaphoreDelete(int32_t sem);
-int32_t PrivSemaphoreObtain(int32_t sem, int32_t wait_time);
-int32_t PrivSemaphoreAbandon(int32_t sem);
+int PrivSemaphoreCreate(sem_t *sem, int pshared, unsigned int value);
+int PrivSemaphoreDelete(sem_t *sem);
+int PrivSemaphoreObtainWait(sem_t *sem, const struct timespec *abstime);
+int PrivSemaphoreObtainNoWait(sem_t *sem);
+int PrivSemaphoreAbandon(sem_t *sem);
 int32_t PrivSemaphoreSetValue(int32_t sem, uint16_t val);
 
 /*********************task**************************/
 
-struct utask
-{
-	char        name[NAME_NUM_MAX];         
-    void        *func_entry;                
-    void        *func_param;     
-    int32_t     stack_size;  
-    uint8_t     prio; 
-};
-typedef struct utask UtaskType;
-
-int32_t PrivTaskCreate(UtaskType utask);
-int32_t PrivTaskStartup(int32_t id);
-int32_t PrivTaskDelete(int32_t id);
-void PrivTaskQuit(void);
-int32_t PrivTaskDelay(int32_t ms);
-
+int PrivTaskCreate(pthread_t *thread, const pthread_attr_t *attr,
+                   void *(*start_routine)(void *), void *arg);
+int PrivTaskStartup(pthread_t *thread);
+int PrivTaskDelete(pthread_t thread, int sig);
+void PrivTaskQuit(void *value_ptr);
+int PrivTaskDelay(int32_t ms);
 int PrivOpen(const char *path, int flags, ...);
 int PrivRead(int fd, void *buf, size_t len);
 int PrivWrite(int fd, const void *buf, size_t len);
 int PrivClose(int fd);
 int PrivIoctl(int fd, int cmd, void *args);
+
+void *PrivMalloc(size_t size);
+void *PrivRealloc(void *pointer, size_t size);
+void *PrivCalloc(size_t  count, size_t size);
+void PrivFree(void *pointer);
+
 
 #ifdef __cplusplus
 }

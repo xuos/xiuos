@@ -73,8 +73,8 @@ struct SensorDevice {
     uint8_t buffer[SENSOR_RECEIVE_BUFFSIZE];  /* Buffer for read data */
 
     int ref_cnt;                            /* Reference count */
-    DoubleLinklistType quant_list;          /* Sensor quantity link */
-    struct SysDoubleLinklistNode link;      /* Sensors link node */
+    DoublelistType quant_list;          /* Sensor quantity link */
+    struct DoublelistNode link;      /* Sensors link node */
 };
 
 enum SensorQuantityType {
@@ -106,8 +106,8 @@ struct SensorQuantity {
 
     int32_t (*ReadValue)(struct SensorQuantity *quant);
 
-    struct SysDoubleLinklistNode quant_link;
-    struct SysDoubleLinklistNode link;
+    struct DoublelistNode quant_link;
+    struct DoublelistNode link;
 };
 
 int SensorDeviceRegister(struct SensorDevice *sdev);

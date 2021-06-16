@@ -131,6 +131,8 @@ int Userprintf(const char *fmt, ...)
         va_list args;
         size_t length;
         static char logbuf[CONSOLEBUF_SIZE];
+        // int fd = 0;
+        // fd = open("/dev/uart0_dev0",O_RDWR);
 
         va_start(args, fmt);
 
@@ -138,7 +140,9 @@ int Userprintf(const char *fmt, ...)
         if (length > CONSOLEBUF_SIZE - 1)
             length = CONSOLEBUF_SIZE - 1;
 
-        write(stdio, logbuf, length);        
+        write(stdio, logbuf, length);    
+        // write(fd, logbuf, length);
+        // close(fd);       
         va_end(args);
     }
     return 0;

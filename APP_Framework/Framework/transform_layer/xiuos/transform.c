@@ -11,19 +11,16 @@
 */
 
 /**
- * @file transform.c
- * @brief support to transform the application interface from private api to posix api
+ * @file xiuos.c
+ * @brief Converts the framework interface to an operating system interface
  * @version 1.0
  * @author AIIT XUOS Lab
  * @date 2021.06.07
  */
 
-#include <pthread.h>
-#include <semaphore.h>
-#include <stdint.h>
-#include <time.h>
+#include <transform.h>
 
-#include "transform.h"
+/**************************mutex***************************/
 
 //for test
 #define XIUOS_OS
@@ -95,7 +92,8 @@ int PrivMutexAbandon(pthread_mutex_t *p_mutex)
     return pthread_mutex_lock(p_mutex);
 }
 
-/* private sem API */
+/**********************semaphore****************************/
+
 int PrivSemaphoreCreate(sem_t *sem, int pshared, unsigned int value)
 {
     return sem_init(sem, pshared, value);
@@ -119,7 +117,7 @@ int PrivSemaphoreAbandon(sem_t *sem)
     return sem_post(sem);
 }
 
-/* private task API */
+/**************************task*************************/
 
 int PrivTaskCreate(pthread_t *thread, const pthread_attr_t *attr,
                    void *(*start_routine)(void *), void *arg)
@@ -142,8 +140,70 @@ void PrivTaskQuit(void *value_ptr)
     pthread_exit(value_ptr);
 }
 
-int PrivTaskDelay(const struct timespec *rqtp, struct timespec *rmtp)
+int PrivTaskDelay(int32_t ms)
 {
-    nanosleep(rqtp,rmtp);
+    UserTaskDelay(ms);
 }
-#endif
+
+/*********************fs**************************/
+
+/************************Driver Posix Transform***********************/
+int PrivOpen(const char *path, int flags, ...)
+{
+    return open(path, flags);
+}
+
+int PrivClose(int fd)
+{
+    return close(fd);
+}
+
+int PrivRead(int fd, void *buf, size_t len)
+{    
+    return read(fd, buf, len);
+}
+
+int PrivWrite(int fd, const void *buf, size_t len)
+{   
+    return write(fd, buf, len);
+}
+
+static int PrivSerialIoctl(int fd, void *args)
+{
+    struct SerialDataCfg *serial_cfg = (struct SerialDataCfg *)args;
+
+    return ioctl(fd, OPE_INT, &serial_cfg);
+}
+
+int PrivIoctl(int fd, int cmd, void *args)
+{
+    struct PrivIoctlCfg *ioctl_cfg = (struct PrivIoctlCfg *)args;
+    
+    switch (ioctl_cfg->ioctl_driver_type)
+    {
+    case SERIAL_TYPE:
+        PrivSerialIoctl(fd, ioctl_cfg->args);
+        break;
+    default:
+        break;
+    }
+}
+
+/********************memory api************/
+void *PrivMalloc(size_t size)
+{
+    return UserMalloc(size);
+}
+void *PrivRealloc(void *pointer, size_t size)
+{
+    return UserRealloc(pointer, size);
+}
+
+void *PrivCalloc(size_t  count, size_t size)
+{
+    return UserCalloc(count, size);
+}
+void PrivFree(void *pointer)
+{
+    UserFree(pointer);
+}

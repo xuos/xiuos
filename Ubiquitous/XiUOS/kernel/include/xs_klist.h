@@ -45,14 +45,6 @@ typedef struct SingleLinklistNode
 } SysSingleLinklistType;              
 
 
-struct CommonMember
-{
-    char name[NAME_NUM_MAX];
-    uint8 type;
-    uint8 flag;
-    DoubleLinklistType list;
-};
-
 #define  CONTAINER_OF(item, type, member) \
     ((type *)((char *)(item) - (unsigned long)(&((type *)0)->member)))
 
