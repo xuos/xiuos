@@ -28,6 +28,7 @@ Modification: Use file system functions
 
 #include <sys/errno.h>
 #include <stdio.h>
+#include <transform.h>
 
 int _close_r(struct _reent *ptr, int fd)
 {

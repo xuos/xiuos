@@ -1,5 +1,4 @@
 menu "Applications"
-source "$KERNEL_DIR/applications/user_api/posix_support/Kconfig"
 
     menu "config stack size and priority of main task"
         config MAIN_KTASK_STACK_SIZE

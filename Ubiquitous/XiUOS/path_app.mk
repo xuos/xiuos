@@ -1,12 +1,15 @@
 
-
 export APPPATHS :=-I$(BSP_ROOT) \
 
-APPPATHS +=-I$(KERNEL_ROOT)/../../APP_Framework/Applications/general_functions/linklist \
+APPPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Applications/general_functions/list \
 	-I$(KERNEL_ROOT)/../../APP_Framework/lib/app_newlib/include \
-	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/sensor \
-	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer #
+	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/sensor #
 
+ifeq ($(CONFIG_COMPILE_WITH_XIUOS), y)
+APPPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos \
+	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos/user_api/switch_api \
+	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos/user_api/posix_support/include #
+endif
 
 COMPILE_APP:
 	@$(eval CPPPATHS=$(APPPATHS))
