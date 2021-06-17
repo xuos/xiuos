@@ -23,6 +23,8 @@
 
 #include <list.h>
 #include <transform.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdint.h>
 #include <sys/types.h>
 
@@ -106,6 +108,7 @@ struct Adapter
     int fd;
 
     struct AdapterProductInfo *info;
+    struct Socket *socket;
 
     enum NetProtocolType net_protocol;
     enum NetRoleType net_role;
@@ -114,7 +117,7 @@ struct Adapter
     
     void *done;
 
-    struct SysDoubleLinklistNode link;
+    struct DoublelistNode link;
 };
 
 #endif

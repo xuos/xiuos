@@ -20,7 +20,7 @@
 
 #include <adapter.h>
 
-static DoubleLinklistType adapter_list;
+static DoublelistType adapter_list;
 
 static int adapter_list_lock;
 
@@ -30,9 +30,13 @@ static int adapter_list_lock;
  */
 int AdapterFrameworkInit(void)
 {
-    InitDoubleLinkList(&adapter_list);
+    int ret = 0;
+    AppInitDoubleList(&adapter_list);
 
-    adapter_list_lock = KMutexCreate();
+    ret = PrivMutexCreate(&adapter_list_lock, 0);
+    if(ret < 0) {
+        printf("AdapterFrameworkInit mutex create failed.\n");
+    }
 
     return 0;
 }
@@ -42,24 +46,24 @@ int AdapterFrameworkInit(void)
  * @param name - name string
  * @return adapter device pointer
  */
-struct Adapter *AdapterDeviceFind(const char *name)
+struct Adapter *AdapterDeviceFindByName(const char *name)
 {
     struct Adapter *ret = NULL;
-    struct SysDoubleLinklistNode *node;
+    struct DoublelistNode *node;
 
-    if (name == NULL)
+    if (NULL == name)
         return NULL;
 
-    UserMutexObtain(adapter_list_lock, -1);
-    DOUBLE_LINKLIST_FOR_EACH(node, &adapter_list) {
-        struct Adapter *adapter =CONTAINER_OF(node,
+    PrivMutexObtain(&adapter_list_lock);
+    DOUBLE_LIST_FOR_EACH(node, &adapter_list) {
+        struct Adapter *adapter = CONTAINER_OF(node,
                 struct Adapter, link);
-        if (strncmp(adapter->name, name, NAME_NUM_MAX) == 0) {
+        if (0 == strncmp(adapter->name, name, NAME_NUM_MAX)) {
             ret = adapter;
             break;
         }
     }
-    UserMutexAbandon(adapter_list_lock);
+    PrivMutexAbandon(&adapter_list_lock);
 
     return ret;
 }
@@ -71,17 +75,17 @@ struct Adapter *AdapterDeviceFind(const char *name)
  */
 int AdapterDeviceRegister(struct Adapter *adapter)
 {
-    if (adapter == NULL)
+    if (NULL == adapter )
         return -1;
 
-    if (AdapterDeviceFindByName(adapter->name) != NULL) {
+    if (NULL != AdapterDeviceFindByName(adapter->name)) {
         printf("%s: sensor with the same name already registered\n", __func__);
         return -1;
     }
 
-    UserMutexObtain(adapter_list_lock, -1);
-    DoubleLinkListInsertNodeAfter(&adapter_list, &adapter->link);
-    UserMutexAbandon(adapter_list_lock);
+    PrivMutexObtain(&adapter_list_lock);
+    AppDoubleListInsertNodeAfter(&adapter_list, &adapter->link);
+    PrivMutexAbandon(&adapter_list_lock);
 
     return 0;
 }
@@ -95,9 +99,9 @@ int AdapterDeviceUnregister(struct Adapter *adapter)
 {
     if (!adapter)
         return -1;
-    UserMutexObtain(adapter_list, -1);
-    DoubleLinkListRmNode(&adapter->link);
-    UserMutexAbandon(adapter_list);
+    PrivMutexObtain(&adapter_list_lock);
+    AppDoubleListRmNode(&adapter->link);
+    PrivMutexAbandon(&adapter_list_lock);
 
     return 0;
 }
@@ -121,11 +125,11 @@ int AdapterDeviceOpen(struct Adapter *adapter)
     {
     case PRIVATE_PROTOCOL:
         priv_done = (struct PrivProtocolDone *)adapter->done;
-        if (priv_done->open == NULL)
+        if (NULL == priv_done->open)
             return 0;
         
         result = priv_done->open(adapter);
-        if (result == 0) {
+        if (0 == result) {
             printf("Device %s open success.\n", adapter->name);
         }else{
             if (adapter->fd) {
@@ -138,11 +142,11 @@ int AdapterDeviceOpen(struct Adapter *adapter)
     
     case IP_PROTOCOL:
         ip_done = (struct IpProtocolDone *)adapter->done;
-        if (ip_done->open == NULL)
+        if (NULL == ip_done->open)
             return 0;
         
         result = ip_done->open(adapter);
-        if (result == 0) {
+        if (0 == result) {
             printf("Device %s open success.\n", adapter->name);
         }else{
             if (adapter->fd) {
@@ -179,11 +183,11 @@ int AdapterDeviceClose(struct Adapter *adapter)
     {
     case PRIVATE_PROTOCOL:
         priv_done = (struct PrivProtocolDone *)adapter->done;
-        if (priv_done->close == NULL)
+        if (NULL == priv_done->close)
             return 0;
         
         result = priv_done->close(adapter);
-        if (result == 0)
+        if (0 == result)
             printf("%s successfully closed.\n", adapter->name);
         else
             printf("Closed %s failure.\n", adapter->name);
@@ -192,11 +196,11 @@ int AdapterDeviceClose(struct Adapter *adapter)
     
     case IP_PROTOCOL:
         ip_done = (struct IpProtocolDone *)adapter->done;
-        if (ip_done->close == NULL)
+        if (NULL == ip_done->close)
             return 0;
         
         result = ip_done->close(adapter);
-        if (result == 0)
+        if (0 == result)
             printf("%s successfully closed.\n", adapter->name);
         else
             printf("Closed %s failure.\n", adapter->name);
@@ -221,10 +225,24 @@ ssize_t AdapterDeviceRead(struct Adapter *adapter, void *dst, size_t len)
     if (!adapter)
         return -1;
 
-    if (adapter->done->read == NULL)
-        return -1;
+    if (PRIVATE_PROTOCOL == adapter->net_protocol) {
+        struct PrivProtocolDone *priv_done = (struct PrivProtocolDone *)adapter->done; 
+        
+        if (NULL == priv_done->recv)
+            return -1;
     
-    return adapter->done->read(adapter, dst, len);
+        return priv_done->recv(adapter, dst, len);
+    } else if (IP_PROTOCOL == adapter->net_protocol) {
+        struct IpProtocolDone *ip_done = (struct IpProtocolDone *)adapter->done;
+    
+        if (NULL == ip_done->recv)
+            return -1;
+    
+        return ip_done->recv(adapter->socket, dst, len);
+    } else {
+        printf("AdapterDeviceRead net_protocol %d not support\n", adapter->net_protocol);
+        return -1;
+    }
 }
 
 /**
@@ -239,10 +257,24 @@ ssize_t AdapterDeviceWrite(struct Adapter *adapter, const void *src, size_t len)
     if (!adapter)
         return -1;
 
-    if (adapter->done->write == NULL)
-        return -1;
+    if (PRIVATE_PROTOCOL == adapter->net_protocol) {
+        struct PrivProtocolDone *priv_done = (struct PrivProtocolDone *)adapter->done; 
+        
+        if (NULL == priv_done->send)
+            return -1;
     
-    return adapter->done->write(adapter, src, len);
+        return priv_done->send(adapter, src, len);
+    } else if (IP_PROTOCOL == adapter->net_protocol) {
+        struct IpProtocolDone *ip_done = (struct IpProtocolDone *)adapter->done;
+    
+        if (NULL == ip_done->send)
+            return -1;
+    
+        return ip_done->send(adapter->socket, src, len);
+    } else {
+        printf("AdapterDeviceWrite net_protocol %d not support\n", adapter->net_protocol);
+        return -1;
+    }
 }
 
 /**
@@ -256,9 +288,23 @@ int AdapterDeviceControl(struct Adapter *adapter, int cmd, void *args)
 {
     if (!adapter)
         return -1;
-
-    if (adapter->done->ioctl == NULL)
-        return -1;
+        
+    if (PRIVATE_PROTOCOL == adapter->net_protocol) {
+        struct PrivProtocolDone *priv_done = (struct PrivProtocolDone *)adapter->done; 
+        
+        if (NULL == priv_done->ioctl)
+            return -1;
     
-    return adapter->done->ioctl(adapter, cmd, args);
+        return priv_done->ioctl(adapter, cmd, args);
+    } else if (IP_PROTOCOL == adapter->net_protocol) {
+        struct IpProtocolDone *ip_done = (struct IpProtocolDone *)adapter->done;
+    
+        if (NULL == ip_done->ioctl)
+            return -1;
+    
+        return ip_done->ioctl(adapter, cmd, args);
+    } else {
+        printf("AdapterDeviceControl net_protocol %d not support\n", adapter->net_protocol);
+        return -1;
+    }
 }

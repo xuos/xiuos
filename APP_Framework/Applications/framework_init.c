@@ -50,7 +50,7 @@ static int AppInitDesc(struct InitDesc sub_desc[])
 
 static struct InitDesc framework[] = 
 {
-#ifdef SENSOR_SENSORDEVICE
+#ifdef SUPPORT_SENSOR_FRAMEWORK
 	{ "perception_framework", SensorFrameworkInit },
 #endif
 
@@ -150,7 +150,7 @@ static int ConnectionFrameworkInit(struct InitDesc sub_desc[])
  */
 int FrameworkInit()
 {
-#ifdef SENSOR_SENSORDEVICE
+#ifdef SUPPORT_SENSOR_FRAMEWORK
 	PerceptionFrameworkInit(framework);
 #endif
 

@@ -166,8 +166,8 @@ KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/sensor #
 KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos #
 KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Applications/general_functions/list #
 
-ifeq ($(CONFIG_CONNECTION_ADAPTER), y)
-KERNELPATHS += -I$(KERNEL_ROOT)/framework/connection/Adapter/include #
+ifeq ($(CONFIG_SUPPORT_CONNECTION_FRAMEWORK), y)
+KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/connection #
 endif
 
 ifeq ($(CONFIG_CRYPTO), y)

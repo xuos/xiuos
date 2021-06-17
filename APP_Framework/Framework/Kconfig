@@ -17,5 +17,6 @@ config TRANSFORM_LAYER_ATTRIUBUTE
 
 
 source "$APP_DIR/Framework/sensor/Kconfig"
+source "$APP_DIR/Framework/connection/Kconfig"
 source "$APP_DIR/Framework/know/tflite_sin/Kconfig"
 source "$APP_DIR/Framework/know/tflite_mnist/Kconfig"

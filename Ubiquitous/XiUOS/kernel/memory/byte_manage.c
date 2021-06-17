@@ -953,11 +953,7 @@ void *x_umalloc(x_size_t size)
 	lock = CriticalAreaLock();
     /* alignment */
 	size = ALIGN_MEN_UP(size, MEM_ALIGN_SIZE);
-<<<<<<< HEAD
-    ret = UserByteManager.dynamic_buddy_manager.done->malloc(&UserByteManager.dynamic_buddy_manager,size, DYNAMIC_BLOCK_NO_EXTMEM_MASK);
-=======
     ret = UserByteManager.dynamic_buddy_manager.done->malloc(&UserByteManager.dynamic_buddy_manager,size,DYNAMIC_BLOCK_NO_EXTMEM_MASK);
->>>>>>> 0ddb5bfd1f2d80ec762bd2627d04c60da063e9fc
     if(ret != NONE)
         CHECK(UserByteManager.dynamic_buddy_manager.done->JudgeLegal(&UserByteManager.dynamic_buddy_manager, ret - SIZEOF_DYNAMICALLOCNODE_MEM));
 

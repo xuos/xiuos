@@ -11,6 +11,10 @@ APPPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos
 	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos/user_api/posix_support/include #
 endif
 
+ifeq ($(CONFIG_SUPPORT_CONNECTION_FRAMEWORK), y)
+APPPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/connection #
+endif
+
 COMPILE_APP:
 	@$(eval CPPPATHS=$(APPPATHS))
 	@echo $(SRC_APP_DIR)

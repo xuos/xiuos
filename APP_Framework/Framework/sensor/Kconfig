@@ -1,8 +1,8 @@
-menuconfig SENSOR_SENSORDEVICE
+menuconfig SUPPORT_SENSOR_FRAMEWORK
         bool "support sensor framework"
         default y
 
-if SENSOR_SENSORDEVICE
+if SUPPORT_SENSOR_FRAMEWORK
         menuconfig SENSOR_CO2
                 bool "Using CO2 sensor device"
                 default n
