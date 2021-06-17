@@ -73,8 +73,8 @@ struct SensorDevice {
     uint8_t buffer[SENSOR_RECEIVE_BUFFSIZE];  /* Buffer for read data */
 
     int ref_cnt;                            /* Reference count */
-    DoubleLinklistType quant_list;          /* Sensor quantity link */
-    struct SysDoubleLinklistNode link;      /* Sensors link node */
+    DoublelistType quant_list;          /* Sensor quantity link */
+    struct DoublelistNode link;      /* Sensors link node */
 };
 
 enum SensorQuantityType {
@@ -106,8 +106,8 @@ struct SensorQuantity {
 
     int32_t (*ReadValue)(struct SensorQuantity *quant);
 
-    struct SysDoubleLinklistNode quant_link;
-    struct SysDoubleLinklistNode link;
+    struct DoublelistNode quant_link;
+    struct DoublelistNode link;
 };
 
 int SensorDeviceRegister(struct SensorDevice *sdev);
@@ -118,7 +118,7 @@ int SensorQuantityRegister(struct SensorQuantity *quant);
 int SensorQuantityUnregister(struct SensorQuantity *quant);
 int SensorQuantityOpen(struct SensorQuantity *quant);
 int SensorQuantityClose(struct SensorQuantity *quant);
-int32_t SensorQuantityRead(struct SensorQuantity *quant);
+int SensorQuantityRead(struct SensorQuantity *quant);
 int SensorQuantityControl(struct SensorQuantity *quant, int cmd);
 
 uint32_t Crc16(uint8_t * data, uint8_t length);

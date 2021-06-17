@@ -12,8 +12,16 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <user_api.h>
+
+extern int FrameworkInit();
 
 int main(void)
 {
+	printf("Hello, world!\n");
+	FrameworkInit();
     return 0;
 }
+// int cppmain(void);
+
+

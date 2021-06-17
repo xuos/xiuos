@@ -1,7 +1,5 @@
 menu "APP Framework"
 
-source "$KERNEL_DIR/framework/perception/Kconfig"
-
 source "$KERNEL_DIR/framework/connection/Kconfig"
 
 source "$KERNEL_DIR/framework/intelligent/Kconfig"

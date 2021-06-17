@@ -27,10 +27,11 @@ Modification: Use malloc, realloc, calloc and free functions
 *************************************************/
 
 #include <stddef.h>
+#include <transform.h>
 
 void *_malloc_r (struct _reent *ptr, size_t size)
 {
-    void* result = (void*)UserMalloc(size);
+    void* result = (void*)PrivMalloc(size);
 
     if (result == NULL)
     {
@@ -42,7 +43,7 @@ void *_malloc_r (struct _reent *ptr, size_t size)
 
 void *_realloc_r (struct _reent *ptr, void *old, size_t newlen)
 {
-    void* result = (void*)UserRealloc(old, newlen);
+    void* result = (void*)PrivRealloc(old, newlen);
 
     if (result == NULL)
     {
@@ -54,7 +55,7 @@ void *_realloc_r (struct _reent *ptr, void *old, size_t newlen)
 
 void *_calloc_r (struct _reent *ptr, size_t size, size_t len)
 {
-    void* result = (void*)UserCalloc(size, len);
+    void* result = (void*)PrivCalloc(size, len);
 
     if (result == NULL)
     {
@@ -66,5 +67,5 @@ void *_calloc_r (struct _reent *ptr, size_t size, size_t len)
 
 void _free_r (struct _reent *ptr, void *address)
 {
-    UserFree (address);
+    PrivFree (address);
 }

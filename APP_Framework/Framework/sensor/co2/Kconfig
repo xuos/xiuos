@@ -1,0 +1,22 @@
+
+config SENSOR_ZG09
+        bool "Using zg09"
+        default n
+
+        if SENSOR_ZG09
+                config SENSOR_DEVICE_ZG09
+                        string "zg09 sensor name"
+                        default "zg09_1"
+                
+                config SENSOR_QUANTITY_ZG09_CO2
+                        string "zg09 quantity name"
+                        default "co2_1"
+                
+                config SENSOR_DEVICE_ZG09_DEV
+                        string "zg09 device name"
+                        default "/dev/uart2_dev2"
+
+                config SENSOR_DEVICE_ZG09_DEV_EXT_PORT
+                        int "if ZG09 device using extuart, choose port"
+                        default "4"
+        endif

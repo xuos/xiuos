@@ -1,0 +1,18 @@
+
+config SENSOR_HS300X
+        bool "Using HS300x"
+        default n
+
+        if SENSOR_HS300X
+                config SENSOR_DEVICE_HS300X
+                        string "HS300x sensor name"
+                        default "hs300x_1"
+                
+                config SENSOR_QUANTITY_HS300X_TEMPERATURE
+                        string "HS300x quantity name"
+                        default "temperature_1"
+                
+                config SENSOR_DEVICE_HS300X_DEV
+                        string "HS300x device name"
+                        default "/dev/i2c1_dev0"
+        endif

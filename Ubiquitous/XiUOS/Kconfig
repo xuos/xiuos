@@ -1,12 +1,8 @@
 
 source "$KERNEL_DIR/kernel/Kconfig"
 
+source "$KERNEL_DIR/lib/Kconfig"
 
 source "$KERNEL_DIR/fs/Kconfig"
-
-
-source "$KERNEL_DIR/framework/Kconfig"
-
-source "$KERNEL_DIR/applications/Kconfig"
 
 source "$KERNEL_DIR/../../APP_Framework/Kconfig"

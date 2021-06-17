@@ -1,4 +1,5 @@
 menu "Kernel feature"
+
     menu "separate compile(choose none for compile once)"
         config SEPARATE_COMPILE
         bool

@@ -1,0 +1,30 @@
+
+config SENSOR_PS5308
+        bool "Using PS5308"
+        default n
+
+        if SENSOR_PS5308
+                config SENSOR_DEVICE_PS5308
+                        string "PS5308 sensor name"
+                        default "ps5308_1"
+                
+                config SENSOR_QUANTITY_PS5308_PM1_0
+                        string "PS5308 quantity PM1.0 name"
+                        default "pm1_0_1"
+
+                config SENSOR_QUANTITY_PS5308_PM2_5
+                        string "PS5308 quantity PM2.5 name"
+                        default "pm2_5_1"
+                
+                config SENSOR_QUANTITY_PS5308_PM10
+                        string "PS5308 quantity PM10 name"
+                        default "pm10_1"
+                
+                config SENSOR_DEVICE_PS5308_DEV
+                        string "PS5308 device name"
+                        default "/dev/uart2_dev2"
+
+                config SENSOR_DEVICE_PS5308_DEV_EXT_PORT
+                        int "if PS5308 device using extuart, choose port"
+                        default "4"
+        endif

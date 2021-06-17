@@ -1,0 +1,3 @@
+menuconfig SUPPORT_CONNECTION_FRAMEWORK
+        bool "support connection framework"
+        default n

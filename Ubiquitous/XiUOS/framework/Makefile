@@ -1,3 +1,3 @@
-SRC_DIR := connection  perception intelligent security
+SRC_DIR := connection intelligent security
 
 include $(KERNEL_ROOT)/compiler.mk

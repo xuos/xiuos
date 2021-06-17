@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 extern int main(void);
-//extern void UserTaskQuit(void);
+extern void UserTaskQuit(void);
 extern uintptr_t _ustext;
 extern uintptr_t _uetext;
 extern uintptr_t _ueronly;
@@ -31,7 +31,7 @@ const struct userspace_s userspace __attribute__ ((section (".userspace"))) =
   /* General memory map */
 
   .us_entrypoint    = (main_t)main,
-  //.us_taskquit      = (exit_t)UserTaskQuit,
+  .us_taskquit      = (exit_t)UserTaskQuit,
   .us_textstart     = (uintptr_t)&_ustext,
   .us_textend       = (uintptr_t)&_uetext,
   .us_datasource    = (uintptr_t)&_ueronly,

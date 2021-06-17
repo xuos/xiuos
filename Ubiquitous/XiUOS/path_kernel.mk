@@ -157,12 +157,17 @@ ifeq ($(CONFIG_FS_CH376), y)
 KERNELPATHS +=-I$(KERNEL_ROOT)/fs/compatibility_ch376 #
 endif
 
-ifeq ($(CONFIG_PERCEPTION_SENSORDEVICE), y)
-KERNELPATHS += -I$(KERNEL_ROOT)/framework/perception #
-endif
+# ifeq ($(CONFIG_PERCEPTION_SENSORDEVICE), y)
+# KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/sensor #
+# endif
 
-ifeq ($(CONFIG_CONNECTION_ADAPTER), y)
-KERNELPATHS += -I$(KERNEL_ROOT)/framework/connection/Adapter/include #
+KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos/user_api/posix_support/include #
+KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/sensor #
+KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos #
+KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Applications/general_functions/list #
+
+ifeq ($(CONFIG_SUPPORT_CONNECTION_FRAMEWORK), y)
+KERNELPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/connection #
 endif
 
 ifeq ($(CONFIG_CRYPTO), y)

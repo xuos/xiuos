@@ -1,0 +1,40 @@
+menuconfig SUPPORT_SENSOR_FRAMEWORK
+        bool "support sensor framework"
+        default y
+
+if SUPPORT_SENSOR_FRAMEWORK
+        menuconfig SENSOR_CO2
+                bool "Using CO2 sensor device"
+                default n
+        if SENSOR_CO2
+        source "$APP_DIR/Framework/sensor/co2/Kconfig"
+        endif
+
+        menuconfig SENSOR_PM
+                bool "Using PM sensor device"
+                default n
+        if SENSOR_PM
+        source "$APP_DIR/Framework/sensor/pm/Kconfig"
+        endif
+
+        menuconfig SENSOR_VOICE
+                bool "Using voice sensor device"
+                default n
+        if SENSOR_VOICE
+        source "$APP_DIR/Framework/sensor/voice/Kconfig"
+        endif
+
+        menuconfig SENSOR_TEMPERATURE
+                bool "Using temperature sensor device"
+                default n
+        if SENSOR_TEMPERATURE
+        source "$APP_DIR/Framework/sensor/temperature/Kconfig"
+        endif
+
+        menuconfig SENSOR_HUMIDITY
+                bool "Using humidity sensor device"
+                default n
+        if SENSOR_HUMIDITY
+        source "$APP_DIR/Framework/sensor/humidity/Kconfig"
+        endif
+endif
