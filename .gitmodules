@@ -1,3 +1,6 @@
 [submodule "Ubiquitous/RT_Thread/rt-thread"]
 	path = Ubiquitous/RT_Thread/rt-thread
 	url = https://git.trustie.net/chunyexixiaoyu/rt-thread.git
+[submodule "Ubiquitous/RT_Thread/bsp/k210/kendryte-sdk/kendryte-sdk-source"]
+	path = Ubiquitous/RT_Thread/bsp/k210/kendryte-sdk/kendryte-sdk-source
+	url = https://git.trustie.net/chunyexixiaoyu/kendryte-sdk-source.git

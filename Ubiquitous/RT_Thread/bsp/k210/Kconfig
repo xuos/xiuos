@@ -1,0 +1,36 @@
+mainmenu "XIUOS Rt-thread Configuration"
+
+config ROOT_DIR
+    string
+    default "../../../.."
+
+config BSP_DIR
+    string
+    default "."
+
+config RT_Thread_DIR
+    string
+    default "../.."
+
+config RTT_DIR
+    string
+    default "../../rt-thread"
+
+config BOARD_K210_EVB
+    bool
+    select ARCH_RISCV64
+    select ARCH_RISCV_FPU_S
+    select RT_USING_COMPONENTS_INIT
+    select RT_USING_USER_MAIN
+    default y
+
+source "$RTT_DIR/Kconfig"
+source "base-drivers/Kconfig"
+source "kendryte-sdk/Kconfig"
+source "$RT_Thread_DIR/drivers/Kconfig"
+source "$ROOT_DIR/APP_Framework/Applications/Kconfig"
+source "$ROOT_DIR/APP_Framework/Framework/Kconfig"
+
+config __STACKSIZE__
+    int "stack size for interrupt"
+    default 4096
