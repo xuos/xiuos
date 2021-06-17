@@ -5,7 +5,7 @@ APPPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Applications/general_functions/
 	-I$(KERNEL_ROOT)/../../APP_Framework/lib/app_newlib/include \
 	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/sensor #
 
-ifeq ($(CONFIG_COMPILE_WITH_XIUOS), y)
+ifeq ($(CONFIG_ADD_XIUOS_FETURES), y)
 APPPATHS += -I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos \
 	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos/user_api/switch_api \
 	-I$(KERNEL_ROOT)/../../APP_Framework/Framework/transform_layer/xiuos/user_api/posix_support/include #

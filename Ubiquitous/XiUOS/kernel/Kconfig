@@ -1,7 +1,4 @@
 menu "Kernel feature"
-    config COMPILE_WITH_XIUOS
-        bool "select xiuos kernel"
-        default y
 
     menu "separate compile(choose none for compile once)"
         config SEPARATE_COMPILE
