@@ -1,4 +1,0 @@
-config USING_TFLITE_MNIST
-    bool "mnist demo app for tflite micro"
-    depends on INTELLIGENT_TFLITE
-    default n
