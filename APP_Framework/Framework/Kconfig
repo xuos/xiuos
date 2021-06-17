@@ -1,12 +1,5 @@
-menuconfig SUPPORT_SENSOR_FRAMEWORK
-    bool "select sensor framework"
-    default y
-    if SUPPORT_SENSOR_FRAMEWORK
-    source "$APP_DIR/Framework/sensor/Kconfig"
-    endif
-
 config TRANSFORM_LAYER_ATTRIUBUTE
-    bool "select transform layer"
+    bool "support transform layer"
     default y
     choice
         prompt "select os features"
@@ -22,3 +15,7 @@ config TRANSFORM_LAYER_ATTRIUBUTE
             bool "add rt_thread fetures"
     endchoice
 
+
+source "$APP_DIR/Framework/sensor/Kconfig"
+source "$APP_DIR/Framework/know/tflite_sin/Kconfig"
+source "$APP_DIR/Framework/know/tflite_mnist/Kconfig"

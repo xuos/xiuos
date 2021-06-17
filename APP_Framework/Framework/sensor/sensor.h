@@ -118,7 +118,7 @@ int SensorQuantityRegister(struct SensorQuantity *quant);
 int SensorQuantityUnregister(struct SensorQuantity *quant);
 int SensorQuantityOpen(struct SensorQuantity *quant);
 int SensorQuantityClose(struct SensorQuantity *quant);
-int32_t SensorQuantityRead(struct SensorQuantity *quant);
+int SensorQuantityRead(struct SensorQuantity *quant);
 int SensorQuantityControl(struct SensorQuantity *quant, int cmd);
 
 uint32_t Crc16(uint8_t * data, uint8_t length);

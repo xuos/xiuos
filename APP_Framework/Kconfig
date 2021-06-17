@@ -1,10 +1,11 @@
 menu "APP_Framework"
 
-config APP_DIR
-    string
-    option env="SRC_APP_DIR"
-    default "."
+    config APP_DIR
+        string
+        option env="SRC_APP_DIR"
+        default "."
 
+source "$APP_DIR/Applications/Kconfig"
 source "$APP_DIR/Framework/Kconfig"
 
 endmenu

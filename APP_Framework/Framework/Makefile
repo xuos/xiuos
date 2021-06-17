@@ -1,6 +1,6 @@
 SRC_DIR :=  transform_layer 
 
-ifeq ($(CONFIG_SUPPORT_SENSOR_FRAMEWORK),y)
+ifeq ($(CONFIG_SENSOR_SENSORDEVICE),y)
 	SRC_DIR += sensor
 endif
 

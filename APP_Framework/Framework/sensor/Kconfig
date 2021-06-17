@@ -1,5 +1,5 @@
 menuconfig SENSOR_SENSORDEVICE
-        bool "Using sensor devices"
+        bool "support sensor framework"
         default y
 
 if SENSOR_SENSORDEVICE
