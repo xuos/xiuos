@@ -1,22 +1,27 @@
-config TRANSFORM_LAYER_ATTRIUBUTE
-    bool "support transform layer"
-    default y
-    choice
-        prompt "select os features"
-        default ADD_XIUOS_FETURES
+menu "Framework"
 
-        config ADD_XIUOS_FETURES
-            bool "add xiuos fetures"
-        
-        config ADD_NUTTX_FETURES
-            bool "add nuttx fetures"
+    config TRANSFORM_LAYER_ATTRIUBUTE
+        bool "support transform layer"
+        default y
+        choice
+            prompt "select os features"
+            default ADD_XIUOS_FETURES
 
-        config ADD_RTTHREAD_FETURES
-            bool "add rt_thread fetures"
-    endchoice
+            config ADD_XIUOS_FETURES
+                bool "add xiuos fetures"
+            
+            config ADD_NUTTX_FETURES
+                bool "add nuttx fetures"
+
+            config ADD_RTTHREAD_FETURES
+                bool "add rt_thread fetures"
+        endchoice
 
 
-source "$APP_DIR/Framework/sensor/Kconfig"
-source "$APP_DIR/Framework/connection/Kconfig"
-source "$APP_DIR/Framework/know/tflite_sin/Kconfig"
-source "$APP_DIR/Framework/know/tflite_mnist/Kconfig"
+    source "$APP_DIR/Framework/sensor/Kconfig"
+    source "$APP_DIR/Framework/connection/Kconfig"
+    source "$APP_DIR/Framework/know/Kconfig"
+    source "$APP_DIR/Framework/control/Kconfig"
+
+
+endmenu

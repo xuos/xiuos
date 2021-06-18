@@ -7,5 +7,7 @@ menu "APP_Framework"
 
 source "$APP_DIR/Applications/Kconfig"
 source "$APP_DIR/Framework/Kconfig"
+source "$APP_DIR/lib/Kconfig"
+
 
 endmenu

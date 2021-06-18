@@ -1,0 +1,14 @@
+menu "app lib"
+
+    choice
+            prompt "chose a kind of lib for app"
+            default APP_SELECT_NEWLIB
+
+            config APP_SELECT_NEWLIB
+                bool "app select newlib"
+            
+            config APP_SELECT_OTHER_LIB
+                bool "app select other lib"
+    endchoice
+
+endmenu
