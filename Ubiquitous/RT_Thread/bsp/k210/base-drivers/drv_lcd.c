@@ -52,9 +52,9 @@ static void init_rst(void)
 {
     gpiohs_set_drive_mode(RST_GPIONUM, GPIO_DM_OUTPUT);
     gpiohs_set_pin(RST_GPIONUM, GPIO_PV_LOW);
-    usleep(100000);
+    rt_thread_mdelay(10);
     gpiohs_set_pin(RST_GPIONUM, GPIO_PV_HIGH);
-    usleep(100000);
+    rt_thread_mdelay(10);
 }
 
 
@@ -122,17 +122,26 @@ void lcd_interrupt_enable(void)
     lcd_ctl.mode = 1;
 }
 
+void lcd_pre()
+{
+    fpioa_set_function(37, FUNC_GPIOHS0 + RST_GPIONUM);
+    fpioa_set_function(38, FUNC_GPIOHS0 + DCX_GPIONUM);
+    fpioa_set_function(36, FUNC_SPI0_SS0 + LCD_SPI_SLAVE_SELECT);
+    fpioa_set_function(39, FUNC_SPI0_SCLK);
+}
+
 int lcd_init(void)
 {
 
     uint8_t data = 0;
+    lcd_pre();
     tft_hard_init();
     /*soft reset*/
     tft_write_command(SOFTWARE_RESET);
-    usleep(100000);
+    rt_thread_mdelay(10);
     /*exit sleep*/
     tft_write_command(SLEEP_OFF);
-    usleep(100000);
+    rt_thread_mdelay(10);
     /*pixel format*/
     tft_write_command(PIXEL_FORMAT_SET);
     data = 0x55;
@@ -302,14 +311,8 @@ void lcd_draw_picture(uint16_t x1, uint16_t y1, uint16_t width, uint16_t height,
     lcd_set_area(x1, y1, x1 + width - 1, y1 + height - 1);
     tft_write_word(ptr, width * height / 2, lcd_ctl.mode ? 2 : 0);
 }
-void lcd_pre()
-{
-    fpioa_set_function(38, FUNC_GPIOHS0 + DCX_GPIONUM);
-    fpioa_set_function(36, FUNC_SPI0_SS3);
-    fpioa_set_function(39, FUNC_SPI0_SCLK);
-    fpioa_set_function(37, FUNC_GPIOHS0 + RST_GPIONUM);
 
-}
+
 void lcd_test0()
 {
     char test[]={"xuos-intelligence framwork"};
