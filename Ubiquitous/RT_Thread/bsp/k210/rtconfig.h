@@ -246,24 +246,26 @@
 #define BSP_USING_UART1
 #define BSP_UART1_TXD_PIN 20
 #define BSP_UART1_RXD_PIN 21
-#define BSP_USING_DVP
-
-/* The default pin assignment is based on the Maix Duino K210 development board */
-
-#define BSP_DVP_SCCB_SDA_PIN 40
-#define BSP_DVP_SCCB_SCLK_PIN 41
-#define BSP_DVP_CMOS_RST_PIN 42
-#define BSP_DVP_CMOS_VSYNC_PIN 43
-#define BSP_DVP_CMOS_PWDN_PIN 44
-#define BSP_DVP_CMOS_XCLK_PIN 46
-#define BSP_DVP_CMOS_PCLK_PIN 47
-#define BSP_DVP_CMOS_HREF_PIN 45
+#define BSP_USING_SPI1
+#define BSP_SPI1_CLK_PIN 27
+#define BSP_SPI1_D0_PIN 28
+#define BSP_SPI1_D1_PIN 26
+#define BSP_SPI1_USING_SS0
+#define BSP_SPI1_SS0_PIN 29
+#define BSP_SPI1_USING_SS1
+#define BSP_SPI1_SS1_PIN 8
+#define BSP_USING_SDCARD
 
 /* Kendryte SDK Config */
 
 #define PKG_KENDRYTE_SDK_VERNUM 0x0055
 
 /* More Drivers */
+
+
+/* Applications */
+
+/* Framework */
 
 #define __STACKSIZE__ 4096
 

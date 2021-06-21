@@ -1,0 +1,7 @@
+Import('RTT_ROOT')
+from building import *
+
+cwd = GetCurrentDir()
+objs = SConscript(os.path.join(cwd, 'rw007-source', 'SConscript'))
+
+Return('objs')

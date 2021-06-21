@@ -1,0 +1,14 @@
+
+menuconfig DRV_USING_OV2640
+	bool "ov2640 driver"
+	default n
+
+if SOC_FAMILY_STM32
+	config DRV_USING_OV2640
+		select BSP_USING_DCMI
+endif
+
+if BOARD_K210_EVB
+	config DRV_USING_OV2640
+		select BSP_USING_DVP
+endif
