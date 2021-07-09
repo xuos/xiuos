@@ -1,0 +1,70 @@
+menu "sensor app"
+
+    menuconfig APPLICATION_SENSOR
+        bool "Using sensor apps"
+        default n
+        select PERCEPTION_SENSORDEVICE
+
+        if APPLICATION_SENSOR
+            menuconfig APPLICATION_SENSOR_CO2
+                bool "Using sensor CO2 apps"
+                default n
+                select PERCEPTION_CO2
+
+                if APPLICATION_SENSOR_CO2
+                    config APPLICATION_SENSOR_CO2_ZG09
+                    bool "Using sensor ZG09 apps"
+                    default n
+                    select PERCEPTION_ZG09
+                endif
+
+            menuconfig APPLICATION_SENSOR_PM1_0
+                bool "Using sensor PM1.0 apps"
+                default n
+                select PERCEPTION_PM
+
+                if APPLICATION_SENSOR_PM1_0
+                    config APPLICATION_SENSOR_PM1_0_PS5308
+                    bool "Using sensor PS5308 apps"
+                    default n
+                    select PERCEPTION_PS5308
+                endif
+
+            menuconfig APPLICATION_SENSOR_VOICE
+                bool "Using sensor voice apps"
+                default n
+                select PERCEPTION_VOICE
+
+                if APPLICATION_SENSOR_VOICE
+                    config APPLICATION_SENSOR_VOICE_D124
+                    bool "Using sensor D124 apps"
+                    default n
+                    select PERCEPTION_D124
+                endif
+
+            menuconfig APPLICATION_SENSOR_HUMIDITY
+                bool "Using sensor humidity apps"
+                default n
+                select PERCEPTION_HUMIDITY
+
+                if APPLICATION_SENSOR_HUMIDITY
+                    config APPLICATION_SENSOR_HUMIDITY_HS300X
+                    bool "Using sensor HS300x apps"
+                    default n
+                    select PERCEPTION_HS300X
+                endif
+
+            menuconfig APPLICATION_SENSOR_TEMPERATURE
+                bool "Using sensor temperature apps"
+                default n
+                select PERCEPTION_TEMPERATURE
+
+                if APPLICATION_SENSOR_TEMPERATURE
+                    config APPLICATION_SENSOR_TEMPERATURE_HS300X
+                    bool "Using sensor HS300x apps"
+                    default n
+                    select PERCEPTION_HS300X
+                endif
+        endif
+
+endmenu

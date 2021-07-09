@@ -1,0 +1,7 @@
+menu "knowing app"
+
+    menuconfig APPLICATION_KNOWING
+        bool "Using knowing apps"
+        default n
+
+endmenu

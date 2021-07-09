@@ -1,0 +1,8 @@
+menu "control app"
+
+    menuconfig APPLICATION_CONTROL
+        bool "Using control apps"
+        default n
+
+endmenu
+

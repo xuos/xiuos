@@ -1,18 +1,20 @@
-menuconfig USER_TEST
-    bool "Enable application test function "
-    default n
+menu "test app"
+    menuconfig USER_TEST
+        bool "Enable application test function "
+        default n
 
-    if USER_TEST
-        config USER_TEST_LORA_ADHOC
-            bool "Config test lora adhoc"
-            default n
+        if USER_TEST
+            config USER_TEST_LORA_ADHOC
+                bool "Config test lora adhoc"
+                default n
 
-        config USER_TEST_SPI_LORA
-            bool "Config test spi lora"
-            default n
+            config USER_TEST_SPI_LORA
+                bool "Config test spi lora"
+                default n
 
-        config USER_TEST_SPI_FLASH
-            bool "Config test spi flash"
-            default n
+            config USER_TEST_SPI_FLASH
+                bool "Config test spi flash"
+                default n
 
-    endif
+        endif
+endmenu

@@ -1,0 +1,14 @@
+menu "connection app"
+    menuconfig APPLICATION_CONNECTION
+        bool "Using connection apps"
+        default n
+
+    menuconfig CONNECTION_COMMUNICATION_ZIGBEE
+        bool "enable zigbee demo"
+        default n
+        select CONFIG_CONNECTION_COMMUNICATION_ZIGBEE
+        if CONNECTION_COMMUNICATION_ZIGBEE
+            source "$KERNEL_DIR/framework/connection/Adapter/zigbee/Kconfig"
+        endif
+
+endmenu
