@@ -1,0 +1,14 @@
+import os
+from building import * 
+Import('RTT_ROOT')
+Import('rtconfig')
+cwd = GetCurrentDir()
+DEPENDS = ["DRV_USING_OV2640"]
+
+SOURCES = []
+if GetDepend(['DRV_USING_OV2640']):
+    SOURCES += ['drv_ov2640.c']
+path =  [cwd]
+objs = DefineGroup('ov2640', src = SOURCES, depend = DEPENDS,CPPPATH = path) 
+
+Return("objs") 

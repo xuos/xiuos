@@ -37,7 +37,7 @@ static struct io_config
     IOCONFIG(BSP_DVP_CMOS_HREF_PIN, FUNC_CMOS_HREF),
 #endif
 
-#ifdef BSP_USING_LCD
+#if 0       //here is a drv lcd bug now don't know why
     IOCONFIG(BSP_LCD_CS_PIN, FUNC_SPI0_SS3),                 /* LCD CS PIN */
     IOCONFIG(BSP_LCD_WR_PIN, FUNC_SPI0_SCLK),                /* LCD WR PIN */
     IOCONFIG(BSP_LCD_DC_PIN, FUNC_GPIOHS2),                 /* LCD DC PIN */
@@ -122,6 +122,9 @@ int io_config_init(void)
     sysctl_set_spi0_dvp_data(1);
     sysctl_set_power_mode(SYSCTL_POWER_BANK6, SYSCTL_POWER_V18);
     sysctl_set_power_mode(SYSCTL_POWER_BANK7, SYSCTL_POWER_V18);
+#endif
+#ifdef FACE_DETECT
+    sysctl_clock_enable(SYSCTL_CLOCK_AI);
 #endif
 }
 INIT_BOARD_EXPORT(io_config_init);
